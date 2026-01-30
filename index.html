@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RC Download Portal</title>
 
 <style>
@@ -12,9 +13,9 @@ height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-background:linear-gradient(270deg,red,blue,green,purple);
+background:linear-gradient(270deg,#0f2027,#203a43,#2c5364,#000);
 background-size:800% 800%;
-animation:bgmove 10s infinite;
+animation:bgmove 12s infinite;
 color:white;
 }
 
@@ -25,39 +26,43 @@ color:white;
 }
 
 .container{
-background:rgba(0,0,0,0.8);
-padding:30px;
-border-radius:15px;
-width:330px;
+background:rgba(0,0,0,0.85);
+padding:28px;
+border-radius:16px;
+width:90%;
+max-width:350px;
 text-align:center;
+box-shadow:0 0 20px #000;
 }
 
 .glow-box{
 border:3px solid gold;
 border-radius:10px;
 padding:10px;
-animation:rotateGlow 3s linear infinite;
+animation:rotateGlow 2.5s linear infinite;
 }
 
 @keyframes rotateGlow{
-0%{box-shadow:0 0 5px gold}
+0%{box-shadow:0 0 6px gold}
 50%{box-shadow:0 0 20px gold}
-100%{box-shadow:0 0 5px gold}
+100%{box-shadow:0 0 6px gold}
 }
 
 input{
 width:100%;
 padding:12px;
-font-size:18px;
-margin:10px 0;
-border-radius:6px;
+font-size:16px;
+margin:12px 0;
+border-radius:7px;
 border:none;
 text-align:center;
+outline:none;
 }
 
 .plate{
-font-family:'Arial Black';
+font-weight:bold;
 letter-spacing:2px;
+text-transform:uppercase;
 background:white;
 color:black;
 border:3px solid black;
@@ -66,7 +71,7 @@ border:3px solid black;
 button,.upi-btn{
 width:100%;
 padding:12px;
-font-size:18px;
+font-size:16px;
 border:none;
 border-radius:8px;
 background:#0d6efd;
@@ -79,16 +84,16 @@ margin-top:10px;
 }
 
 @keyframes blueGlow{
-0%{box-shadow:0 0 5px #0d6efd}
-50%{box-shadow:0 0 20px #0d6efd}
-100%{box-shadow:0 0 5px #0d6efd}
+0%{box-shadow:0 0 6px #0d6efd}
+50%{box-shadow:0 0 18px #0d6efd}
+100%{box-shadow:0 0 6px #0d6efd}
 }
 
 .hidden{display:none;}
 
 .footer{
 margin-top:15px;
-font-size:13px;
+font-size:12px;
 opacity:0.8;
 }
 </style>
@@ -98,11 +103,10 @@ opacity:0.8;
 
 <!-- PAGE 1 -->
 <div class="container" id="page1">
-
 <h3>Enter Vehicle Number</h3>
 
 <div class="glow-box">
-<input class="plate" id="vehicle" placeholder="BR-09-AB-1234">
+<input class="plate" id="vehicle" placeholder="BR09AB1234">
 </div>
 
 <button onclick="goPayment()">Continue</button>
@@ -121,6 +125,8 @@ opacity:0.8;
 Pay Using UPI
 </a>
 
+<input id="utr" placeholder="Enter UTR Number">
+
 <button onclick="goCongrats()">I Have Paid</button>
 
 </div>
@@ -128,7 +134,7 @@ Pay Using UPI
 <!-- PAGE 3 -->
 <div class="container hidden" id="page3">
 
-<h2>🎉 Congratulations</h2>
+<h2>🎉 Payment Successful</h2>
 <p>RC aapke WhatsApp par bhej di jayegi</p>
 
 <input id="whatsapp" placeholder="Enter WhatsApp Number">
@@ -138,6 +144,12 @@ Pay Using UPI
 </div>
 
 <script>
+const vehicleInput = document.getElementById("vehicle");
+
+vehicleInput.addEventListener("input", () => {
+vehicleInput.value = vehicleInput.value.toUpperCase().replace(/[^A-Z0-9]/g,"");
+});
+
 function goPayment(){
 if(vehicle.value==""){
 alert("Vehicle number daale");
@@ -148,6 +160,10 @@ page2.classList.remove("hidden");
 }
 
 function goCongrats(){
+if(utr.value==""){
+alert("UTR number daale");
+return;
+}
 page2.classList.add("hidden");
 page3.classList.remove("hidden");
 }
@@ -157,7 +173,7 @@ if(whatsapp.value==""){
 alert("WhatsApp number daale");
 return;
 }
-alert("RC soon sent on WhatsApp ✅");
+alert("RC will be sent shortly on WhatsApp ✅");
 location.reload();
 }
 </script>
