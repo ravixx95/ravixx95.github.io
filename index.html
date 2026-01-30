@@ -1,21 +1,204 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>RC PDF Download</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<title>RC Download Portal</title>
+
 <style>
-body{font-family:Arial;text-align:center;padding:40px;background:#f2f2f2}
-input,button{padding:12px;width:90%;max-width:300px;margin:10px}
-button{background:#007bff;color:white;border:none}
+body{
+margin:0;
+font-family:Arial, sans-serif;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(270deg,red,blue,green,purple);
+background-size:800% 800%;
+animation:bgmove 10s infinite;
+color:white;
+}
+
+@keyframes bgmove{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
+.container{
+background:rgba(0,0,0,0.8);
+padding:30px;
+border-radius:15px;
+width:330px;
+text-align:center;
+}
+
+.glow-box{
+border:3px solid gold;
+border-radius:10px;
+padding:10px;
+animation:rotateGlow 3s linear infinite;
+}
+
+@keyframes rotateGlow{
+0%{box-shadow:0 0 5px gold}
+50%{box-shadow:0 0 20px gold}
+100%{box-shadow:0 0 5px gold}
+}
+
+input{
+width:100%;
+padding:12px;
+font-size:18px;
+margin:10px 0;
+border-radius:6px;
+border:none;
+text-align:center;
+}
+
+.plate{
+font-family:'Arial Black';
+letter-spacing:2px;
+background:white;
+color:black;
+border:3px solid black;
+}
+
+button,.upi-btn{
+width:100%;
+padding:12px;
+font-size:18px;
+border:none;
+border-radius:8px;
+background:#0d6efd;
+color:white;
+animation:blueGlow 2s infinite;
+cursor:pointer;
+text-decoration:none;
+display:block;
+margin-top:10px;
+}
+
+@keyframes blueGlow{
+0%{box-shadow:0 0 5px #0d6efd}
+50%{box-shadow:0 0 20px #0d6efd}
+100%{box-shadow:0 0 5px #0d6efd}
+}
+
+.hidden{display:none;}
+
+.popup{
+position:fixed;
+top:0;left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.8);
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.popup-box{
+background:black;
+padding:25px;
+border-radius:12px;
+text-align:center;
+}
+
+.footer{
+margin-top:15px;
+font-size:13px;
+opacity:0.8;
+}
 </style>
 </head>
+
 <body>
 
-<h2>Enter Vehicle Number</h2>
-<input type="text" placeholder="BR01AB1234">
-<button>Get RC PDF</button>
+<div class="container" id="page1">
 
-<p>Powered by rcpdf.in</p>
+<h3>Enter Vehicle Number</h3>
+
+<div class="glow-box">
+<input class="plate" id="vehicle" placeholder="BR-09-AB-1234" maxlength="13">
+</div>
+
+<input id="whatsapp" placeholder="WhatsApp Number">
+
+<button onclick="goPay()">Pay & Download RC</button>
+
+<div class="footer">
+Powered by Mishra Service<br>
+© 2026 All Rights Reserved
+</div>
+
+</div>
+
+<div class="container hidden" id="page2">
+
+<h3>Scan QR or Pay Directly</h3>
+
+<img src="YOUR_QR_IMAGE_LINK_HERE" width="200">
+
+<p>Payment kar ke RC turant download kare</p>
+
+<!-- ✅ Direct UPI Payment Button -->
+<a class="upi-btn" href="upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
+Pay ₹120 Using UPI
+</a>
+
+<p><small>Note: RC aapke WhatsApp par milegi</small></p>
+
+<input id="utr" placeholder="Enter UTR Number">
+
+<button onclick="submitUTR()">Submit</button>
+
+</div>
+
+<div class="popup hidden" id="popup">
+<div class="popup-box">
+<h2>Congratulations 👏🏻🎉</h2>
+<p>Aapko jaldi hi aapke gaadi ka RC mil jayega.<br>
+Server issue ki wajah se thoda delay ho raha hai.</p>
+<button onclick="closePopup()">OK</button>
+</div>
+</div>
+
+<script>
+const vehicleInput = document.getElementById("vehicle");
+
+vehicleInput.addEventListener("input", ()=>{
+let v = vehicleInput.value.replace(/[^A-Z0-9]/g,"").toUpperCase();
+
+let formatted = v;
+
+if(v.length>2) formatted = v.slice(0,2)+"-"+v.slice(2);
+if(v.length>4) formatted = formatted.slice(0,5)+"-"+v.slice(4);
+if(v.length>6) formatted = formatted.slice(0,8)+"-"+v.slice(6);
+
+vehicleInput.value = formatted;
+});
+
+function goPay(){
+if(vehicle.value=="" || whatsapp.value==""){
+alert("Vehicle number aur WhatsApp number bhare");
+return;
+}
+document.getElementById("page1").classList.add("hidden");
+document.getElementById("page2").classList.remove("hidden");
+}
+
+function submitUTR(){
+if(utr.value==""){
+alert("UTR number daale");
+return;
+}
+document.getElementById("popup").classList.remove("hidden");
+}
+
+function closePopup(){
+location.reload();
+}
+</script>
 
 </body>
 </html>
