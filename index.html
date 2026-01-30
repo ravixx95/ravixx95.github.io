@@ -86,24 +86,6 @@ margin-top:10px;
 
 .hidden{display:none;}
 
-.popup{
-position:fixed;
-top:0;left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.8);
-display:flex;
-justify-content:center;
-align-items:center;
-}
-
-.popup-box{
-background:black;
-padding:25px;
-border-radius:12px;
-text-align:center;
-}
-
 .footer{
 margin-top:15px;
 font-size:13px;
@@ -114,88 +96,68 @@ opacity:0.8;
 
 <body>
 
+<!-- PAGE 1 -->
 <div class="container" id="page1">
 
 <h3>Enter Vehicle Number</h3>
 
 <div class="glow-box">
-<input class="plate" id="vehicle" placeholder="BR-09-AB-1234" maxlength="13">
+<input class="plate" id="vehicle" placeholder="BR-09-AB-1234">
 </div>
 
-<input id="whatsapp" placeholder="WhatsApp Number">
+<button onclick="goPayment()">Continue</button>
 
-<button onclick="goPay()">Pay & Download RC</button>
-
-<div class="footer">
-Powered by Mishra Service<br>
-© 2026 All Rights Reserved
+<div class="footer">Powered by Mishra Service</div>
 </div>
 
-</div>
-
+<!-- PAGE 2 -->
 <div class="container hidden" id="page2">
 
-<h3>Scan QR or Pay Directly</h3>
+<h3>Pay ₹120 to Download RC</h3>
 
-<img src="YOUR_QR_IMAGE_LINK_HERE" width="200">
+<img src="https://via.placeholder.com/200" width="200">
 
-<p>Payment kar ke RC turant download kare</p>
-
-<!-- ✅ Direct UPI Payment Button -->
 <a class="upi-btn" href="upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
-Pay ₹120 Using UPI
+Pay Using UPI
 </a>
 
-<p><small>Note: RC aapke WhatsApp par milegi</small></p>
-
-<input id="utr" placeholder="Enter UTR Number">
-
-<button onclick="submitUTR()">Submit</button>
+<button onclick="goCongrats()">I Have Paid</button>
 
 </div>
 
-<div class="popup hidden" id="popup">
-<div class="popup-box">
-<h2>Congratulations 👏🏻🎉</h2>
-<p>Aapko jaldi hi aapke gaadi ka RC mil jayega.<br>
-Server issue ki wajah se thoda delay ho raha hai.</p>
-<button onclick="closePopup()">OK</button>
-</div>
+<!-- PAGE 3 -->
+<div class="container hidden" id="page3">
+
+<h2>🎉 Congratulations</h2>
+<p>RC aapke WhatsApp par bhej di jayegi</p>
+
+<input id="whatsapp" placeholder="Enter WhatsApp Number">
+
+<button onclick="finish()">Submit</button>
+
 </div>
 
 <script>
-const vehicleInput = document.getElementById("vehicle");
-
-vehicleInput.addEventListener("input", ()=>{
-let v = vehicleInput.value.replace(/[^A-Z0-9]/g,"").toUpperCase();
-
-let formatted = v;
-
-if(v.length>2) formatted = v.slice(0,2)+"-"+v.slice(2);
-if(v.length>4) formatted = formatted.slice(0,5)+"-"+v.slice(4);
-if(v.length>6) formatted = formatted.slice(0,8)+"-"+v.slice(6);
-
-vehicleInput.value = formatted;
-});
-
-function goPay(){
-if(vehicle.value=="" || whatsapp.value==""){
-alert("Vehicle number aur WhatsApp number bhare");
+function goPayment(){
+if(vehicle.value==""){
+alert("Vehicle number daale");
 return;
 }
-document.getElementById("page1").classList.add("hidden");
-document.getElementById("page2").classList.remove("hidden");
+page1.classList.add("hidden");
+page2.classList.remove("hidden");
 }
 
-function submitUTR(){
-if(utr.value==""){
-alert("UTR number daale");
+function goCongrats(){
+page2.classList.add("hidden");
+page3.classList.remove("hidden");
+}
+
+function finish(){
+if(whatsapp.value==""){
+alert("WhatsApp number daale");
 return;
 }
-document.getElementById("popup").classList.remove("hidden");
-}
-
-function closePopup(){
+alert("RC soon sent on WhatsApp ✅");
 location.reload();
 }
 </script>
