@@ -1,195 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="title" content="RC PDF Download – Vehicle RC by Number | rcpdf.in">
-<meta name="description" content="Enter vehicle number and download RC PDF instantly. Fast RC service online in India.">
-<meta name="keywords" content="RC download, vehicle RC PDF, RC by number, bike RC online, car RC download">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>RC PDF Download by Vehicle Number | rcpdf.in</title>
-  <title>RC PDF Download Instantly – Get Vehicle RC by Number | rcpdf.in</title>
-
-  
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RC Download Portal</title>
+<title>RC PDF Portal</title>
 
 <style>
-
-<p style="display:none;">
-RC PDF download online service for bike and car. Users can get vehicle RC by entering registration number. Fast RC PDF India.
-</p>
-
-  
 body{
 margin:0;
 font-family:Arial, sans-serif;
-height:100vh;
+min-height:100vh;
 display:flex;
+flex-direction:column;
 justify-content:center;
 align-items:center;
-background:linear-gradient(270deg,#0f2027,#203a43,#2c5364,#000);
+background:linear-gradient(270deg, red, blue, green, purple, cyan);
 background-size:800% 800%;
-animation:bgmove 12s infinite;
-color:white;
+animation:bg 12s infinite alternate;
 }
 
-@keyframes bgmove{
+@keyframes bg{
 0%{background-position:0% 50%}
 50%{background-position:100% 50%}
 100%{background-position:0% 50%}
 }
 
-.container{
-background:rgba(0,0,0,0.85);
-padding:28px;
-border-radius:16px;
-width:90%;
-max-width:350px;
-text-align:center;
-box-shadow:0 0 20px #000;
-}
-
-.glow-box{
-border:3px solid gold;
+.home{
+position:fixed;
+top:12px;
+left:12px;
+background:white;
+color:black;
+padding:8px 16px;
 border-radius:10px;
-padding:10px;
-animation:rotateGlow 2.5s linear infinite;
+font-weight:bold;
+cursor:pointer;
+z-index:10;
 }
 
-@keyframes rotateGlow{
-0%{box-shadow:0 0 6px gold}
-50%{box-shadow:0 0 20px gold}
-100%{box-shadow:0 0 6px gold}
+.container{
+background:rgba(0,0,0,0.78);
+color:white;
+padding:25px;
+border-radius:18px;
+width:92%;
+max-width:420px;
+text-align:center;
+box-shadow:0 0 25px rgba(0,0,0,0.6);
 }
 
 input{
 width:100%;
 padding:12px;
-font-size:16px;
-margin:12px 0;
-border-radius:7px;
+margin:10px 0;
 border:none;
-text-align:center;
-outline:none;
+border-radius:10px;
+font-size:16px;
 }
 
-.plate{
-font-weight:bold;
-letter-spacing:2px;
-text-transform:uppercase;
-background:white;
-color:black;
-border:3px solid black;
-}
-
-button,.upi-btn{
+button{
 width:100%;
 padding:12px;
-font-size:16px;
 border:none;
-border-radius:8px;
-background:#0d6efd;
-color:white;
-animation:blueGlow 2s infinite;
+border-radius:12px;
+background:#00ffd5;
+font-size:18px;
 cursor:pointer;
-text-decoration:none;
-display:block;
 margin-top:10px;
-}
-
-@keyframes blueGlow{
-0%{box-shadow:0 0 6px #0d6efd}
-50%{box-shadow:0 0 18px #0d6efd}
-100%{box-shadow:0 0 6px #0d6efd}
 }
 
 .hidden{display:none;}
 
-.footer{
-margin-top:15px;
-font-size:12px;
-opacity:0.8;
+.neon-box{
+position:relative;
+padding:8px;
+border-radius:18px;
+margin:10px 0;
 }
+
+.neon-box::before{
+content:"";
+position:absolute;
+inset:-4px;
+background:linear-gradient(270deg, red, cyan, blue, lime, magenta, yellow, red);
+background-size:400% 400%;
+animation:neon 6s linear infinite;
+filter:blur(6px);
+z-index:-1;
+}
+
+@keyframes neon{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
+.neon-box img,.neon-box button{
+position:relative;
+z-index:1;
+}
+
+.footer{
+margin-top:20px;
+padding:12px;
+width:100%;
+text-align:center;
+color:white;
+font-size:14px;
+background:linear-gradient(270deg, red, blue, green, purple, cyan);
+background-size:600% 600%;
+animation:bg 10s infinite alternate;
+border-radius:12px;
+}
+
+.footer p{margin:4px 0;}
+
 </style>
 </head>
 
 <body>
 
-<!-- PAGE 1 -->
-<div class="container" id="page1">
-<h3>Enter Vehicle Number</h3>
+<div class="home" onclick="location.reload()">🏠 Home</div>
 
-<div class="glow-box">
-<input class="plate" id="vehicle" placeholder="BR-09-AB-1234">
+<div class="container">
+
+<div id="step1">
+<h2>Enter Vehicle Number</h2>
+<input id="vehicle" placeholder="BR09AB1234" oninput="vibrate()">
+<button onclick="nextStep()">Continue</button>
 </div>
 
-<button onclick="goPayment()">Continue</button>
+<div id="step2" class="hidden">
+<h3>RC PRAPT KARNE KE LIYE</h3>
 
-<div class="footer">❣️Powered by Mishra Service♥️</div>
+<p>Pay ₹120</p>
+
+<div class="neon-box">
+<img src="https://drive.google.com/uc?export=view&id=1VrjHeoJz6rXTi0ap-FbYEYZuwOAINPBY"
+style="width:220px;border-radius:14px;">
 </div>
 
-<!-- PAGE 2 -->
-<div class="container hidden" id="page2">
+<p>UPI ID: bestinsurance@upi</p>
 
-<h3>Pay ₹120 to Download RC</h3>
-
-<img src="https://via.placeholder.com/200" width="200">
-
-<a class="upi-btn" href="upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
-Pay Using UPI
+<div class="neon-box">
+<a href="upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
+<button>Pay via UPI App</button>
 </a>
+</div>
 
-<input id="utr" placeholder="Enter UTR Number">
+<input id="mobile" placeholder="Mobile Number (Required)" oninput="vibrate()">
 
-<button onclick="goCongrats()">I Have Paid</button>
+<button onclick="confirmPayment()">Payment Done</button>
+</div>
+
+<div id="step3" class="hidden">
+<h3>Payment Successful ✅</h3>
+<p>Aapko jald hi aapka original RC ka PDF mil jayega</p>
+<button onclick="sendTelegram()">Send Vehicle Number</button>
+</div>
 
 </div>
 
-<!-- PAGE 3 -->
-<div class="container hidden" id="page3">
-
-<h2>🎉 Payment Successful</h2>
-<p>RC aapke WhatsApp par bhej di jayegi</p>
-
-<input id="whatsapp" placeholder="Enter WhatsApp Number">
-
-<button onclick="finish()">Submit</button>
-
+<div class="footer">
+<p>© Copyright Reserved 2026</p>
+<p>Mishra SERVICE ♥️❣️</p>
+<p>MAKE IN INDIA</p>
+<p>MADE WITH ♥️</p>
 </div>
 
 <script>
-const vehicleInput = document.getElementById("vehicle");
+const token="8138238341:AAEhmifhXAEgq-PYHEHReW2MDuis7rzieRg";
+const chatId="5600045707";
 
-vehicleInput.addEventListener("input", () => {
-vehicleInput.value = vehicleInput.value.toUpperCase().replace(/[^A-Z0-9]/g,"");
-});
-
-function goPayment(){
-if(vehicle.value==""){
-alert("Vehicle number daale");
-return;
-}
-page1.classList.add("hidden");
-page2.classList.remove("hidden");
+function vibrate(){
+if(navigator.vibrate){navigator.vibrate(40);}
 }
 
-function goCongrats(){
-if(utr.value==""){
-alert("UTR number daale");
-return;
-}
-page2.classList.add("hidden");
-page3.classList.remove("hidden");
+function nextStep(){
+let v=document.getElementById("vehicle").value.trim();
+if(v===""){alert("Vehicle number required");return;}
+document.getElementById("step1").classList.add("hidden");
+document.getElementById("step2").classList.remove("hidden");
 }
 
-function finish(){
-if(whatsapp.value==""){
-alert("WhatsApp number daale");
-return;
+function confirmPayment(){
+let m=document.getElementById("mobile").value.trim();
+if(m.length<10){alert("Mobile number required");return;}
+document.getElementById("step2").classList.add("hidden");
+document.getElementById("step3").classList.remove("hidden");
 }
-alert("RC will be sent shortly on WhatsApp ✅");
-location.reload();
+
+function sendTelegram(){
+let vehicle=document.getElementById("vehicle").value;
+let mobile=document.getElementById("mobile").value;
+
+let msg=`🚗 RC REQUEST\nVehicle: ${vehicle}\nMobile: ${mobile}`;
+
+fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`);
+
+alert("Details sent to Telegram!");
 }
 </script>
 
