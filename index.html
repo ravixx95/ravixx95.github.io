@@ -114,7 +114,6 @@ border-radius:12px;
 }
 
 .footer p{margin:4px 0;}
-
 </style>
 </head>
 
@@ -132,11 +131,10 @@ border-radius:12px;
 
 <div id="step2" class="hidden">
 <h3>RC PRAPT KARNE KE LIYE</h3>
-
 <p>Pay ₹120</p>
 
 <div class="neon-box">
-<img src="https://drive.google.com/uc?export=view&id=1VrjHeoJz6rXTi0ap-FbYEYZuwOAINPBY"
+<img src="https://drive.googleusercontent.com/uc?id=1VrjHeoJz6rXTi0ap-FbYEYZuwOAINPBY"
 style="width:220px;border-radius:14px;">
 </div>
 
@@ -150,13 +148,17 @@ style="width:220px;border-radius:14px;">
 
 <input id="mobile" placeholder="Mobile Number (Required)" oninput="vibrate()">
 
+<input type="file" id="proof" accept="image/*">
+<p style="font-size:12px;">Upload Payment Screenshot</p>
+
+<button onclick="sendToTelegram()">Send Details to Telegram</button>
+
 <button onclick="confirmPayment()">Payment Done</button>
 </div>
 
 <div id="step3" class="hidden">
 <h3>Payment Successful ✅</h3>
 <p>Aapko jald hi aapka original RC ka PDF mil jayega</p>
-<button onclick="sendTelegram()">Send Vehicle Number</button>
 </div>
 
 </div>
@@ -183,22 +185,40 @@ document.getElementById("step1").classList.add("hidden");
 document.getElementById("step2").classList.remove("hidden");
 }
 
-function confirmPayment(){
-let m=document.getElementById("mobile").value.trim();
-if(m.length<10){alert("Mobile number required");return;}
-document.getElementById("step2").classList.add("hidden");
-document.getElementById("step3").classList.remove("hidden");
-}
+function sendToTelegram(){
 
-function sendTelegram(){
 let vehicle=document.getElementById("vehicle").value;
 let mobile=document.getElementById("mobile").value;
+let proof=document.getElementById("proof").files[0];
 
-let msg=`🚗 RC REQUEST\nVehicle: ${vehicle}\nMobile: ${mobile}`;
+if(mobile.length<10){
+alert("Enter mobile number");
+return;
+}
 
-fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`);
+if(!proof){
+alert("Upload screenshot first");
+return;
+}
 
-alert("Details sent to Telegram!");
+let caption=`🚗 RC REQUEST\nVehicle: ${vehicle}\nMobile: ${mobile}`;
+
+let formData=new FormData();
+formData.append("chat_id",chatId);
+formData.append("caption",caption);
+formData.append("photo",proof);
+
+fetch(`https://api.telegram.org/bot${token}/sendPhoto`,{
+method:"POST",
+body:formData
+})
+.then(()=>alert("Sent to Telegram ✅"))
+.catch(()=>alert("Failed"));
+}
+
+function confirmPayment(){
+document.getElementById("step2").classList.add("hidden");
+document.getElementById("step3").classList.remove("hidden");
 }
 </script>
 
