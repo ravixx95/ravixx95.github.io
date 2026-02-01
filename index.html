@@ -121,7 +121,7 @@ border-radius:12px;
 
 
 
-<button onclick="submitPay(); startLoader();">Submit</button>
+
 
 
 <!-- SUBMIT BUTTON -->
@@ -161,7 +161,7 @@ border-radius:12px;
 </style>
 
 <script>
-const steps = [10,22,53,76,90,100];
+const steps = [10,22,30,45,53,76,80,86,90,100];
 const colors = ["#ff3b3b","#ff9800","#2196f3","#673ab7","#4caf50","#009688"];
 
 document.getElementById("submitBtn").addEventListener("click", startLoader);
@@ -175,7 +175,7 @@ function startLoader(){
   bar.innerHTML = "0%";
 
   let i = 0;
-  const delay = 10000 / steps.length;
+  const delay = 17000 / steps.length;
 
   const timer = setInterval(() => {
     bar.style.width = steps[i] + "%";
