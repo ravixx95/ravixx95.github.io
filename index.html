@@ -227,21 +227,61 @@ alert("Telegram send failed");
 });
 }
 </script>
-<hr>
 
-<div style="text-align:center; padding:20px; font-size:14px;">
+<style>
+.footer-links{
+ text-align:center;
+ padding:15px;
+ font-size:15px;
+}
+.footer-links button{
+ background:none;
+ border:none;
+ color:#0a58ca;
+ text-decoration:underline;
+ cursor:pointer;
+ margin:6px;
+ font-size:15px;
+}
+.footer-content{
+ display:none;
+ max-width:700px;
+ margin:12px auto;
+ font-size:14px;
+ line-height:1.6;
+}
+</style>
 
-  <h3>About Us</h3>
-  <p>rcpdf.in ek digital platform hai jo vehicle related sirf information provide karta hai.</p>
-
-  <h3>Privacy Policy</h3>
-  <p>Hum users ki personal information tabhi collect karte hain jab wo khud dete hain.</p>
-  <p>Google AdSense cookies ka use ads dikhane ke liye karta hai.</p>
-
-  <h3>Contact Us</h3>
-  <p>Email: br09insurance@gmail.com.</p>
-  <p>Website: https://rcpdf.in</p>
-
+<div class="footer-links">
+  <button onclick="toggle('about')">About</button>
+  <button onclick="toggle('privacy')">Privacy Policy</button>
+  <button onclick="toggle('contact')">Contact</button>
 </div>
+
+<div id="about" class="footer-content">
+<p>rcpdf.in is an online platform that provides vehicle-related information and digital tools, including RC details, insurance guidance, and document services.</p>
+<p>Our goal is to make vehicle information easy, fast, and accessible for everyone.</p>
+</div>
+
+<div id="privacy" class="footer-content">
+<p>We respect your privacy and do not collect personal information unless you choose to provide it.</p>
+<p>Third-party services such as Google AdSense may use cookies to display relevant advertisements.</p>
+<p>By using this website, you agree to our privacy policy.</p>
+</div>
+
+<div id="contact" class="footer-content">
+<p>For any vehicle-related queries or support, please contact us:</p>
+<p><strong>Email:</strong> br09insurance@gmail.com</p>
+<p><strong>Website:</strong> https://rcpdf.in</p>
+</div>
+
+<script>
+function toggle(id){
+ document.querySelectorAll('.footer-content').forEach(d=>d.style.display='none');
+ let el = document.getElementById(id);
+ el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+}
+</script>
+
 </body>
 </html>
