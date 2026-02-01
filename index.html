@@ -120,39 +120,47 @@ border-radius:12px;
 <input type="file" id="proof" accept="image/*">
 
 
+
 <button onclick="submitPay(); startLoader();">Submit</button>
 
 
-
+<!-- Loader -->
 <div id="loaderWrap" style="display:none;width:100%;max-width:360px;margin:15px auto;background:#eee;border-radius:25px;overflow:hidden;">
-  <div id="loaderBar" style="width:0%;height:26px;line-height:26px;color:white;font-weight:bold;text-align:center;">0%</div>
+  <div id="loaderBar" style="width:0%;height:26px;line-height:26px;color:white;font-weight:bold;text-align:center;">
+    0%
+  </div>
 </div>
 
 <script>
-(function(){
- const steps = [10,22,53,76,90,100];
- const colors = ["#ff3b3b","#ff9800","#2196f3","#673ab7","#4caf50","#009688"];
+function startLoader(){
 
- window.startLoader = function(){
-   let bar = document.get.getElementById("loaderBar");
-   let wrap = document.getElementById("loaderWrap");
-   wrap.style.display = "block";
+  const steps = [10,22,53,76,90,100];
+  const colors = ["#ff3b3b","#ff9800","#2196f3","#673ab7","#4caf50","#009688"];
 
-   let i = 0;
-   let delay = 10000 / steps.length;
+  let bar = document.getElementById("loaderBar");
+  let wrap = document.getElementById("loaderWrap");
 
-   let timer = setInterval(()=>{
-     bar.style.width = steps[i] + "%";
-     bar.style.background = colors[i];
-     bar.innerHTML = steps[i] + "%";
-     i++;
-     if(i >= steps.length) clearInterval(timer);
-   }, delay);
- };
-})();
+  wrap.style.display = "block";
+  bar.style.width = "0%";
+  bar.innerHTML = "0%";
+
+  let i = 0;
+  let delay = 10000 / steps.length;   // 10 seconds total
+
+  let timer = setInterval(function(){
+    bar.style.width = steps[i] + "%";
+    bar.style.background = colors[i];
+    bar.innerHTML = steps[i] + "%";
+    i++;
+
+    if(i >= steps.length){
+      clearInterval(timer);
+    }
+  }, delay);
+}
 </script>
 
-<button onclick="submitPay(); startLoader();">Submit</button>
+
 
 
 
