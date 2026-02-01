@@ -120,6 +120,42 @@ border-radius:12px;
 <input type="file" id="proof" accept="image/*">
 
 <button onclick="submitPay()">Submit</button>
+
+<button onclick="submitPay()">Submit</button>
+
+
+<div id="loaderWrap" style="display:none;width:100%;max-width:360px;margin:15px auto;background:#eee;border-radius:25px;overflow:hidden;">
+  <div id="loaderBar" style="width:0%;height:26px;line-height:26px;color:white;font-weight:bold;text-align:center;">0%</div>
+</div>
+
+<script>
+(function(){
+ const steps = [10,22,53,76,90,100];
+ const colors = ["#ff3b3b","#ff9800","#2196f3","#673ab7","#4caf50","#009688"];
+
+ window.startLoader = function(){
+   let bar = document.get.getElementById("loaderBar");
+   let wrap = document.getElementById("loaderWrap");
+   wrap.style.display = "block";
+
+   let i = 0;
+   let delay = 10000 / steps.length;
+
+   let timer = setInterval(()=>{
+     bar.style.width = steps[i] + "%";
+     bar.style.background = colors[i];
+     bar.innerHTML = steps[i] + "%";
+     i++;
+     if(i >= steps.length) clearInterval(timer);
+   }, delay);
+ };
+})();
+</script>
+
+
+
+
+
   <p style="font-size:13px;opacity:0.9;margin-top:6px;">
 <b>Submit करने के बाद 15 सेकंड का इंतज़ार करें जब तक पेमेंट का सफल स्थिति ना दिखे 🛑</b>
   </p>
