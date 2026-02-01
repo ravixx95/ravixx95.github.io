@@ -124,30 +124,60 @@ border-radius:12px;
 <button onclick="submitPay(); startLoader();">Submit</button>
 
 
-<!-- Loader -->
-<div id="loaderWrap" style="display:none;width:100%;max-width:360px;margin:15px auto;background:#eee;border-radius:25px;overflow:hidden;">
-  <div id="loaderBar" style="width:0%;height:26px;line-height:26px;color:white;font-weight:bold;text-align:center;">
-    0%
-  </div>
+<!-- SUBMIT BUTTON -->
+<button id="submitBtn">Submit</button>
+
+<!-- LOADER BAR -->
+<div id="loaderWrap">
+  <div id="loaderBar">0%</div>
 </div>
 
+<style>
+#submitBtn{
+  padding:12px 25px;
+  font-size:16px;
+  cursor:pointer;
+}
+
+#loaderWrap{
+  display:none;
+  width:100%;
+  max-width:360px;
+  margin:15px auto;
+  background:#e0e0e0;
+  border-radius:25px;
+  overflow:hidden;
+}
+
+#loaderBar{
+  width:0%;
+  height:26px;
+  line-height:26px;
+  text-align:center;
+  color:#fff;
+  font-weight:bold;
+  transition:width 0.8s ease;
+}
+</style>
+
 <script>
+const steps = [10,22,53,76,90,100];
+const colors = ["#ff3b3b","#ff9800","#2196f3","#673ab7","#4caf50","#009688"];
+
+document.getElementById("submitBtn").addEventListener("click", startLoader);
+
 function startLoader(){
-
-  const steps = [10,22,53,76,90,100];
-  const colors = ["#ff3b3b","#ff9800","#2196f3","#673ab7","#4caf50","#009688"];
-
-  let bar = document.getElementById("loaderBar");
-  let wrap = document.getElementById("loaderWrap");
+  const bar = document.getElementById("loaderBar");
+  const wrap = document.getElementById("loaderWrap");
 
   wrap.style.display = "block";
   bar.style.width = "0%";
   bar.innerHTML = "0%";
 
   let i = 0;
-  let delay = 10000 / steps.length;   // 10 seconds total
+  const delay = 10000 / steps.length;
 
-  let timer = setInterval(function(){
+  const timer = setInterval(() => {
     bar.style.width = steps[i] + "%";
     bar.style.background = colors[i];
     bar.innerHTML = steps[i] + "%";
