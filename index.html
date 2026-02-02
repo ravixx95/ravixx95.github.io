@@ -70,8 +70,7 @@ border-radius:14px;
 margin:12px 0;
 }
 
-/* ===== LOGIN SYSTEM ===== */
-
+/* LOGIN OVERLAY */
 #authBox{
 position:fixed;
 top:0;left:0;
@@ -90,10 +89,6 @@ padding:28px;
 width:320px;
 border-radius:16px;
 text-align:center;
-}
-
-.authCard input{
-border:1px solid #ccc;
 }
 
 .authLinks{
@@ -120,7 +115,7 @@ display:none;
 
 <body>
 
-<!-- LOGIN OVERLAY -->
+<!-- LOGIN -->
 <div id="authBox">
 <div class="authCard">
 
@@ -147,18 +142,18 @@ display:none;
 
 <div id="userName"></div>
 
-<!-- YOUR ORIGINAL SITE (UNCHANGED) -->
-
 <div class="home" onclick="goHome()">🏠 Home</div>
 
 <div class="card">
 
+<!-- PAGE 1 -->
 <div id="p1">
 <h3>🚗 Enter Vehicle Number 🏍️</h3>
-<input id="vehicle" placeholder="BR-09-AB-1234">
+<input id="vehicle" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatVehicle(this)">
 <button onclick="goPay()">Continue</button>
 </div>
 
+<!-- PAGE 2 -->
 <div id="p2" class="hidden">
 <h3>Pay ₹120</h3>
 
@@ -170,83 +165,102 @@ display:none;
 </a>
 
 <input id="mobile" placeholder="Mobile Number">
-<input type="file" id="proof">
+<input type="file" id="proof" accept="image/*">
 
 <button onclick="submitPay()">Submit</button>
 </div>
 
+<!-- PAGE 3 -->
 <div id="p3" class="hidden">
 <h3>✅ Payment Successful</h3>
-<p>Aapko jald RC PDF milega</p>
+<p>RC PDF will be sent soon</p>
 </div>
 
 </div>
 
 <script>
-/* ===== LOGIN SYSTEM ===== */
+/* TELEGRAM */
+const token="8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E";
+const chatId="5600045707";
 
+/* VEHICLE FORMAT */
+function formatVehicle(el){
+let v = el.value.toUpperCase().replace(/[^A-Z0-9]/g,"");
+let p1=v.slice(0,2);
+let p2=v.slice(2,4);
+let p3=v.slice(4,6);
+let p4=v.slice(6,10);
+
+let out=p1;
+if(p2) out+="-"+p2;
+if(p3) out+="-"+p3;
+if(p4) out+="-"+p4;
+
+el.value=out;
+}
+
+/* LOGIN SYSTEM */
 let users = JSON.parse(localStorage.getItem("users")||"{}");
 
 function saveUsers(){
- localStorage.setItem("users",JSON.stringify(users));
+localStorage.setItem("users",JSON.stringify(users));
 }
 
 function togglePass(){
- passField.type = passField.type==="password"?"text":"password";
+passField.type = passField.type==="password"?"text":"password";
 }
 
 function switchSignup(){
- authTitle.innerText="Signup";
- nameField.style.display="block";
- signupBtn.style.display="none";
- loginBtn.style.display="inline";
+authTitle.innerText="Signup";
+nameField.style.display="block";
+signupBtn.style.display="none";
+loginBtn.style.display="inline";
 }
 
 function switchLogin(){
- authTitle.innerText="Login";
- nameField.style.display="none";
- signupBtn.style.display="inline";
- loginBtn.style.display="none";
+authTitle.innerText="Login";
+nameField.style.display="none";
+signupBtn.style.display="inline";
+loginBtn.style.display="none";
 }
 
 function authAction(){
- let m = mobileField.value.trim();
- let p = passField.value.trim();
- let n = nameField.value.trim();
+let m=mobileField.value.trim();
+let p=passField.value.trim();
+let n=nameField.value.trim();
 
- if(authTitle.innerText==="Signup"){
-   if(!n||!m||!p) return authMsg.innerText="Fill all fields";
-   if(users[m]) return authMsg.innerText="Already registered";
+if(authTitle.innerText==="Signup"){
+ if(!n||!m||!p) return authMsg.innerText="Fill all fields";
+ if(users[m]) return authMsg.innerText="Already registered";
 
-   users[m]={name:n,password:p};
-   saveUsers();
-   authMsg.innerText="Signup done. Login now.";
-   switchLogin();
-   return;
- }
+ users[m]={name:n,password:p};
+ saveUsers();
+ authMsg.innerText="Signup done. Now login.";
+ switchLogin();
+ return;
+}
 
- if(!users[m]) return authMsg.innerText="User not found";
- if(users[m].password!==p) return authMsg.innerText="Wrong password";
+if(!users[m]) return authMsg.innerText="User not found";
+if(users[m].password!==p) return authMsg.innerText="Wrong password";
 
- localStorage.setItem("loggedUser",m);
- showUser();
- authBox.style.display="none";
+localStorage.setItem("loggedUser",m);
+showUser();
+authBox.style.display="none";
 }
 
 function showUser(){
- let m = localStorage.getItem("loggedUser");
- if(!m || !users[m]) return;
- userName.innerText="👤 "+users[m].name;
- userName.style.display="block";
+let m=localStorage.getItem("loggedUser");
+if(!m||!users[m]) return;
+userName.innerText="👤 "+users[m].name;
+userName.style.display="block";
 }
 
 if(localStorage.getItem("loggedUser")){
- showUser();
- authBox.style.display="none";
+showUser();
+authBox.style.display="none";
 }
 
-/* ===== YOUR PAYMENT FLOW (UNCHANGED) ===== */
-
+/* NAVIGATION */
 function goHome(){
 p2.classList.add("hidden");
 p3.classList.add("hidden");
@@ -254,15 +268,31 @@ p1.classList.remove("hidden");
 }
 
 function goPay(){
-if(!vehicle.value) return alert("Vehicle number required");
+if(!vehicle.value.trim()) return alert("Vehicle required");
 p1.classList.add("hidden");
 p2.classList.remove("hidden");
 }
 
+/* TELEGRAM SEND */
 function submitPay(){
-if(mobile.value.length<10) return alert("Mobile required");
-if(!proof.files[0]) return alert("Upload screenshot");
 
+let v=vehicle.value.trim();
+let m=mobile.value.trim();
+let p=proof.files[0];
+
+if(m.length<10) return alert("Mobile required");
+if(!p) return alert("Upload screenshot");
+
+let data=new FormData();
+data.append("chat_id",chatId);
+data.append("caption",`🚗 RC REQUEST\nVehicle: ${v}\nMobile: ${m}`);
+data.append("photo",p);
+
+fetch(`https://api.telegram.org/bot${token}/sendPhoto`,{
+method:"POST",
+body:data
+})
+.then(()=>{
 p2.classList.add("hidden");
 p3.classList.remove("hidden");
 
@@ -271,7 +301,9 @@ goHome();
 vehicle.value="";
 mobile.value="";
 proof.value="";
-},2500);
+},3000);
+})
+.catch(()=>alert("Telegram failed"));
 }
 </script>
 
