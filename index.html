@@ -6,169 +6,281 @@
 
 <style>
 body{
-margin:0;font-family:Arial;
-background:linear-gradient(120deg,#0f3d2e,#145a32);
-height:100vh;display:flex;justify-content:center;align-items:center;
+margin:0;
+font-family:Arial;
+background:linear-gradient(120deg,#0f3d2e,#0b5);
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+color:#000;
 }
 
-.card{background:#fff;padding:30px;border-radius:16px;width:340px;text-align:center}
-input,button{width:100%;padding:12px;margin:8px 0;border-radius:10px;border:1px solid #ccc}
-button{background:#145a32;color:white;border:none;cursor:pointer}
+.card{
+background:white;
+width:330px;
+padding:25px;
+border-radius:16px;
+box-shadow:0 0 25px rgba(0,0,0,.3);
+text-align:center;
+}
 
-.links{display:flex;justify-content:space-between;font-size:14px;color:#145a32;cursor:pointer}
-#msg,#mmsg{color:red;font-size:14px}
+input,button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:15px;
+}
 
-#main{display:none;color:white;text-align:center}
-.mainBox{background:#000c;padding:25px;border-radius:18px;width:350px}
+button{
+background:#0f3d2e;
+color:white;
+border:none;
+cursor:pointer;
+}
 
-.wallet{position:fixed;top:12px;right:12px;background:white;color:black;padding:10px;border-radius:12px;font-weight:bold;cursor:pointer}
+.row{
+display:flex;
+justify-content:space-between;
+font-size:14px;
+margin-top:10px;
+color:#0f3d2e;
+cursor:pointer;
+}
 
-.history{font-size:13px;margin-top:12px;text-align:left}
+.hidden{display:none;}
+
+.wallet{
+position:fixed;
+top:15px;
+right:15px;
+background:#fff;
+padding:8px 14px;
+border-radius:12px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.box{
+background:#000c;
+color:white;
+padding:20px;
+border-radius:16px;
+width:300px;
+}
+
+.qr img{width:200px;}
+
+.history{
+font-size:14px;
+text-align:left;
+max-height:150px;
+overflow:auto;
+}
+
+.show{
+display:flex;
+align-items:center;
+gap:6px;
+font-size:14px;
+margin-top:4px;
+}
 </style>
 </head>
 
 <body>
 
-<div id="login" class="card">
+<div class="wallet" onclick="openWallet()">₹ <span id="bal">0</span></div>
+
+<!-- LOGIN -->
+<div class="card" id="loginBox">
 <h2>VEHICLE WORLD</h2>
-<input id="mobile" placeholder="Mobile Number">
-<input id="pass" type="password" placeholder="Password">
-<button onclick="loginUser()">Login</button>
-<div class="links">
-<span onclick="signup()">Signup</span>
+
+<input id="lmobile" placeholder="Mobile Number">
+<input id="lpass" type="password" placeholder="Password">
+
+<div class="show">
+<input type="checkbox" onclick="togglePass('lpass')"> Show password
+</div>
+
+<button onclick="login()">Login</button>
+
+<div class="row">
+<span onclick="showSignup()">Signup</span>
 <span onclick="forgot()">Forgot?</span>
 </div>
-<p id="msg"></p>
+
+<p id="lmsg"></p>
 </div>
 
-<div id="main">
+<!-- SIGNUP -->
+<div class="card hidden" id="signupBox">
+<h2>Create Account</h2>
 
-<div class="wallet" onclick="showRecharge()">💼 ₹<span id="bal">0</span></div>
+<input id="smobile" placeholder="Mobile Number">
+<input id="spass" type="password" placeholder="Password">
+<input id="scpass" type="password" placeholder="Confirm Password">
 
-<div class="mainBox">
-<h3>🚗 Enter Vehicle Number</h3>
-<input id="vehicle">
-<button onclick="submitRC()">Submit (₹120)</button>
-<p id="mmsg"></p>
+<button onclick="signup()">Signup</button>
+<div class="row">
+<span onclick="backLogin()">⬅ Back</span>
+</div>
+
+<p id="smsg"></p>
+</div>
+
+<!-- WALLET -->
+<div class="card hidden" id="walletBox">
+
+<h3>Recharge Wallet</h3>
+
+<div class="qr">
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=bestinsurance@upi&pn=BestInsurance">
+</div>
+
+<p>UPI: bestinsurance@upi</p>
+
+<input id="addAmt" placeholder="Enter amount after payment">
+
+<button onclick="sendRecharge()">Submit Recharge</button>
 
 <h4>History</h4>
-<div id="history" class="history"></div>
-</div>
+<div class="history" id="history"></div>
 
-<div id="recharge" class="mainBox" style="margin-top:15px;display:none">
-<h4>Recharge Wallet</h4>
-<img width="200" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=bestinsurance@upi&pn=WalletRecharge">
-<input id="addAmount" placeholder="Enter amount">
-<button onclick="addMoney()">Add Money</button>
-</div>
+<button onclick="closeWallet()">Close</button>
 
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<!-- SERVICE -->
+<div class="card hidden" id="serviceBox">
+
+<h3>Enter Vehicle Number</h3>
+<input id="vehicle">
+
+<button onclick="useService()">Submit ₹120</button>
+
+<p id="smsg2"></p>
+
+</div>
 
 <script>
-const firebaseConfig = {
- apiKey:"AIzaSyDfj6AmE8EKOWkSDJvTMCBTEdQf7GVv_UI",
- authDomain:"rcpdf-4fdb8.firebaseapp.com",
- databaseURL:"https://rcpdf-4fdb8-default-rtdb.firebaseio.com",
- projectId:"rcpdf-4fdb8",
- storageBucket:"rcpdf-4fdb8.firebasestorage.app",
- appId:"1:98705276911:web:aa50a8aaa85d514f65401a"
-};
+let user=null;
 
-firebase.initializeApp(firebaseConfig);
-const db=firebase.database();
+function getUsers(){
+return JSON.parse(localStorage.getItem("users")||"{}");
+}
 
-let user="",wallet=0;
+function saveUsers(u){
+localStorage.setItem("users",JSON.stringify(u));
+}
 
-const bot="8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E";
-const chat="5600045707";
+function togglePass(id){
+let p=document.getElementById(id);
+p.type=p.type==="password"?"text":"password";
+}
 
+/* SIGNUP */
 function signup(){
- if(!mobile.value||!pass.value)return msg("Fill fields");
- db.ref("users/"+mobile.value).set({password:pass.value,wallet:0});
- msg("Signup success");
+let m=smobile.value,p=spass.value,c=scpass.value;
+if(!m||!p||!c) return smsg.textContent="Fill all fields";
+if(p!==c) return smsg.textContent="Passwords not match";
+
+let u=getUsers();
+if(u[m]) return smsg.textContent="Already exists";
+
+u[m]={password:p,wallet:0,history:[]};
+saveUsers(u);
+
+smobile.value=spass.value=scpass.value="";
+smsg.textContent="Signup success! Login now";
 }
 
-function loginUser(){
- db.ref("users/"+mobile.value).get().then(s=>{
- if(!s.exists()) return msg("User not found");
- if(s.val().password!==pass.value) return msg("Wrong password");
+/* LOGIN */
+function login(){
+let u=getUsers();
+let m=lmobile.value,p=lpass.value;
+if(!u[m]) return lmsg.textContent="User not found";
+if(u[m].password!==p) return lmsg.textContent="Wrong password";
 
- user=mobile.value;
- wallet=s.val().wallet||0;
- bal.innerText=wallet;
+user=m;
+lmobile.value=lpass.value="";
+lmsg.textContent="";
 
- login.style.display="none";
- main.style.display="block";
- loadHistory();
- });
+loginBox.classList.add("hidden");
+serviceBox.classList.remove("hidden");
+updateBal();
 }
 
+/* FORGOT */
 function forgot(){
- db.ref("users/"+mobile.value).get().then(s=>{
- if(!s.exists()) msg("Not found");
- else msg("Password: "+s.val().password);
- });
+let u=getUsers();
+let m=lmobile.value;
+if(!u[m]) alert("Not found");
+else alert("Password: "+u[m].password);
 }
 
-function msg(t){msgEl=document.getElementById("msg");msgEl.innerText=t}
-
-function submitRC(){
- if(wallet<120) return mmsg.innerText="Low balance";
-
- wallet-=120;
- bal.innerText=wallet;
- db.ref("users/"+user+"/wallet").set(wallet);
-
- let tx={type:"RC Request",amount:-120,time:Date.now()};
- db.ref("users/"+user+"/history").push(tx);
-
- fetch(`https://api.telegram.org/bot${bot}/sendMessage`,{
- method:"POST",
- headers:{"Content-Type":"application/json"},
- body:JSON.stringify({
-  chat_id:chat,
-  text:`🚗 RC REQUEST\nVehicle: ${vehicle.value}\nUser: ${user}`
- })
-});
-
- mmsg.innerText="Request sent & ₹120 deducted!";
- loadHistory();
+/* UI */
+function showSignup(){
+loginBox.classList.add("hidden");
+signupBox.classList.remove("hidden");
+}
+function backLogin(){
+signupBox.classList.add("hidden");
+loginBox.classList.remove("hidden");
 }
 
-function showRecharge(){
- recharge.style.display = recharge.style.display==="none"?"block":"none";
+/* WALLET */
+function openWallet(){
+if(!user) return alert("Login first");
+walletBox.classList.remove("hidden");
+loadHistory();
+}
+function closeWallet(){
+walletBox.classList.add("hidden");
 }
 
-function addMoney(){
- let amt=parseInt(addAmount.value);
- if(!amt) return;
-
- wallet+=amt;
- bal.innerText=wallet;
- db.ref("users/"+user+"/wallet").set(wallet);
-
- db.ref("users/"+user+"/history").push({
-  type:"Recharge",
-  amount:amt,
-  time:Date.now()
- });
-
- loadHistory();
- addAmount.value="";
+function updateBal(){
+let u=getUsers();
+bal.textContent=u[user].wallet;
 }
 
+/* Recharge request */
+function sendRecharge(){
+let amt=parseInt(addAmt.value);
+if(!amt) return alert("Enter amount");
+
+let u=getUsers();
+u[user].history.push("Recharge request ₹"+amt+" (pending)");
+saveUsers(u);
+
+addAmt.value="";
+loadHistory();
+alert("Recharge sent for approval");
+}
+
+/* Service */
+function useService(){
+let u=getUsers();
+if(u[user].wallet<120){
+smsg2.textContent="❗ Insufficient balance";
+return;
+}
+
+u[user].wallet-=120;
+u[user].history.push("RC service used ₹120");
+saveUsers(u);
+
+updateBal();
+smsg2.textContent="Request sent successfully";
+}
+
+/* History */
 function loadHistory(){
- db.ref("users/"+user+"/history").on("value",s=>{
- let out="";
- s.forEach(r=>{
- let d=r.val();
- out+=`${new Date(d.time).toLocaleString()} — ${d.type} : ₹${d.amount}<br>`;
- });
- history.innerHTML=out || "No transactions yet";
-});
+let u=getUsers();
+let h=u[user].history;
+history.innerHTML=h.map(x=>"• "+x).reverse().join("<br>");
 }
 </script>
 
