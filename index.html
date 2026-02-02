@@ -43,6 +43,19 @@ button{background:#00ffd5;font-weight:bold;cursor:pointer}
 
 .hidden{display:none}
 
+.home{
+position:fixed;
+top:12px;
+left:12px;
+background:white;
+color:black;
+padding:8px 16px;
+border-radius:10px;
+font-weight:bold;
+cursor:pointer;
+z-index:9999;
+}
+
 #wallet{
 position:fixed;
 right:12px;
@@ -52,13 +65,63 @@ color:black;
 padding:10px 14px;
 border-radius:12px;
 font-weight:bold;
-z-index:999;
+z-index:9999;
+}
+
+/* LOGIN OVERLAY */
+#loginBox{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.85);
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:10000;
+}
+
+.loginCard{
+background:white;
+padding:30px;
+border-radius:14px;
+width:320px;
+text-align:center;
+}
+
+.loginCard h2{margin:0;color:#145a32}
+.loginCard input{border:1px solid #ccc}
+.loginCard button{background:#145a32;color:white}
+.loginLinks{
+display:flex;
+justify-content:space-between;
+font-size:14px;
+margin-top:8px;
+color:#145a32;
+cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
+<!-- LOGIN SCREEN -->
+<div id="loginBox">
+  <div class="loginCard">
+    <h2>VEHICLE WORLD</h2>
+    <input id="lmob" placeholder="Mobile Number">
+    <input id="lpass" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <div class="loginLinks">
+      <span onclick="signup()">Signup</span>
+      <span onclick="forgot()">Forgot?</span>
+    </div>
+    <p id="lmsg"></p>
+  </div>
+</div>
+
+<div class="home" onclick="goHome()">🏠 Home</div>
 <div id="wallet">💼 ₹<span id="bal">0</span></div>
 
 <div class="card">
@@ -72,14 +135,14 @@ z-index:999;
 <div id="p2" class="hidden">
 <h3>Wallet Payment ₹120</h3>
 
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=bestinsurance@upi">
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
 
 <input id="mobile" placeholder="Mobile Number">
 <button onclick="submitPay()">Submit</button>
 </div>
 
 <div id="p3" class="hidden">
-<h3>✅ Success</h3>
+<h3>✅ Payment Successful</h3>
 <p>Request sent & wallet deducted</p>
 </div>
 
@@ -91,66 +154,82 @@ z-index:999;
 
 <script>
 const firebaseConfig = {
- /* // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyDfj6AmE8EKOWkSDJvTMCBTEdQf7GVv_UI",
-  authDomain: "rcpdf-4fdb8.firebaseapp.com",
-  databaseURL: "https://rcpdf-4fdb8-default-rtdb.firebaseio.com",
-  projectId: "rcpdf-4fdb8",
-  storageBucket: "rcpdf-4fdb8.firebasestorage.app",
-  messagingSenderId: "98705276911",
-  appId: "1:98705276911:web:aa50a8aaa85d514f65401a",
-  measurementId: "G-SZWRSDG45N"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app); */
+/* PASTE YOUR FIREBASE CONFIG HERE */
 };
 
 firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
 
-let user=localStorage.getItem("user") || "demo";
-let balance=0;
+let currentUser=null;
+let walletBalance=0;
 
-db.ref("users/"+user+"/wallet").on("value",s=>{
- balance=s.val()||0;
- document.getElementById("bal").innerText=balance;
+function login(){
+let m=lmob.value,p=lpass.value;
+db.ref("users/"+m).get().then(s=>{
+ if(!s.exists()) return lmsg.innerText="User not found";
+ if(s.val().password===p){
+  currentUser=m;
+  localStorage.setItem("user",m);
+  loginBox.style.display="none";
+  loadWallet();
+ } else lmsg.innerText="Wrong password";
 });
+}
+
+function signup(){
+let m=lmob.value,p=lpass.value;
+db.ref("users/"+m).get().then(s=>{
+ if(s.exists()) lmsg.innerText="Already exists";
+ else{
+  db.ref("users/"+m).set({password:p,wallet:0});
+  lmsg.innerText="Signup done, now login";
+ }
+});
+}
+
+function forgot(){
+let m=lmob.value;
+db.ref("users/"+m).get().then(s=>{
+ if(!s.exists()) lmsg.innerText="No account";
+ else lmsg.innerText="Password: "+s.val().password;
+});
+}
+
+function loadWallet(){
+db.ref("users/"+currentUser+"/wallet").on("value",s=>{
+ walletBalance=s.val()||0;
+ bal.innerText=walletBalance;
+});
+}
+
+function goHome(){
+p2.classList.add("hidden");
+p3.classList.add("hidden");
+p1.classList.remove("hidden");
+}
 
 function goPay(){
- if(!vehicle.value.trim()) return alert("Vehicle number required");
- p1.classList.add("hidden");
- p2.classList.remove("hidden");
+if(!vehicle.value.trim()) return alert("Vehicle required");
+p1.classList.add("hidden");
+p2.classList.remove("hidden");
 }
 
 function submitPay(){
- if(balance<120) return alert("Wallet balance kam hai");
+if(walletBalance<120) return alert("Wallet balance kam hai");
 
- let m=mobile.value.trim();
- if(m.length<10) return alert("Mobile number required");
+db.ref("users/"+currentUser+"/wallet").set(walletBalance-120);
 
- db.ref("users/"+user+"/wallet").set(balance-120);
+fetch(`https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendMessage`,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+chat_id:"5600045707",
+text:`🚗 RC REQUEST\nVehicle: ${vehicle.value}\nMobile: ${mobile.value}`
+})
+});
 
- fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendMessage",{
- method:"POST",
- headers:{"Content-Type":"application/json"},
- body:JSON.stringify({
- chat_id:"5600045707",
- text:`🚗 RC REQUEST\nVehicle: ${vehicle.value}\nMobile: ${m}`
- })
- });
-
- p2.classList.add("hidden");
- p3.classList.remove("hidden");
+p2.classList.add("hidden");
+p3.classList.remove("hidden");
 }
 </script>
 
