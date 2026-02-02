@@ -1,27 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Vehicle World</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RC PDF Portal</title>
 
 <style>
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(120deg,#0f3d2e,#0b5);
-height:100vh;
+background:linear-gradient(270deg,red,blue,green,purple,cyan);
+background-size:600% 600%;
+animation:bg 12s infinite alternate;
 display:flex;
-justify-content:center;
+flex-direction:column;
 align-items:center;
-color:#000;
+justify-content:center;
+min-height:100vh;
 }
 
+@keyframes bg{0%{background-position:0%}100%{background-position:100%}}
+
 .card{
-background:white;
-width:330px;
+background:#000c;
+color:white;
 padding:25px;
-border-radius:16px;
-box-shadow:0 0 25px rgba(0,0,0,.3);
+border-radius:18px;
+width:92%;
+max-width:420px;
 text-align:center;
 }
 
@@ -29,258 +35,189 @@ input,button{
 width:100%;
 padding:12px;
 margin-top:10px;
-border-radius:8px;
-border:1px solid #ccc;
-font-size:15px;
+border:none;
+border-radius:10px;
+font-size:16px;
 }
 
 button{
-background:#0f3d2e;
-color:white;
-border:none;
-cursor:pointer;
-}
-
-.row{
-display:flex;
-justify-content:space-between;
-font-size:14px;
-margin-top:10px;
-color:#0f3d2e;
+background:#00ffd5;
+font-weight:bold;
 cursor:pointer;
 }
 
 .hidden{display:none;}
 
-.wallet{
+img{width:220px;border-radius:14px;margin:12px 0}
+
+/* LOGIN */
+#loginBox{
 position:fixed;
-top:15px;
-right:15px;
-background:#fff;
-padding:8px 14px;
-border-radius:12px;
-font-weight:bold;
-cursor:pointer;
-}
-
-.box{
-background:#000c;
-color:white;
-padding:20px;
-border-radius:16px;
-width:300px;
-}
-
-.qr img{width:200px;}
-
-.history{
-font-size:14px;
-text-align:left;
-max-height:150px;
-overflow:auto;
-}
-
-.show{
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,.85);
 display:flex;
 align-items:center;
-gap:6px;
+justify-content:center;
+z-index:9999;
+}
+
+.loginCard{
+background:white;
+color:black;
+padding:30px;
+border-radius:16px;
+width:320px;
+text-align:center;
+}
+
+.loginLinks{
+display:flex;
+justify-content:space-between;
 font-size:14px;
-margin-top:4px;
+margin-top:10px;
+color:#0a58ca;
+cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div class="wallet" onclick="openWallet()">₹ <span id="bal">0</span></div>
+<!-- LOGIN SCREEN -->
+<div id="loginBox">
+  <div class="loginCard">
+    <h2>VEHICLE WORLD</h2>
+    <input id="lmobile" placeholder="Mobile Number">
+    <input id="lpass" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
 
-<!-- LOGIN -->
-<div class="card" id="loginBox">
-<h2>VEHICLE WORLD</h2>
+    <div class="loginLinks">
+      <span onclick="openSignup()">Signup</span>
+      <span onclick="forgot()">Forgot?</span>
+    </div>
 
-<input id="lmobile" placeholder="Mobile Number">
-<input id="lpass" type="password" placeholder="Password">
-
-<div class="show">
-<input type="checkbox" onclick="togglePass('lpass')"> Show password
-</div>
-
-<button onclick="login()">Login</button>
-
-<div class="row">
-<span onclick="showSignup()">Signup</span>
-<span onclick="forgot()">Forgot?</span>
-</div>
-
-<p id="lmsg"></p>
+    <p id="lmsg"></p>
+  </div>
 </div>
 
 <!-- SIGNUP -->
-<div class="card hidden" id="signupBox">
+<div id="signupBox" class="loginCard hidden" style="position:fixed;z-index:9999">
 <h2>Create Account</h2>
-
 <input id="smobile" placeholder="Mobile Number">
 <input id="spass" type="password" placeholder="Password">
 <input id="scpass" type="password" placeholder="Confirm Password">
-
 <button onclick="signup()">Signup</button>
-<div class="row">
-<span onclick="backLogin()">⬅ Back</span>
-</div>
-
+<p onclick="backLogin()" style="cursor:pointer;color:#0a58ca">⬅ Back to login</p>
 <p id="smsg"></p>
 </div>
 
-<!-- WALLET -->
-<div class="card hidden" id="walletBox">
+<!-- ORIGINAL SYSTEM -->
+<div class="card">
 
-<h3>Recharge Wallet</h3>
-
-<div class="qr">
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=bestinsurance@upi&pn=BestInsurance&cu=INR">
-</div>
-
-<p>UPI: bestinsurance@upi</p>
-
-<input id="addAmt" placeholder="Enter amount after payment">
-
-<button onclick="sendRecharge()">Submit Recharge</button>
-
-<h4>History</h4>
-<div class="history" id="history"></div>
-
-<button onclick="closeWallet()">Close</button>
-
-</div>
-
-<!-- SERVICE -->
-<div class="card hidden" id="serviceBox">
-
-<h3>Enter Vehicle Number</h3>
+<div id="p1">
+<h3>🚗 Enter Vehicle Number</h3>
 <input id="vehicle">
+<button onclick="goPay()">Continue</button>
+</div>
 
-<button onclick="useService()">Submit ₹120</button>
+<div id="p2" class="hidden">
+<h3>Pay ₹120</h3>
 
-<p id="smsg2"></p>
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
+<p>UPI ID: bestinsurance@upi</p>
+
+<a href="upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
+<button>Pay with UPI App</button>
+</a>
+
+<input id="mobile" placeholder="Mobile Number">
+<input type="file" id="proof">
+
+<button onclick="submitPay()">Submit</button>
+</div>
+
+<div id="p3" class="hidden">
+<h3>✅ Payment Successful</h3>
+</div>
 
 </div>
 
 <script>
-let user=null;
+/* ===== LOGIN SYSTEM (LOCAL STORAGE SIMPLE) ===== */
 
 function getUsers(){
-return JSON.parse(localStorage.getItem("users")||"{}");
+ return JSON.parse(localStorage.getItem("users")||"{}");
 }
-
 function saveUsers(u){
-localStorage.setItem("users",JSON.stringify(u));
+ localStorage.setItem("users",JSON.stringify(u));
 }
 
-function togglePass(id){
-let p=document.getElementById(id);
-p.type=p.type==="password"?"text":"password";
-}
-
-/* SIGNUP */
 function signup(){
-let m=smobile.value,p=spass.value,c=scpass.value;
-if(!m||!p||!c) return smsg.textContent="Fill all fields";
-if(p!==c) return smsg.textContent="Passwords not match";
+ let m=smobile.value,p=spass.value,c=scpass.value;
+ if(!m||!p||!c) return smsg.innerText="Fill all fields";
+ if(p!==c) return smsg.innerText="Passwords not match";
 
-let u=getUsers();
-if(u[m]) return smsg.textContent="Already exists";
+ let u=getUsers();
+ if(u[m]) return smsg.innerText="Already exists";
 
-u[m]={password:p,wallet:0,history:[]};
-saveUsers(u);
+ u[m]={password:p};
+ saveUsers(u);
 
-smobile.value=spass.value=scpass.value="";
-smsg.textContent="Signup success! Login now";
+ smsg.innerText="Signup success! Login now";
 }
 
-/* LOGIN */
 function login(){
-let u=getUsers();
-let m=lmobile.value,p=lpass.value;
-if(!u[m]) return lmsg.textContent="User not found";
-if(u[m].password!==p) return lmsg.textContent="Wrong password";
+ let u=getUsers();
+ let m=lmobile.value,p=lpass.value;
 
-user=m;
-lmobile.value=lpass.value="";
-lmsg.textContent="";
+ if(!u[m]) return lmsg.innerText="User not found";
+ if(u[m].password!==p) return lmsg.innerText="Wrong password";
 
-loginBox.classList.add("hidden");
-serviceBox.classList.remove("hidden");
-updateBal();
+ localStorage.setItem("loggedUser",m);
+ loginBox.style.display="none";
 }
 
-/* FORGOT */
 function forgot(){
-let u=getUsers();
-let m=lmobile.value;
-if(!u[m]) alert("Not found");
-else alert("Password: "+u[m].password);
+ let u=getUsers();
+ let m=lmobile.value;
+ if(!u[m]) alert("Not found");
+ else alert("Password: "+u[m].password);
 }
 
-/* UI */
-function showSignup(){
-loginBox.classList.add("hidden");
-signupBox.classList.remove("hidden");
+function openSignup(){
+ loginBox.style.display="none";
+ signupBox.classList.remove("hidden");
 }
 function backLogin(){
-signupBox.classList.add("hidden");
-loginBox.classList.remove("hidden");
+ signupBox.classList.add("hidden");
+ loginBox.style.display="flex";
 }
 
-/* WALLET */
-function openWallet(){
-if(!user) return alert("Login first");
-walletBox.classList.remove("hidden");
-loadHistory();
-}
-function closeWallet(){
-walletBox.classList.add("hidden");
+/* auto login */
+if(localStorage.getItem("loggedUser")){
+ loginBox.style.display="none";
 }
 
-function updateBal(){
-let u=getUsers();
-bal.textContent=u[user].wallet;
+/* ===== ORIGINAL PAYMENT SYSTEM ===== */
+
+function goPay(){
+ if(!vehicle.value) return alert("Vehicle required");
+ p1.classList.add("hidden");
+ p2.classList.remove("hidden");
 }
 
-/* Recharge request */
-function sendRecharge(){
-let amt=parseInt(addAmt.value);
-if(!amt) return alert("Enter amount");
+function submitPay(){
+ if(mobile.value.length<10) return alert("Mobile required");
+ if(!proof.files[0]) return alert("Upload screenshot");
 
-let u=getUsers();
-u[user].history.push("Recharge request ₹"+amt+" (pending)");
-saveUsers(u);
+ p2.classList.add("hidden");
+ p3.classList.remove("hidden");
 
-addAmt.value="";
-loadHistory();
-alert("Recharge sent for approval");
-}
-
-/* Service */
-function useService(){
-let u=getUsers();
-if(u[user].wallet<120){
-smsg2.textContent="❗ Insufficient balance";
-return;
-}
-
-u[user].wallet-=120;
-u[user].history.push("RC service used ₹120");
-saveUsers(u);
-
-updateBal();
-smsg2.textContent="Request sent successfully";
-}
-
-/* History */
-function loadHistory(){
-let u=getUsers();
-let h=u[user].history;
-history.innerHTML=h.map(x=>"• "+x).reverse().join("<br>");
+ setTimeout(()=>{
+  p3.classList.add("hidden");
+  p1.classList.remove("hidden");
+ },2500);
 }
 </script>
 
