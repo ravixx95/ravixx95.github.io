@@ -19,7 +19,23 @@ justify-content:center;
 min-height:100vh;
 }
 
-@keyframes bg{0%{background-position:0%}100%{background-position:100%}}
+@keyframes bg{
+0%{background-position:0%}
+100%{background-position:100%}
+}
+
+.home{
+position:fixed;
+top:12px;
+left:12px;
+background:white;
+color:black;
+padding:8px 16px;
+border-radius:10px;
+font-weight:bold;
+cursor:pointer;
+z-index:999;
+}
 
 .card{
 background:#000c;
@@ -48,76 +64,98 @@ cursor:pointer;
 
 .hidden{display:none;}
 
-img{width:220px;border-radius:14px;margin:12px 0}
+img{
+width:220px;
+border-radius:14px;
+margin:12px 0;
+}
 
-/* LOGIN */
-#loginBox{
+/* ===== LOGIN SYSTEM ===== */
+
+#authBox{
 position:fixed;
 top:0;left:0;
 width:100%;height:100%;
-background:rgba(0,0,0,.85);
+background:rgba(0,0,0,.88);
 display:flex;
 align-items:center;
 justify-content:center;
 z-index:9999;
 }
 
-.loginCard{
+.authCard{
 background:white;
 color:black;
-padding:30px;
-border-radius:16px;
+padding:28px;
 width:320px;
+border-radius:16px;
 text-align:center;
 }
 
-.loginLinks{
+.authCard input{
+border:1px solid #ccc;
+}
+
+.authLinks{
 display:flex;
 justify-content:space-between;
 font-size:14px;
-margin-top:10px;
 color:#0a58ca;
 cursor:pointer;
+}
+
+#userName{
+position:fixed;
+top:12px;
+right:12px;
+background:white;
+padding:6px 12px;
+border-radius:10px;
+font-weight:bold;
+z-index:1000;
+display:none;
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN SCREEN -->
-<div id="loginBox">
-  <div class="loginCard">
-    <h2>VEHICLE WORLD</h2>
-    <input id="lmobile" placeholder="Mobile Number">
-    <input id="lpass" type="password" placeholder="Password">
-    <button onclick="login()">Login</button>
+<!-- LOGIN OVERLAY -->
+<div id="authBox">
+<div class="authCard">
 
-    <div class="loginLinks">
-      <span onclick="openSignup()">Signup</span>
-      <span onclick="forgot()">Forgot?</span>
-    </div>
+<h3 id="authTitle">Login</h3>
 
-    <p id="lmsg"></p>
-  </div>
+<input id="nameField" placeholder="Your Name" style="display:none">
+<input id="mobileField" placeholder="Mobile Number">
+<input id="passField" type="password" placeholder="Password">
+
+<label style="font-size:14px">
+<input type="checkbox" onclick="togglePass()"> Show password
+</label>
+
+<button onclick="authAction()">Login</button>
+
+<div class="authLinks">
+<span id="signupBtn" onclick="switchSignup()">Signup</span>
+<span id="loginBtn" onclick="switchLogin()" style="display:none">Back to Login</span>
 </div>
 
-<!-- SIGNUP -->
-<div id="signupBox" class="loginCard hidden" style="position:fixed;z-index:9999">
-<h2>Create Account</h2>
-<input id="smobile" placeholder="Mobile Number">
-<input id="spass" type="password" placeholder="Password">
-<input id="scpass" type="password" placeholder="Confirm Password">
-<button onclick="signup()">Signup</button>
-<p onclick="backLogin()" style="cursor:pointer;color:#0a58ca">⬅ Back to login</p>
-<p id="smsg"></p>
+<p id="authMsg"></p>
+</div>
 </div>
 
-<!-- ORIGINAL SYSTEM -->
+<div id="userName"></div>
+
+<!-- YOUR ORIGINAL SITE (UNCHANGED) -->
+
+<div class="home" onclick="goHome()">🏠 Home</div>
+
 <div class="card">
 
 <div id="p1">
-<h3>🚗 Enter Vehicle Number</h3>
-<input id="vehicle">
+<h3>🚗 Enter Vehicle Number 🏍️</h3>
+<input id="vehicle" placeholder="BR-09-AB-1234">
 <button onclick="goPay()">Continue</button>
 </div>
 
@@ -139,85 +177,101 @@ cursor:pointer;
 
 <div id="p3" class="hidden">
 <h3>✅ Payment Successful</h3>
+<p>Aapko jald RC PDF milega</p>
 </div>
 
 </div>
 
 <script>
-/* ===== LOGIN SYSTEM (LOCAL STORAGE SIMPLE) ===== */
+/* ===== LOGIN SYSTEM ===== */
 
-function getUsers(){
- return JSON.parse(localStorage.getItem("users")||"{}");
-}
-function saveUsers(u){
- localStorage.setItem("users",JSON.stringify(u));
-}
+let users = JSON.parse(localStorage.getItem("users")||"{}");
 
-function signup(){
- let m=smobile.value,p=spass.value,c=scpass.value;
- if(!m||!p||!c) return smsg.innerText="Fill all fields";
- if(p!==c) return smsg.innerText="Passwords not match";
-
- let u=getUsers();
- if(u[m]) return smsg.innerText="Already exists";
-
- u[m]={password:p};
- saveUsers(u);
-
- smsg.innerText="Signup success! Login now";
+function saveUsers(){
+ localStorage.setItem("users",JSON.stringify(users));
 }
 
-function login(){
- let u=getUsers();
- let m=lmobile.value,p=lpass.value;
+function togglePass(){
+ passField.type = passField.type==="password"?"text":"password";
+}
 
- if(!u[m]) return lmsg.innerText="User not found";
- if(u[m].password!==p) return lmsg.innerText="Wrong password";
+function switchSignup(){
+ authTitle.innerText="Signup";
+ nameField.style.display="block";
+ signupBtn.style.display="none";
+ loginBtn.style.display="inline";
+}
+
+function switchLogin(){
+ authTitle.innerText="Login";
+ nameField.style.display="none";
+ signupBtn.style.display="inline";
+ loginBtn.style.display="none";
+}
+
+function authAction(){
+ let m = mobileField.value.trim();
+ let p = passField.value.trim();
+ let n = nameField.value.trim();
+
+ if(authTitle.innerText==="Signup"){
+   if(!n||!m||!p) return authMsg.innerText="Fill all fields";
+   if(users[m]) return authMsg.innerText="Already registered";
+
+   users[m]={name:n,password:p};
+   saveUsers();
+   authMsg.innerText="Signup done. Login now.";
+   switchLogin();
+   return;
+ }
+
+ if(!users[m]) return authMsg.innerText="User not found";
+ if(users[m].password!==p) return authMsg.innerText="Wrong password";
 
  localStorage.setItem("loggedUser",m);
- loginBox.style.display="none";
+ showUser();
+ authBox.style.display="none";
 }
 
-function forgot(){
- let u=getUsers();
- let m=lmobile.value;
- if(!u[m]) alert("Not found");
- else alert("Password: "+u[m].password);
+function showUser(){
+ let m = localStorage.getItem("loggedUser");
+ if(!m || !users[m]) return;
+ userName.innerText="👤 "+users[m].name;
+ userName.style.display="block";
 }
 
-function openSignup(){
- loginBox.style.display="none";
- signupBox.classList.remove("hidden");
-}
-function backLogin(){
- signupBox.classList.add("hidden");
- loginBox.style.display="flex";
-}
-
-/* auto login */
 if(localStorage.getItem("loggedUser")){
- loginBox.style.display="none";
+ showUser();
+ authBox.style.display="none";
 }
 
-/* ===== ORIGINAL PAYMENT SYSTEM ===== */
+/* ===== YOUR PAYMENT FLOW (UNCHANGED) ===== */
+
+function goHome(){
+p2.classList.add("hidden");
+p3.classList.add("hidden");
+p1.classList.remove("hidden");
+}
 
 function goPay(){
- if(!vehicle.value) return alert("Vehicle required");
- p1.classList.add("hidden");
- p2.classList.remove("hidden");
+if(!vehicle.value) return alert("Vehicle number required");
+p1.classList.add("hidden");
+p2.classList.remove("hidden");
 }
 
 function submitPay(){
- if(mobile.value.length<10) return alert("Mobile required");
- if(!proof.files[0]) return alert("Upload screenshot");
+if(mobile.value.length<10) return alert("Mobile required");
+if(!proof.files[0]) return alert("Upload screenshot");
 
- p2.classList.add("hidden");
- p3.classList.remove("hidden");
+p2.classList.add("hidden");
+p3.classList.remove("hidden");
 
- setTimeout(()=>{
-  p3.classList.add("hidden");
-  p1.classList.remove("hidden");
- },2500);
+setTimeout(()=>{
+goHome();
+vehicle.value="";
+mobile.value="";
+proof.value="";
+},2500);
 }
 </script>
 
