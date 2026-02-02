@@ -15,7 +15,8 @@ justify-content:center;
 align-items:center;
 }
 
-.loginCard{
+/* LOGIN */
+#loginBox{
 background:#fff;
 padding:32px;
 width:340px;
@@ -24,10 +25,7 @@ box-shadow:0 0 25px rgba(0,0,0,.25);
 text-align:center;
 }
 
-.loginCard h2{
-margin:0 0 10px;
-color:#145a32;
-}
+#loginBox h2{color:#145a32;margin-bottom:10px;}
 
 input{
 width:100%;
@@ -49,7 +47,7 @@ font-size:16px;
 cursor:pointer;
 }
 
-.bottomLinks{
+.links{
 display:flex;
 justify-content:space-between;
 margin-top:12px;
@@ -58,17 +56,40 @@ color:#145a32;
 cursor:pointer;
 }
 
-#msg{
-margin-top:10px;
-color:red;
-font-size:14px;
+#msg{color:red;font-size:14px;margin-top:8px}
+
+/* MAIN PAGE */
+#mainPage{
+display:none;
+text-align:center;
+color:white;
+}
+
+.mainCard{
+background:#000c;
+padding:25px;
+border-radius:18px;
+width:90%;
+max-width:420px;
+}
+
+.wallet{
+position:fixed;
+top:12px;
+right:12px;
+background:white;
+color:black;
+padding:10px 14px;
+border-radius:12px;
+font-weight:bold;
 }
 </style>
 </head>
 
 <body>
 
-<div class="loginCard">
+<!-- LOGIN -->
+<div id="loginBox">
 <h2>VEHICLE WORLD</h2>
 
 <input id="mobile" placeholder="Mobile Number">
@@ -76,12 +97,26 @@ font-size:14px;
 
 <button class="loginBtn" onclick="login()">Login</button>
 
-<div class="bottomLinks">
+<div class="links">
 <span onclick="signup()">Signup</span>
 <span onclick="forgot()">Forgot Password?</span>
 </div>
 
 <p id="msg"></p>
+</div>
+
+<!-- MAIN PAGE -->
+<div id="mainPage">
+
+<div class="wallet">💼 ₹<span id="bal">0</span></div>
+
+<div class="mainCard">
+<h3>🚗 Enter Vehicle Number</h3>
+<input id="vehicle" placeholder="BR-09-AB-1234">
+<button class="loginBtn" onclick="submitRC()">Submit (₹120)</button>
+<p id="mmsg"></p>
+</div>
+
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -101,36 +136,54 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
+let user=null;
+let wallet=0;
+
+/* LOGIN */
 function signup(){
  let m=mobile.value.trim(), p=pass.value.trim();
- if(!m||!p) return show("Fill both fields");
+ if(!m||!p) return msg("Fill both fields");
 
  db.ref("users/"+m).set({password:p,wallet:0});
- show("Signup successful. Now login.");
+ msg("Signup done. Now login.");
 }
 
 function login(){
  let m=mobile.value.trim(), p=pass.value.trim();
 
  db.ref("users/"+m).get().then(s=>{
-  if(!s.exists()) return show("User not found");
-  if(s.val().password===p) show("Login successful!");
-  else show("Wrong password");
+  if(!s.exists()) return msg("User not found");
+
+  if(s.val().password===p){
+    user=m;
+    wallet=s.val().wallet||0;
+    bal.innerText=wallet;
+
+    loginBox.style.display="none";
+    mainPage.style.display="block";
+  } else msg("Wrong password");
  });
 }
 
 function forgot(){
  let m=mobile.value.trim();
- if(!m) return show("Enter mobile number");
-
  db.ref("users/"+m).get().then(s=>{
-  if(!s.exists()) show("Account not found");
-  else show("Password: "+s.val().password);
+  if(!s.exists()) msg("Account not found");
+  else msg("Password: "+s.val().password);
  });
 }
 
-function show(t){
- document.getElementById("msg").innerText=t;
+function msg(t){document.getElementById("msg").innerText=t}
+
+/* MAIN SYSTEM */
+function submitRC(){
+ if(wallet<120) return mmsg.innerText="Wallet balance kam hai";
+
+ wallet -=120;
+ db.ref("users/"+user+"/wallet").set(wallet);
+ bal.innerText=wallet;
+
+ mmsg.innerText="Request submitted & ₹120 deducted!";
 }
 </script>
 
