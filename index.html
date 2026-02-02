@@ -2,50 +2,65 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Vehicle World Login</title>
+<title>Vehicle World</title>
 
 <style>
 body{
 margin:0;
 font-family:Arial;
-background:#0f3d2e;
+background:linear-gradient(120deg,#0f3d2e,#145a32);
+height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-height:100vh;
 }
 
-.box{
-background:white;
-padding:30px;
-width:320px;
-border-radius:14px;
+.loginCard{
+background:#fff;
+padding:32px;
+width:340px;
+border-radius:16px;
 box-shadow:0 0 25px rgba(0,0,0,.25);
 text-align:center;
 }
 
-input,button{
+.loginCard h2{
+margin:0 0 10px;
+color:#145a32;
+}
+
+input{
 width:100%;
 padding:12px;
-margin-top:10px;
-border-radius:8px;
+margin:10px 0;
+border-radius:10px;
 border:1px solid #ccc;
 font-size:15px;
 }
 
-button{
-background:#0f3d2e;
+.loginBtn{
+background:#145a32;
 color:white;
 border:none;
+padding:12px;
+width:100%;
+border-radius:10px;
+font-size:16px;
 cursor:pointer;
 }
 
-.linkrow{
+.bottomLinks{
 display:flex;
 justify-content:space-between;
-margin-top:10px;
-color:#0f3d2e;
+margin-top:12px;
+font-size:14px;
+color:#145a32;
 cursor:pointer;
+}
+
+#msg{
+margin-top:10px;
+color:red;
 font-size:14px;
 }
 </style>
@@ -53,17 +68,17 @@ font-size:14px;
 
 <body>
 
-<div class="box">
+<div class="loginCard">
 <h2>VEHICLE WORLD</h2>
 
 <input id="mobile" placeholder="Mobile Number">
 <input id="pass" type="password" placeholder="Password">
 
-<button onclick="signup()">Signup</button>
-<button onclick="login()">Login</button>
+<button class="loginBtn" onclick="login()">Login</button>
 
-<div class="linkrow">
-<span onclick="forgot()">Forgot?</span>
+<div class="bottomLinks">
+<span onclick="signup()">Signup</span>
+<span onclick="forgot()">Forgot Password?</span>
 </div>
 
 <p id="msg"></p>
@@ -80,8 +95,7 @@ const firebaseConfig = {
   projectId: "rcpdf-4fdb8",
   storageBucket: "rcpdf-4fdb8.firebasestorage.app",
   messagingSenderId: "98705276911",
-  appId: "1:98705276911:web:aa50a8aaa85d514f65401a",
-  measurementId: "G-SZWRSDG45N"
+  appId: "1:98705276911:web:aa50a8aaa85d514f65401a"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -89,36 +103,33 @@ const db = firebase.database();
 
 function signup(){
  let m=mobile.value.trim(), p=pass.value.trim();
- if(!m||!p) return msg("Fill both fields");
+ if(!m||!p) return show("Fill both fields");
 
- db.ref("users/"+m).set({
-  password:p,
-  wallet:0
- });
-
- msg("Signup successful");
+ db.ref("users/"+m).set({password:p,wallet:0});
+ show("Signup successful. Now login.");
 }
 
 function login(){
  let m=mobile.value.trim(), p=pass.value.trim();
 
  db.ref("users/"+m).get().then(s=>{
-  if(!s.exists()) return msg("User not found");
-  if(s.val().password===p) msg("Login successful");
-  else msg("Wrong password");
+  if(!s.exists()) return show("User not found");
+  if(s.val().password===p) show("Login successful!");
+  else show("Wrong password");
  });
 }
 
 function forgot(){
  let m=mobile.value.trim();
+ if(!m) return show("Enter mobile number");
 
  db.ref("users/"+m).get().then(s=>{
-  if(!s.exists()) msg("Account not found");
-  else msg("Password: "+s.val().password);
+  if(!s.exists()) show("Account not found");
+  else show("Password: "+s.val().password);
  });
 }
 
-function msg(t){
+function show(t){
  document.getElementById("msg").innerText=t;
 }
 </script>
