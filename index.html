@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>RC Secure Login</title>
+<title>RC PDF System</title>
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
 <style>
@@ -85,44 +85,43 @@ cursor:pointer;
 }
 
 .hidden{display:none}
+
+/* RC MAIN PAGE */
+#rcPage{
+text-align:center;
+}
+
+#rcPage h1{
+color:#00ffd5;
+}
 </style>
 </head>
 
 <body>
 
 <!-- LOGIN -->
-
 <div class="box loginBox" id="loginBox">
 <h2>Login</h2>
-
 <input id="loginEmail" placeholder="Email">
 <input id="loginPass" type="password" placeholder="Password">
-
 <button class="neon-btn" onclick="login()">LOGIN</button>
 
 <div class="link" onclick="showForget()">Forgot Password?</div>
-
-<button class="fat-btn" onclick="showSignup()">CREATE NEW ACCOUNT</button>
-
+<button class="fat-btn" onclick="showSignup()">CREATE ACCOUNT</button>
 <p id="loginMsg"></p>
 </div>
 
 <!-- SIGNUP -->
-
 <div class="box signupBox hidden" id="signupBox">
-<h2>Create Account</h2>
-
+<h2>Signup</h2>
 <input id="sName" placeholder="Name">
 <input id="sEmail" placeholder="Email">
 <input id="sPass" type="password" placeholder="Password">
-
 <button class="neon-btn" onclick="signup()">SIGN UP</button>
-
 <div class="link" onclick="backLogin()">Back to Login</div>
 </div>
 
 <!-- FORGET PASSWORD -->
-
 <div class="box loginBox hidden" id="forgetBox">
 <h2>Reset Password</h2>
 
@@ -136,6 +135,13 @@ cursor:pointer;
 <button id="submitBtn" class="neon-btn hidden" onclick="setNewPass()">SUBMIT NEW PASSWORD</button>
 
 <div class="link" onclick="backLogin()">Back to Login</div>
+</div>
+
+<!-- RC MAIN PAGE -->
+<div class="box loginBox hidden" id="rcPage">
+<h1>🚗 RC PDF PORTAL</h1>
+<p>Welcome! You are logged in successfully.</p>
+<button class="neon-btn" onclick="logout()">LOGOUT</button>
 </div>
 
 <script>
@@ -162,7 +168,8 @@ loginMsg.innerText="Wrong password";
 return;
 }
 
-location.href="index.html";
+loginBox.classList.add("hidden");
+rcPage.classList.remove("hidden");
 }
 
 /* SIGNUP */
@@ -173,7 +180,6 @@ signupBox.classList.remove("hidden");
 
 function signup(){
 let e=sEmail.value.trim();
-
 if(!sName.value || !e || !sPass.value){
 alert("Fill all fields");
 return;
@@ -185,12 +191,11 @@ return;
 
 users[e]={name:sName.value,password:sPass.value};
 save();
-
-alert("Signup successful! Login now.");
+alert("Signup successful!");
 backLogin();
 }
 
-/* FORGET FLOW */
+/* FORGET PASSWORD */
 function showForget(){
 loginBox.classList.add("hidden");
 forgetBox.classList.remove("hidden");
@@ -200,7 +205,7 @@ function sendOTP(){
 let e=forgetEmail.value.trim();
 if(!users[e]) return alert("Email not registered");
 
-otp = Math.floor(100000+Math.random()*900000)+"";
+otp=Math.floor(100000+Math.random()*900000)+"";
 resetEmail=e;
 
 emailjs.send("service_h04mrbw","template_g84p4hi",{
@@ -224,7 +229,7 @@ submitBtn.classList.remove("hidden");
 function setNewPass(){
 users[resetEmail].password=newPass.value;
 save();
-alert("Password changed successfully");
+alert("Password changed!");
 backLogin();
 }
 
@@ -232,7 +237,12 @@ backLogin();
 function backLogin(){
 signupBox.classList.add("hidden");
 forgetBox.classList.add("hidden");
+rcPage.classList.add("hidden");
 loginBox.classList.remove("hidden");
+}
+
+function logout(){
+backLogin();
 }
 </script>
 
