@@ -1,81 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RC PDF Portal</title>
 
 <style>
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(270deg,red,blue,green,purple,cyan);
-background-size:600% 600%;
-animation:bg 12s infinite alternate;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-min-height:100vh;
+background:#111;
 }
 
-@keyframes bg{
-0%{background-position:0%}
-100%{background-position:100%}
-}
-
-.home{
-position:fixed;
-top:12px;
-left:12px;
-background:white;
-color:black;
-padding:8px 16px;
-border-radius:10px;
-font-weight:bold;
-cursor:pointer;
-z-index:999;
-}
-
-.card{
-background:#000c;
-color:white;
-padding:25px;
-border-radius:18px;
-width:92%;
-max-width:420px;
-text-align:center;
-}
-
-input,button{
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
-border-radius:10px;
-font-size:16px;
-}
-
-button{
-background:#00ffd5;
-font-weight:bold;
-cursor:pointer;
-}
-
-.hidden{display:none;}
-
-img{
-width:220px;
-border-radius:14px;
-margin:12px 0;
-}
-
-/* LOGIN OVERLAY */
+/* OVERLAY */
 #authBox{
 position:fixed;
 top:0;left:0;
 width:100%;height:100%;
-background:rgba(0,0,0,.88);
+background:rgba(0,0,0,.85);
 display:flex;
 align-items:center;
 justify-content:center;
@@ -83,277 +24,229 @@ z-index:9999;
 }
 
 .authCard{
-background:white;
-color:black;
+background:#fff;
+color:#000;
 padding:28px;
 width:320px;
-border-radius:16px;
+border-radius:18px;
 text-align:center;
+box-shadow:0 12px 40px rgba(0,0,0,.4);
 }
 
-.authLinks{
-display:flex;
-justify-content:space-between;
-font-size:14px;
-color:#0a58ca;
-cursor:pointer;
-}
-
-#userName{
-position:fixed;
-top:12px;
-right:12px;
-background:white;
-padding:6px 12px;
+input{
+width:100%;
+padding:12px;
+margin-top:12px;
 border-radius:10px;
-font-weight:bold;
-z-index:1000;
-display:none;
+border:1px solid #ddd;
+font-size:16px;
 }
 
-/* LOGOUT */
-#logoutBtn{
-position:fixed;
-top:50px;
-right:12px;
-background:#ff4d4d;
+/* RGB NEON BUTTON */
+.rgb-btn{
+position:relative;
+margin-top:15px;
+padding:12px;
+width:100%;
+font-size:16px;
+font-weight:bold;
+background:#000;
 color:white;
 border:none;
-padding:6px 14px;
-border-radius:10px;
-font-weight:bold;
+border-radius:14px;
 cursor:pointer;
-z-index:1000;
-display:none;
+z-index:0;
+overflow:hidden;
 }
 
-/* SUCCESS POPUP */
-#successPopup{
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-background:rgba(0,0,0,.9);
-display:none;
+.rgb-btn::before{
+content:"";
+position:absolute;
+inset:-2px;
+background:linear-gradient(
+90deg,
+red,orange,yellow,green,cyan,blue,purple,red
+);
+background-size:400%;
+z-index:-1;
+filter:blur(6px);
+animation:rgb 4s linear infinite;
+}
+
+.rgb-btn::after{
+content:"";
+position:absolute;
+inset:2px;
+background:#000;
+border-radius:12px;
+z-index:-1;
+}
+
+@keyframes rgb{
+0%{background-position:0%}
+100%{background-position:400%}
+}
+
+.link{
+margin-top:14px;
+color:#007bff;
+cursor:pointer;
+font-size:14px;
+}
+
+.hidden{display:none}
+
+/* MAIN PAGE */
+#mainPage{
+min-height:100vh;
+background:#f2f2f2;
+display:flex;
 align-items:center;
 justify-content:center;
-flex-direction:column;
-z-index:10000;
-color:white;
-font-size:22px;
+font-size:24px;
 }
-
-.chakra{
-width:80px;
-height:80px;
-border:6px solid #00ffd5;
-border-top:6px solid transparent;
-border-radius:50%;
-animation:spin 1s linear infinite;
-margin-bottom:15px;
-}
-
-@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
+<!-- MAIN SITE -->
+<div id="mainPage">
+🚗 RC PDF PORTAL (Login ke baad ye page rahega)
+</div>
+
+<!-- LOGIN POPUP -->
 <div id="authBox">
-<div class="authCard">
 
-<h3 id="authTitle">Login</h3>
+<!-- LOGIN -->
+<div class="authCard" id="loginBox">
+<h3>Login</h3>
+<input id="loginMobile" placeholder="Mobile Number">
+<input id="loginPass" type="password" placeholder="Password">
 
-<input id="nameField" placeholder="Your Name" style="display:none">
-<input id="mobileField" placeholder="Mobile Number">
-<input id="passField" type="password" placeholder="Password">
+<button class="rgb-btn" onclick="login()">LOGIN</button>
 
-<label style="font-size:14px">
-<input type="checkbox" onclick="togglePass()"> Show password
-</label>
+<button class="rgb-btn" onclick="showSignup()">SIGNUP</button>
+<button class="rgb-btn" onclick="showForget()">FORGET PASSWORD</button>
 
-<button onclick="authAction()">Login</button>
-
-<div class="authLinks">
-<span id="signupBtn" onclick="switchSignup()">Signup</span>
-<span id="loginBtn" onclick="switchLogin()" style="display:none">Back to Login</span>
+<p id="loginMsg"></p>
 </div>
 
-<p id="authMsg"></p>
-</div>
-</div>
+<!-- SIGNUP -->
+<div class="authCard hidden" id="signupBox">
+<h3>Signup</h3>
+<input id="sName" placeholder="Name">
+<input id="sMobile" placeholder="Mobile Number">
+<input id="sEmail" placeholder="Email">
+<input id="sPass" type="password" placeholder="Password">
 
-<div id="userName"></div>
-<button id="logoutBtn" onclick="logout()">Logout</button>
-
-<div id="successPopup">
-<div class="chakra"></div>
-<div>✅ Login Successful</div>
-</div>
-
-<div class="home" onclick="goHome()">🏠 Home</div>
-
-<div class="card">
-
-<div id="p1">
-<h3>🚗 Enter Vehicle Number 🏍️</h3>
-<input id="vehicle" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatVehicle(this)">
-<button onclick="goPay()">Continue</button>
+<button class="rgb-btn" onclick="signup()">CREATE ACCOUNT</button>
+<div class="link" onclick="backLogin()">Back</div>
 </div>
 
-<div id="p2" class="hidden">
-<h3>Pay ₹120</h3>
+<!-- FORGET -->
+<div class="authCard hidden" id="forgetBox">
+<h3>Reset Password</h3>
 
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
-<p>UPI ID: bestinsurance@upi</p>
+<input id="fEmail" placeholder="Registered Email">
+<button class="rgb-btn" onclick="sendOTP()">SEND OTP</button>
 
-<a href="upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
-<button>Pay with UPI App</button>
-</a>
+<input id="otpInput" class="hidden" placeholder="Enter OTP">
+<button id="verifyBtn" class="rgb-btn hidden" onclick="verifyOTP()">VERIFY OTP</button>
 
-<input id="mobile" placeholder="Mobile Number">
-<input type="file" id="proof" accept="image/*">
+<input id="newPass" class="hidden" placeholder="New Password">
+<button id="saveBtn" class="rgb-btn hidden" onclick="saveNewPass()">SAVE PASSWORD</button>
 
-<button onclick="submitPay()">Submit</button>
-</div>
-
-<div id="p3" class="hidden">
-<h3>✅ Payment Successful</h3>
-<p>RC PDF will be sent soon</p>
+<div class="link" onclick="backLogin()">Back</div>
 </div>
 
 </div>
 
 <script>
-/* TELEGRAM */
-const token="8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E";
-const chatId="5600045707";
-
-/* VEHICLE FORMAT */
-function formatVehicle(el){
-let v = el.value.toUpperCase().replace(/[^A-Z0-9]/g,"");
-let out=v.slice(0,2);
-if(v.slice(2,4)) out+="-"+v.slice(2,4);
-if(v.slice(4,6)) out+="-"+v.slice(4,6);
-if(v.slice(6,10)) out+="-"+v.slice(6,10);
-el.value=out;
-}
-
-/* LOGIN SYSTEM */
 let users = JSON.parse(localStorage.getItem("users")||"{}");
+let otp="", resetEmail="";
 
-function saveUsers(){
-localStorage.setItem("users",JSON.stringify(users));
-}
+function save(){localStorage.setItem("users",JSON.stringify(users));}
 
-function togglePass(){
-passField.type = passField.type==="password"?"text":"password";
-}
+/* LOGIN */
+function login(){
+let m=loginMobile.value.trim();
+let p=loginPass.value.trim();
 
-function switchSignup(){
-authTitle.innerText="Signup";
-nameField.style.display="block";
-signupBtn.style.display="none";
-loginBtn.style.display="inline";
-}
+if(!users[m]) return loginMsg.innerText="User not found";
+if(users[m].password!==p) return loginMsg.innerText="Wrong password";
 
-function switchLogin(){
-authTitle.innerText="Login";
-nameField.style.display="none";
-signupBtn.style.display="inline";
-loginBtn.style.display="none";
-}
-
-function authAction(){
-let m=mobileField.value.trim();
-let p=passField.value.trim();
-let n=nameField.value.trim();
-
-if(authTitle.innerText==="Signup"){
- if(!n||!m||!p) return authMsg.innerText="Fill all fields";
- if(users[m]) return authMsg.innerText="Already registered";
-
- users[m]={name:n,password:p};
- saveUsers();
- authMsg.innerText="Signup done. Now login.";
- switchLogin();
- return;
-}
-
-if(!users[m]) return authMsg.innerText="User not found";
-if(users[m].password!==p) return authMsg.innerText="Wrong password";
-
-localStorage.setItem("loggedUser",m);
-showUser();
-
-successPopup.style.display="flex";
-
-setTimeout(()=>{
-successPopup.style.display="none";
-authBox.style.display="none";
-},1000);
-}
-
-function showUser(){
-let m=localStorage.getItem("loggedUser");
-if(!m||!users[m]) return;
-userName.innerText="👤 "+users[m].name;
-userName.style.display="block";
-logoutBtn.style.display="block";
-}
-
-function logout(){
-localStorage.removeItem("loggedUser");
-location.reload();
-}
-
-if(localStorage.getItem("loggedUser")){
-showUser();
 authBox.style.display="none";
 }
 
-/* NAV */
-function goHome(){
-p2.classList.add("hidden");
-p3.classList.add("hidden");
-p1.classList.remove("hidden");
+/* SIGNUP */
+function showSignup(){
+loginBox.classList.add("hidden");
+signupBox.classList.remove("hidden");
 }
 
-function goPay(){
-if(!vehicle.value.trim()) return alert("Vehicle required");
-p1.classList.add("hidden");
-p2.classList.remove("hidden");
+function signup(){
+let m=sMobile.value.trim();
+
+if(users[m]) return alert("Already registered");
+
+users[m]={
+name:sName.value,
+email:sEmail.value,
+password:sPass.value
+};
+save();
+alert("Account created!");
+backLogin();
 }
 
-/* TELEGRAM SEND */
-function submitPay(){
-let v=vehicle.value.trim();
-let m=mobile.value.trim();
-let p=proof.files[0];
+/* FORGET */
+function showForget(){
+loginBox.classList.add("hidden");
+forgetBox.classList.remove("hidden");
+}
 
-if(m.length<10) return alert("Mobile required");
-if(!p) return alert("Upload screenshot");
+function sendOTP(){
+let email=fEmail.value.trim();
+let found=false;
 
-let data=new FormData();
-data.append("chat_id",chatId);
-data.append("caption",`🚗 RC REQUEST\nVehicle: ${v}\nMobile: ${m}`);
-data.append("photo",p);
+for(let k in users){
+if(users[k].email===email){
+found=true;
+resetEmail=email;
+}
+}
+if(!found) return alert("Email not registered");
 
-fetch(`https://api.telegram.org/bot${token}/sendPhoto`,{
-method:"POST",
-body:data
-})
-.then(()=>{
-p2.classList.add("hidden");
-p3.classList.remove("hidden");
+otp=Math.floor(100000+Math.random()*900000)+"";
+alert("OTP (demo): "+otp);
 
-setTimeout(()=>{
-goHome();
-vehicle.value="";
-mobile.value="";
-proof.value="";
-},3000);
-});
+otpInput.classList.remove("hidden");
+verifyBtn.classList.remove("hidden");
+}
+
+function verifyOTP(){
+if(otpInput.value!==otp) return alert("Wrong OTP");
+newPass.classList.remove("hidden");
+saveBtn.classList.remove("hidden");
+}
+
+function saveNewPass(){
+for(let k in users){
+if(users[k].email===resetEmail){
+users[k].password=newPass.value;
+}
+}
+save();
+alert("Password changed");
+backLogin();
+}
+
+/* COMMON */
+function backLogin(){
+signupBox.classList.add("hidden");
+forgetBox.classList.add("hidden");
+loginBox.classList.remove("hidden");
 }
 </script>
 
