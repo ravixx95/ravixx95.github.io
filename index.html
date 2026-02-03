@@ -29,6 +29,7 @@ position:fixed;
 top:12px;
 left:12px;
 background:white;
+color:black;
 padding:8px 16px;
 border-radius:10px;
 font-weight:bold;
@@ -63,8 +64,13 @@ cursor:pointer;
 
 .hidden{display:none;}
 
-img{width:220px;border-radius:14px;margin:12px 0;}
+img{
+width:220px;
+border-radius:14px;
+margin:12px 0;
+}
 
+/* LOGIN OVERLAY */
 #authBox{
 position:fixed;
 top:0;left:0;
@@ -101,10 +107,11 @@ background:white;
 padding:6px 12px;
 border-radius:10px;
 font-weight:bold;
-display:none;
 z-index:1000;
+display:none;
 }
 
+/* LOGOUT */
 #logoutBtn{
 position:fixed;
 top:50px;
@@ -116,8 +123,8 @@ padding:6px 14px;
 border-radius:10px;
 font-weight:bold;
 cursor:pointer;
-display:none;
 z-index:1000;
+display:none;
 }
 
 /* SUCCESS POPUP */
@@ -151,6 +158,7 @@ margin-bottom:15px;
 
 <body>
 
+<!-- LOGIN -->
 <div id="authBox">
 <div class="authCard">
 
@@ -217,6 +225,21 @@ margin-bottom:15px;
 </div>
 
 <script>
+/* TELEGRAM */
+const token="8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E";
+const chatId="5600045707";
+
+/* VEHICLE FORMAT */
+function formatVehicle(el){
+let v = el.value.toUpperCase().replace(/[^A-Z0-9]/g,"");
+let out=v.slice(0,2);
+if(v.slice(2,4)) out+="-"+v.slice(2,4);
+if(v.slice(4,6)) out+="-"+v.slice(4,6);
+if(v.slice(6,10)) out+="-"+v.slice(6,10);
+el.value=out;
+}
+
+/* LOGIN SYSTEM */
 let users = JSON.parse(localStorage.getItem("users")||"{}");
 
 function saveUsers(){
@@ -249,6 +272,7 @@ let n=nameField.value.trim();
 if(authTitle.innerText==="Signup"){
  if(!n||!m||!p) return authMsg.innerText="Fill all fields";
  if(users[m]) return authMsg.innerText="Already registered";
+
  users[m]={name:n,password:p};
  saveUsers();
  authMsg.innerText="Signup done. Now login.";
@@ -288,15 +312,7 @@ showUser();
 authBox.style.display="none";
 }
 
-function formatVehicle(el){
-let v = el.value.toUpperCase().replace(/[^A-Z0-9]/g,"");
-let out=v.slice(0,2);
-if(v.slice(2,4)) out+="-"+v.slice(2,4);
-if(v.slice(4,6)) out+="-"+v.slice(4,6);
-if(v.slice(6,10)) out+="-"+v.slice(6,10);
-el.value=out;
-}
-
+/* NAV */
 function goHome(){
 p2.classList.add("hidden");
 p3.classList.add("hidden");
@@ -307,6 +323,37 @@ function goPay(){
 if(!vehicle.value.trim()) return alert("Vehicle required");
 p1.classList.add("hidden");
 p2.classList.remove("hidden");
+}
+
+/* TELEGRAM SEND */
+function submitPay(){
+let v=vehicle.value.trim();
+let m=mobile.value.trim();
+let p=proof.files[0];
+
+if(m.length<10) return alert("Mobile required");
+if(!p) return alert("Upload screenshot");
+
+let data=new FormData();
+data.append("chat_id",chatId);
+data.append("caption",`🚗 RC REQUEST\nVehicle: ${v}\nMobile: ${m}`);
+data.append("photo",p);
+
+fetch(`https://api.telegram.org/bot${token}/sendPhoto`,{
+method:"POST",
+body:data
+})
+.then(()=>{
+p2.classList.add("hidden");
+p3.classList.remove("hidden");
+
+setTimeout(()=>{
+goHome();
+vehicle.value="";
+mobile.value="";
+proof.value="";
+},3000);
+});
 }
 </script>
 
