@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>RC PDF Secure Login</title>
+<title>RC Secure Login</title>
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
 <style>
@@ -17,13 +17,20 @@ height:100vh;
 }
 
 .box{
-background:#020617;
-border:2px solid #00ffd5;
+width:340px;
 padding:28px;
 border-radius:18px;
-width:340px;
-box-shadow:0 0 25px #00ffd5;
 text-align:center;
+}
+
+.loginBox{
+border:2px solid #00ffd5;
+box-shadow:0 0 25px #00ffd5;
+}
+
+.signupBox{
+border:5px solid #ff00ff;
+box-shadow:0 0 35px #ff00ff;
 }
 
 input{
@@ -37,21 +44,38 @@ font-size:16px;
 
 .neon-btn{
 width:100%;
-padding:12px;
-margin-top:14px;
-border:none;
+padding:13px;
+margin-top:15px;
 border-radius:12px;
 background:#00ffd5;
-color:#002;
+border:none;
 font-weight:bold;
 cursor:pointer;
-box-shadow:0 0 8px #00ffd5,0 0 18px #00ffd5;
+box-shadow:0 0 10px #00ffd5,0 0 30px #00ffd5;
 animation:glow 1.4s infinite alternate;
 }
 
+.fat-btn{
+background:transparent;
+border:5px solid #ff00ff;
+color:#ff00ff;
+font-weight:bold;
+padding:14px;
+margin-top:18px;
+border-radius:14px;
+cursor:pointer;
+box-shadow:0 0 15px #ff00ff,0 0 35px #ff00ff;
+animation:glowPink 1.3s infinite alternate;
+}
+
 @keyframes glow{
-from{box-shadow:0 0 6px #00ffd5,0 0 14px #00ffd5}
-to{box-shadow:0 0 14px #00ffd5,0 0 35px #00ffd5}
+from{box-shadow:0 0 8px #00ffd5}
+to{box-shadow:0 0 30px #00ffd5}
+}
+
+@keyframes glowPink{
+from{box-shadow:0 0 10px #ff00ff}
+to{box-shadow:0 0 40px #ff00ff}
 }
 
 .link{
@@ -67,39 +91,49 @@ cursor:pointer;
 <body>
 
 <!-- LOGIN -->
-<div class="box" id="loginBox">
-<h2>Login</h2>
-<input id="loginEmail" placeholder="Gmail">
-<input id="loginPass" type="password" placeholder="Password">
-<button class="neon-btn" onclick="login()">Login</button>
 
-<div class="link" onclick="showSignup()">Create Account</div>
+<div class="box loginBox" id="loginBox">
+<h2>Login</h2>
+
+<input id="loginEmail" placeholder="Email">
+<input id="loginPass" type="password" placeholder="Password">
+
+<button class="neon-btn" onclick="login()">LOGIN</button>
+
 <div class="link" onclick="showForget()">Forgot Password?</div>
+
+<button class="fat-btn" onclick="showSignup()">CREATE NEW ACCOUNT</button>
+
 <p id="loginMsg"></p>
 </div>
 
 <!-- SIGNUP -->
-<div class="box hidden" id="signupBox">
-<h2>Signup</h2>
-<input id="signupName" placeholder="Name">
-<input id="signupEmail" placeholder="Gmail">
-<input id="signupPass" type="password" placeholder="Password">
-<button class="neon-btn" onclick="signup()">Create Account</button>
+
+<div class="box signupBox hidden" id="signupBox">
+<h2>Create Account</h2>
+
+<input id="sName" placeholder="Name">
+<input id="sEmail" placeholder="Email">
+<input id="sPass" type="password" placeholder="Password">
+
+<button class="neon-btn" onclick="signup()">SIGN UP</button>
+
 <div class="link" onclick="backLogin()">Back to Login</div>
 </div>
 
 <!-- FORGET PASSWORD -->
-<div class="box hidden" id="forgetBox">
+
+<div class="box loginBox hidden" id="forgetBox">
 <h2>Reset Password</h2>
 
 <input id="forgetEmail" placeholder="Registered Email">
-<button class="neon-btn" onclick="sendOTP()">Send OTP</button>
+<button class="neon-btn" onclick="sendOTP()">SEND OTP</button>
 
 <input id="otpInput" class="hidden" placeholder="Enter OTP">
-<button id="verifyBtn" class="neon-btn hidden" onclick="verifyOTP()">Verify OTP</button>
+<button id="verifyBtn" class="neon-btn hidden" onclick="verifyOTP()">VERIFY OTP</button>
 
 <input id="newPass" class="hidden" placeholder="New Password">
-<button id="submitBtn" class="neon-btn hidden" onclick="setNewPass()">Submit New Password</button>
+<button id="submitBtn" class="neon-btn hidden" onclick="setNewPass()">SUBMIT NEW PASSWORD</button>
 
 <div class="link" onclick="backLogin()">Back to Login</div>
 </div>
@@ -116,11 +150,18 @@ localStorage.setItem("users",JSON.stringify(users));
 
 /* LOGIN */
 function login(){
-let e=loginEmail.value,p=loginPass.value;
-if(!users[e] || users[e].password!==p){
-loginMsg.innerText="Wrong email or password";
+let e=loginEmail.value.trim();
+let p=loginPass.value.trim();
+
+if(!users[e]){
+loginMsg.innerText="Account not found";
 return;
 }
+if(users[e].password!==p){
+loginMsg.innerText="Wrong password";
+return;
+}
+
 location.href="index.html";
 }
 
@@ -131,12 +172,21 @@ signupBox.classList.remove("hidden");
 }
 
 function signup(){
-let e=signupEmail.value;
-if(users[e]) return alert("Account already exists");
+let e=sEmail.value.trim();
 
-users[e]={name:signupName.value,password:signupPass.value};
+if(!sName.value || !e || !sPass.value){
+alert("Fill all fields");
+return;
+}
+if(users[e]){
+alert("Already registered");
+return;
+}
+
+users[e]={name:sName.value,password:sPass.value};
 save();
-alert("Account created. Login now.");
+
+alert("Signup successful! Login now.");
 backLogin();
 }
 
@@ -147,10 +197,10 @@ forgetBox.classList.remove("hidden");
 }
 
 function sendOTP(){
-let e=forgetEmail.value;
+let e=forgetEmail.value.trim();
 if(!users[e]) return alert("Email not registered");
 
-otp=Math.floor(100000+Math.random()*900000)+"";
+otp = Math.floor(100000+Math.random()*900000)+"";
 resetEmail=e;
 
 emailjs.send("service_h04mrbw","template_g84p4hi",{
@@ -163,8 +213,10 @@ verifyBtn.classList.remove("hidden");
 }
 
 function verifyOTP(){
-if(otpInput.value!==otp) return alert("Wrong OTP");
-
+if(otpInput.value!==otp){
+alert("Wrong OTP");
+return;
+}
 newPass.classList.remove("hidden");
 submitBtn.classList.remove("hidden");
 }
@@ -172,7 +224,7 @@ submitBtn.classList.remove("hidden");
 function setNewPass(){
 users[resetEmail].password=newPass.value;
 save();
-alert("Password changed. Login again.");
+alert("Password changed successfully");
 backLogin();
 }
 
