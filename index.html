@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>RC PDF Login</title>
+<title>RC PDF Secure Login</title>
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
 <style>
@@ -21,12 +21,12 @@ background:#020617;
 border:2px solid #00ffd5;
 padding:28px;
 border-radius:18px;
-width:330px;
-box-shadow:0 0 20px #00ffd5;
+width:340px;
+box-shadow:0 0 25px #00ffd5;
 text-align:center;
 }
 
-input,button{
+input{
 width:100%;
 padding:12px;
 margin-top:12px;
@@ -35,10 +35,27 @@ border:none;
 font-size:16px;
 }
 
-button{background:#00ffd5;font-weight:bold}
+.neon-btn{
+width:100%;
+padding:12px;
+margin-top:14px;
+border:none;
+border-radius:12px;
+background:#00ffd5;
+color:#002;
+font-weight:bold;
+cursor:pointer;
+box-shadow:0 0 8px #00ffd5,0 0 18px #00ffd5;
+animation:glow 1.4s infinite alternate;
+}
+
+@keyframes glow{
+from{box-shadow:0 0 6px #00ffd5,0 0 14px #00ffd5}
+to{box-shadow:0 0 14px #00ffd5,0 0 35px #00ffd5}
+}
 
 .link{
-margin-top:14px;
+margin-top:15px;
 color:#00ffd5;
 cursor:pointer;
 }
@@ -49,33 +66,42 @@ cursor:pointer;
 
 <body>
 
+<!-- LOGIN -->
 <div class="box" id="loginBox">
-
 <h2>Login</h2>
-
 <input id="loginEmail" placeholder="Gmail">
 <input id="loginPass" type="password" placeholder="Password">
+<button class="neon-btn" onclick="login()">Login</button>
 
-<button onclick="login()">Login</button>
-
+<div class="link" onclick="showSignup()">Create Account</div>
 <div class="link" onclick="showForget()">Forgot Password?</div>
-
 <p id="loginMsg"></p>
 </div>
 
-<div class="box hidden" id="forgetBox">
+<!-- SIGNUP -->
+<div class="box hidden" id="signupBox">
+<h2>Signup</h2>
+<input id="signupName" placeholder="Name">
+<input id="signupEmail" placeholder="Gmail">
+<input id="signupPass" type="password" placeholder="Password">
+<button class="neon-btn" onclick="signup()">Create Account</button>
+<div class="link" onclick="backLogin()">Back to Login</div>
+</div>
 
+<!-- FORGET PASSWORD -->
+<div class="box hidden" id="forgetBox">
 <h2>Reset Password</h2>
 
 <input id="forgetEmail" placeholder="Registered Email">
-<button onclick="sendOTP()">Send OTP</button>
+<button class="neon-btn" onclick="sendOTP()">Send OTP</button>
 
 <input id="otpInput" class="hidden" placeholder="Enter OTP">
-<button id="verifyBtn" class="hidden" onclick="verifyOTP()">Verify OTP</button>
+<button id="verifyBtn" class="neon-btn hidden" onclick="verifyOTP()">Verify OTP</button>
 
 <input id="newPass" class="hidden" placeholder="New Password">
-<button id="submitNew" class="hidden" onclick="setNewPass()">Submit New Password</button>
+<button id="submitBtn" class="neon-btn hidden" onclick="setNewPass()">Submit New Password</button>
 
+<div class="link" onclick="backLogin()">Back to Login</div>
 </div>
 
 <script>
@@ -84,17 +110,37 @@ emailjs.init("eRTexjroiPjM9miek");
 let users = JSON.parse(localStorage.getItem("users")||"{}");
 let otp="", resetEmail="";
 
-function save(){localStorage.setItem("users",JSON.stringify(users));}
+function save(){
+localStorage.setItem("users",JSON.stringify(users));
+}
 
+/* LOGIN */
 function login(){
 let e=loginEmail.value,p=loginPass.value;
-if(!users[e]||users[e].password!==p){
+if(!users[e] || users[e].password!==p){
 loginMsg.innerText="Wrong email or password";
 return;
 }
-location.href="index.html";  // RC MAIN PAGE
+location.href="index.html";
 }
 
+/* SIGNUP */
+function showSignup(){
+loginBox.classList.add("hidden");
+signupBox.classList.remove("hidden");
+}
+
+function signup(){
+let e=signupEmail.value;
+if(users[e]) return alert("Account already exists");
+
+users[e]={name:signupName.value,password:signupPass.value};
+save();
+alert("Account created. Login now.");
+backLogin();
+}
+
+/* FORGET FLOW */
 function showForget(){
 loginBox.classList.add("hidden");
 forgetBox.classList.remove("hidden");
@@ -120,14 +166,21 @@ function verifyOTP(){
 if(otpInput.value!==otp) return alert("Wrong OTP");
 
 newPass.classList.remove("hidden");
-submitNew.classList.remove("hidden");
+submitBtn.classList.remove("hidden");
 }
 
 function setNewPass(){
 users[resetEmail].password=newPass.value;
 save();
-alert("Password updated. Login again.");
-location.reload();  // back to login page
+alert("Password changed. Login again.");
+backLogin();
+}
+
+/* COMMON */
+function backLogin(){
+signupBox.classList.add("hidden");
+forgetBox.classList.add("hidden");
+loginBox.classList.remove("hidden");
 }
 </script>
 
