@@ -2,35 +2,27 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>RC PDF Portal</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RC PDF Login</title>
 
 <style>
 body{
 margin:0;
 font-family:Arial;
 background:#111;
-}
-
-/* OVERLAY */
-#authBox{
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-background:rgba(0,0,0,.85);
 display:flex;
-align-items:center;
 justify-content:center;
-z-index:9999;
+align-items:center;
+height:100vh;
 }
 
-.authCard{
+#authBox{
 background:#fff;
-color:#000;
-padding:28px;
+padding:26px;
 width:320px;
-border-radius:18px;
-text-align:center;
+border-radius:20px;
 box-shadow:0 12px 40px rgba(0,0,0,.4);
+text-align:center;
 }
 
 input{
@@ -38,145 +30,101 @@ width:100%;
 padding:12px;
 margin-top:12px;
 border-radius:10px;
-border:1px solid #ddd;
+border:1px solid #ccc;
 font-size:16px;
 }
 
-/* RGB NEON BUTTON */
-.rgb-btn{
-position:relative;
-margin-top:15px;
-padding:12px;
+.big-btn{
+margin-top:16px;
 width:100%;
-font-size:16px;
-font-weight:bold;
-background:#000;
-color:white;
+padding:14px;
 border:none;
 border-radius:14px;
+background:#00d9c0;
+font-size:16px;
+font-weight:bold;
 cursor:pointer;
-z-index:0;
-overflow:hidden;
 }
 
-.rgb-btn::before{
-content:"";
-position:absolute;
-inset:-2px;
-background:linear-gradient(
-90deg,
-red,orange,yellow,green,cyan,blue,purple,red
-);
-background-size:400%;
-z-index:-1;
-filter:blur(6px);
-animation:rgb 4s linear infinite;
+.row{
+display:flex;
+justify-content:space-between;
+margin-top:12px;
 }
 
-.rgb-btn::after{
-content:"";
-position:absolute;
-inset:2px;
-background:#000;
-border-radius:12px;
-z-index:-1;
-}
-
-@keyframes rgb{
-0%{background-position:0%}
-100%{background-position:400%}
-}
-
-.link{
-margin-top:14px;
-color:#007bff;
+.small-btn{
+width:48%;
+padding:10px;
+border:none;
+border-radius:10px;
+background:#eee;
 cursor:pointer;
-font-size:14px;
+font-weight:bold;
 }
 
 .hidden{display:none}
-
-/* MAIN PAGE */
-#mainPage{
-min-height:100vh;
-background:#f2f2f2;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:24px;
-}
 </style>
 </head>
 
 <body>
 
-<!-- MAIN SITE -->
-<div id="mainPage">
-🚗 RC PDF PORTAL (Login ke baad ye page rahega)
-</div>
-
-<!-- LOGIN POPUP -->
 <div id="authBox">
 
 <!-- LOGIN -->
-<div class="authCard" id="loginBox">
+<div id="loginBox">
 <h3>Login</h3>
 <input id="loginMobile" placeholder="Mobile Number">
 <input id="loginPass" type="password" placeholder="Password">
 
-<button class="rgb-btn" onclick="login()">LOGIN</button>
+<button class="big-btn" onclick="login()">LOGIN</button>
 
-<button class="rgb-btn" onclick="showSignup()">SIGNUP</button>
-<button class="rgb-btn" onclick="showForget()">FORGET PASSWORD</button>
+<div class="row">
+<button class="small-btn" onclick="showSignup()">Signup</button>
+<button class="small-btn" onclick="showForget()">Forget</button>
+</div>
 
 <p id="loginMsg"></p>
 </div>
 
 <!-- SIGNUP -->
-<div class="authCard hidden" id="signupBox">
+<div id="signupBox" class="hidden">
 <h3>Signup</h3>
 <input id="sName" placeholder="Name">
 <input id="sMobile" placeholder="Mobile Number">
 <input id="sEmail" placeholder="Email">
 <input id="sPass" type="password" placeholder="Password">
 
-<button class="rgb-btn" onclick="signup()">CREATE ACCOUNT</button>
-<div class="link" onclick="backLogin()">Back</div>
+<button class="big-btn" onclick="signup()">CREATE</button>
+<button class="small-btn" onclick="backLogin()">Back</button>
 </div>
 
 <!-- FORGET -->
-<div class="authCard hidden" id="forgetBox">
-<h3>Reset Password</h3>
+<div id="forgetBox" class="hidden">
+<h3>Reset</h3>
+<input id="fEmail" placeholder="Email">
 
-<input id="fEmail" placeholder="Registered Email">
-<button class="rgb-btn" onclick="sendOTP()">SEND OTP</button>
-
-<input id="otpInput" class="hidden" placeholder="Enter OTP">
-<button id="verifyBtn" class="rgb-btn hidden" onclick="verifyOTP()">VERIFY OTP</button>
-
-<input id="newPass" class="hidden" placeholder="New Password">
-<button id="saveBtn" class="rgb-btn hidden" onclick="saveNewPass()">SAVE PASSWORD</button>
-
-<div class="link" onclick="backLogin()">Back</div>
+<button class="big-btn" onclick="sendOTP()">SEND OTP</button>
+<button class="small-btn" onclick="backLogin()">Back</button>
 </div>
 
 </div>
 
 <script>
-let users = JSON.parse(localStorage.getItem("users")||"{}");
-let otp="", resetEmail="";
+let users=JSON.parse(localStorage.getItem("users")||"{}");
 
-function save(){localStorage.setItem("users",JSON.stringify(users));}
+function save(){
+localStorage.setItem("users",JSON.stringify(users));
+}
 
 /* LOGIN */
 function login(){
 let m=loginMobile.value.trim();
 let p=loginPass.value.trim();
 
-if(!users[m]) return loginMsg.innerText="User not found";
+if(!users[m]) return loginMsg.innerText="Not registered";
 if(users[m].password!==p) return loginMsg.innerText="Wrong password";
 
-authBox.style.display="none";
+alert("Login successful!");
 }
 
 /* SIGNUP */
@@ -187,8 +135,9 @@ signupBox.classList.remove("hidden");
 
 function signup(){
 let m=sMobile.value.trim();
+if(!m||!sPass.value) return alert("Fill all");
 
-if(users[m]) return alert("Already registered");
+if(users[m]) return alert("Already exists");
 
 users[m]={
 name:sName.value,
@@ -196,7 +145,7 @@ email:sEmail.value,
 password:sPass.value
 };
 save();
-alert("Account created!");
+alert("Signup done");
 backLogin();
 }
 
@@ -207,42 +156,10 @@ forgetBox.classList.remove("hidden");
 }
 
 function sendOTP(){
-let email=fEmail.value.trim();
-let found=false;
-
-for(let k in users){
-if(users[k].email===email){
-found=true;
-resetEmail=email;
-}
-}
-if(!found) return alert("Email not registered");
-
-otp=Math.floor(100000+Math.random()*900000)+"";
-alert("OTP (demo): "+otp);
-
-otpInput.classList.remove("hidden");
-verifyBtn.classList.remove("hidden");
-}
-
-function verifyOTP(){
-if(otpInput.value!==otp) return alert("Wrong OTP");
-newPass.classList.remove("hidden");
-saveBtn.classList.remove("hidden");
-}
-
-function saveNewPass(){
-for(let k in users){
-if(users[k].email===resetEmail){
-users[k].password=newPass.value;
-}
-}
-save();
-alert("Password changed");
+alert("OTP system later (email already stored)");
 backLogin();
 }
 
-/* COMMON */
 function backLogin(){
 signupBox.classList.add("hidden");
 forgetBox.classList.add("hidden");
