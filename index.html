@@ -5,14 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RC PDF Portal</title>
 
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
 <style>
 body{
 margin:0;font-family:Arial;
 background:linear-gradient(270deg,red,blue,green,purple,cyan);
 background-size:600% 600%;
 animation:bg 12s infinite alternate;
-display:flex;flex-direction:column;align-items:center;justify-content:center;
-min-height:100vh;
+display:flex;align-items:center;justify-content:center;min-height:100vh
 }
 @keyframes bg{0%{background-position:0%}100%{background-position:100%}}
 
@@ -21,7 +22,7 @@ input,button{width:100%;padding:12px;margin-top:10px;border:none;border-radius:1
 button{background:#00ffd5;font-weight:bold;cursor:pointer}
 .hidden{display:none}
 
-#authBox{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center}
+#authBox{position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center}
 .authCard{background:white;color:black;padding:28px;width:320px;border-radius:16px;text-align:center}
 .authLinks{display:flex;justify-content:space-between;font-size:14px;color:#0a58ca;cursor:pointer}
 
@@ -35,7 +36,6 @@ display:none;text-align:center;font-weight:bold
 
 <body>
 
-<!-- AUTH -->
 <div id="authBox">
 <div class="authCard">
 
@@ -52,7 +52,6 @@ display:none;text-align:center;font-weight:bold
 <span onclick="showForget()">Forget</span>
 </div>
 
-<!-- FORGET FLOW -->
 <div id="forgetBox" class="hidden">
 <input id="forgetEmail" placeholder="Registered Email">
 <button onclick="sendOTP()">Send OTP</button>
@@ -68,13 +67,13 @@ display:none;text-align:center;font-weight:bold
 </div>
 </div>
 
-<!-- PROFILE -->
 <div id="userName">
 <span id="profileText"></span><br>
-<button onclick="logout()" style="background:red;color:white;padding:6px 12px;border:none;border-radius:8px">Logout</button>
+<button onclick="logout()" style="background:red;color:white;padding:6px 12px;border:none;border-radius:8px">
+Logout
+</button>
 </div>
 
-<!-- RC PAGE -->
 <div class="card">
 
 <div id="p1">
@@ -98,12 +97,14 @@ display:none;text-align:center;font-weight:bold
 </div>
 
 <script>
+emailjs.init("eRTexjroiPjM9miek");
+
 let users = JSON.parse(localStorage.getItem("users")||"{}");
 let otp="", resetMobile="";
 
 function save(){localStorage.setItem("users",JSON.stringify(users))}
 
-/* SWITCH SIGNUP */
+/* SIGNUP SWITCH */
 function switchSignup(){
 authTitle.innerText="Signup";
 emailField.classList.remove("hidden");
@@ -147,7 +148,7 @@ showUser();
 authBox.style.display="none";
 }
 
-/* FORGET OTP EMAIL STYLE */
+/* REAL EMAIL OTP */
 function showForget(){
 forgetBox.classList.remove("hidden");
 }
@@ -157,16 +158,19 @@ let email=forgetEmail.value.trim();
 let found=false;
 
 for(let m in users){
-if(users[m].email===email){
-found=true;
-resetMobile=m;
+ if(users[m].email===email){found=true;resetMobile=m;}
 }
-}
-
 if(!found) return alert("Email not registered");
 
-otp=Math.floor(100000+Math.random()*900000)+"";
-alert("OTP sent to email successfully");
+otp = Math.floor(100000+Math.random()*900000)+"";
+
+emailjs.send(
+"service_h04mrbw",
+"template_g84p4hi",
+{ email: email, passcode: otp }
+);
+
+alert("OTP sent to your email");
 
 otpInput.classList.remove("hidden");
 verifyBtn.classList.remove("hidden");
@@ -193,7 +197,7 @@ userName.style.display="none";
 authBox.style.display="flex";
 }
 
-/* RC NAV */
+/* RC FLOW */
 function goPay(){p1.classList.add("hidden");p2.classList.remove("hidden")}
 function submitPay(){p2.classList.add("hidden");p3.classList.remove("hidden")}
 </script>
