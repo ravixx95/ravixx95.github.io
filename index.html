@@ -73,31 +73,34 @@ border-radius:14px;
 margin:12px 0;
 }
 
-/* 🇮🇳 ASHOKA CHAKRA */
+/* 🇮🇳 RGB NEON ASHOKA CHAKRA */
 .chakra-box{
 display:flex;
 justify-content:center;
-margin-bottom:12px;
+margin-bottom:14px;
 }
 
 .chakra{
-width:90px;
-height:90px;
-border:5px solid #0a3d91;
+width:95px;
+height:95px;
 border-radius:50%;
 position:relative;
-animation:spin 3s linear infinite;
+background:
+conic-gradient(
+red, yellow, lime, cyan, blue, magenta, red
+);
+animation:spin 2.8s linear infinite;
+padding:5px;
+filter:drop-shadow(0 0 12px cyan);
 }
 
 .chakra::before{
 content:"";
 position:absolute;
-top:50%;
-left:50%;
-width:4px;
-height:40px;
-background:#0a3d91;
-transform:translate(-50%,-50%);
+inset:5px;
+border-radius:50%;
+background:#000c;
+border:4px solid #0a3d91;
 }
 
 .chakra::after{
@@ -105,10 +108,26 @@ content:"";
 position:absolute;
 top:50%;
 left:50%;
-width:40px;
+width:4px;
+height:42px;
+background:#0a3d91;
+transform:translate(-50%,-50%);
+box-shadow:
+0 0 8px #00f,
+0 0 12px cyan;
+}
+
+.chakra span{
+position:absolute;
+top:50%;
+left:50%;
+width:42px;
 height:4px;
 background:#0a3d91;
 transform:translate(-50%,-50%);
+box-shadow:
+0 0 8px #00f,
+0 0 12px cyan;
 }
 
 @keyframes spin{
@@ -140,19 +159,19 @@ border-radius:12px;
 
 <div class="card">
 
-<!-- PAGE 1 -->
 <div id="p1">
 <h3>🚗 Enter Vehicle Number 🏍️</h3>
 
 <div class="chakra-box">
-  <div class="chakra"></div>
+  <div class="chakra">
+    <span></span>
+  </div>
 </div>
 
 <input id="vehicle" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatVehicle(this)">
 <button onclick="goPay()">Continue</button>
 </div>
 
-<!-- PAGE 2 -->
 <div id="p2" class="hidden">
 <h3>Pay ₹120</h3>
 
@@ -164,7 +183,6 @@ border-radius:12px;
 </a>
 
 <input id="mobile" placeholder="Mobile Number">
-
 <input type="file" id="proof" accept="image/*">
 
 <button onclick="submitPay()">Submit</button>
@@ -174,7 +192,6 @@ border-radius:12px;
 </p>
 </div>
 
-<!-- PAGE 3 -->
 <div id="p3" class="hidden">
 <h3>✅ Payment Successful</h3>
 <p>🎉Aapko jald hi aapka original RC ka PDF mil jayega🎊</p>
@@ -187,53 +204,6 @@ border-radius:12px;
 <p>Mishra SERVICE ♥️❣️</p>
 <p>MAKE IN INDIA</p>
 <p>MADE WITH ♥️</p>
-</div>
-
-<style>
-.footer-links{
- text-align:center;
- padding:15px;
- font-size:15px;
-}
-.footer-links button{
- background:none;
- border:none;
- color:#0a58ca;
- text-decoration:underline;
- cursor:pointer;
- margin:6px;
- font-size:15px;
-}
-.footer-content{
- display:none;
- max-width:700px;
- margin:12px auto;
- font-size:14px;
- line-height:1.6;
-}
-</style>
-
-<div class="footer-links">
-  <button onclick="toggle('about')">About</button>
-  <button onclick="toggle('privacy')">Privacy Policy</button>
-  <button onclick="toggle('contact')">Contact</button>
-</div>
-
-<div id="about" class="footer-content">
-<p>rcpdf.in is an online platform that provides vehicle-related information and digital tools, including RC details, insurance guidance, and document services.</p>
-<p>Our goal is to make vehicle information easy, fast, and accessible for everyone.</p>
-</div>
-
-<div id="privacy" class="footer-content">
-<p>We respect your privacy and do not collect personal information unless you choose to provide it.</p>
-<p>Third-party services such as Google AdSense may use cookies to display relevant advertisements.</p>
-<p>By using this website, you agree to our privacy policy.</p>
-</div>
-
-<div id="contact" class="footer-content">
-<p>For any vehicle-related queries or support, please contact us:</p>
-<p><strong>Email:</strong> br09insurance@gmail.com</p>
-<p><strong>Website:</strong> https://rcpdf.in</p>
 </div>
 
 <script>
@@ -310,12 +280,6 @@ proof.value="";
 .catch(()=>{
 alert("Telegram send failed");
 });
-}
-
-function toggle(id){
- document.querySelectorAll('.footer-content').forEach(d=>d.style.display='none');
- let el = document.getElementById(id);
- el.style.display = (el.style.display === 'block') ? 'none' : 'block';
 }
 </script>
 
