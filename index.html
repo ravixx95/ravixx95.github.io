@@ -34,20 +34,21 @@ max-width:420px;
 text-align:center;
 }
 
-/* VEHICLE BOX STYLE */
+/* IND VEHICLE BOX */
 .vehicle-box{
 display:flex;
+align-items:center;
 border:2px solid #000;
 border-radius:14px;
 overflow:hidden;
 background:white;
-margin:15px 0;
+margin:12px 0;
 }
 
 .ind-part{
 background:#0a2c6f;
 color:white;
-padding:12px;
+padding:12px 14px;
 display:flex;
 flex-direction:column;
 align-items:center;
@@ -57,12 +58,12 @@ font-weight:bold;
 .ind-circle{
 width:20px;
 height:20px;
-border:2px solid #ccc;
+border:2px solid #ddd;
 border-radius:50%;
 margin-bottom:4px;
 }
 
-.vehicle-box input{
+#vehicle{
 border:none;
 outline:none;
 padding:14px;
@@ -71,15 +72,25 @@ flex:1;
 width:100%;
 }
 
-/* COMMON */
+/* COMMON INPUTS */
+input{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+font-size:16px;
+}
+
 button{
 width:100%;
 padding:12px;
+margin-top:10px;
 border:none;
 border-radius:10px;
 background:#00ffd5;
-font-size:16px;
 font-weight:bold;
+font-size:16px;
 cursor:pointer;
 }
 
@@ -91,6 +102,7 @@ cursor:pointer;
 
 <div class="card">
 
+<!-- PAGE 1 -->
 <div id="p1">
 <h3>🚗 Enter Vehicle Number</h3>
 
@@ -105,6 +117,7 @@ IND
 <button onclick="goPay()">Continue</button>
 </div>
 
+<!-- PAGE 2 -->
 <div id="p2" class="hidden">
 <h3>Pay ₹120</h3>
 <p>UPI: bestinsurance@upi</p>
@@ -115,9 +128,10 @@ IND
 <button onclick="submitPay()">Submit</button>
 </div>
 
+<!-- PAGE 3 -->
 <div id="p3" class="hidden">
 <h3>✅ Payment Successful</h3>
-<p>PDF will be sent soon</p>
+<p>Your RC PDF will be delivered shortly</p>
 </div>
 
 </div>
