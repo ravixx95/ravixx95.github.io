@@ -183,7 +183,7 @@ font-size:13px;
     <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg">
     IND
   </div>
-  <input id="vehicle" placeholder="Enter Car No" maxlength="13" oninput="formatVehicle(this)">
+  <input id="vehicle" placeholder="Enter vehicle No" maxlength="10" oninput="formatVehicle(this)">
 </div>
 
 <button onclick="goPay()">Continue</button>
@@ -196,6 +196,10 @@ font-size:13px;
 <img width="220" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=bestinsurance@upi&am=120">
 
 <p>UPI ID: bestinsurance@upi</p>
+
+<a href="upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
+<button>Pay with UPI App</button>
+</a>
 
 <input id="mobile" placeholder="Mobile Number">
 <input type="file" id="proof" accept="image/*">
@@ -211,7 +215,8 @@ font-size:13px;
 <!-- PAGE 3 -->
 <div id="p3" class="hidden">
 <h3>✅ Payment Successful</h3>
-<p>RC PDF will be sent soon</p>
+<p>RC PDF will be sent soon
+आपको आपकी RC जल्द से जल्द भेज दी जाएगी </p>
 </div>
 
 </div>
