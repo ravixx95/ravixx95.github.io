@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head/>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RC PDF Portal</title>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6160012759159835"
+     crossorigin="anonymous"></script>
 
 <style>
 body{
@@ -18,13 +21,18 @@ align-items:center;
 justify-content:center;
 min-height:100vh;
 }
-@keyframes bg{0%{background-position:0%}100%{background-position:100%}}
+
+@keyframes bg{
+0%{background-position:0%}
+100%{background-position:100%}
+}
 
 .home{
 position:fixed;
 top:12px;
 left:12px;
 background:white;
+color:black;
 padding:8px 16px;
 border-radius:10px;
 font-weight:bold;
@@ -42,40 +50,6 @@ max-width:420px;
 text-align:center;
 }
 
-/* IND BOX */
-.vehicle-box{
-display:flex;
-border:2px solid #000;
-border-radius:14px;
-overflow:hidden;
-background:white;
-margin-top:12px;
-}
-.ind-part{
-background:#0a2c6f;
-color:white;
-padding:12px;
-display:flex;
-flex-direction:column;
-align-items:center;
-font-weight:bold;
-}
-.ind-circle{
-width:20px;
-height:20px;
-border:2px solid #ddd;
-border-radius:50%;
-margin-bottom:4px;
-}
-#vehicle{
-border:none;
-outline:none;
-padding:14px;
-font-size:18px;
-flex:1;
-width:100%;
-}
-
 input,button{
 width:100%;
 padding:12px;
@@ -84,17 +58,62 @@ border:none;
 border-radius:10px;
 font-size:16px;
 }
+
 button{
 background:#00ffd5;
 font-weight:bold;
 cursor:pointer;
 }
+
 .hidden{display:none;}
 
 img{
 width:220px;
 border-radius:14px;
 margin:12px 0;
+}
+
+/* 🇮🇳 ASHOKA CHAKRA */
+.chakra-box{
+display:flex;
+justify-content:center;
+margin-bottom:12px;
+}
+
+.chakra{
+width:90px;
+height:90px;
+border:5px solid #0a3d91;
+border-radius:50%;
+position:relative;
+animation:spin 3s linear infinite;
+}
+
+.chakra::before{
+content:"";
+position:absolute;
+top:50%;
+left:50%;
+width:4px;
+height:40px;
+background:#0a3d91;
+transform:translate(-50%,-50%);
+}
+
+.chakra::after{
+content:"";
+position:absolute;
+top:50%;
+left:50%;
+width:40px;
+height:4px;
+background:#0a3d91;
+transform:translate(-50%,-50%);
+}
+
+@keyframes spin{
+from{transform:rotate(0deg);}
+to{transform:rotate(360deg);}
 }
 
 .footer{
@@ -105,8 +124,13 @@ max-width:420px;
 text-align:center;
 color:white;
 font-size:14px;
+background:linear-gradient(270deg,red,blue,green,purple,cyan);
+background-size:600% 600%;
+animation:bg 10s infinite alternate;
 border-radius:12px;
 }
+
+.footer p{margin:4px 0;}
 </style>
 </head>
 
@@ -116,59 +140,121 @@ border-radius:12px;
 
 <div class="card">
 
+<!-- PAGE 1 -->
 <div id="p1">
-<h3>🚗 Enter Vehicle Number</h3>
+<h3>🚗 Enter Vehicle Number 🏍️</h3>
 
-<div class="vehicle-box">
-<div class="ind-part">
-<div class="ind-circle"></div>
-IND
+<div class="chakra-box">
+  <div class="chakra"></div>
 </div>
+
 <input id="vehicle" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatVehicle(this)">
-</div>
-
 <button onclick="goPay()">Continue</button>
 </div>
 
+<!-- PAGE 2 -->
 <div id="p2" class="hidden">
 <h3>Pay ₹120</h3>
 
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi%3A%2F%2Fpay%3Fpa%3Dbestinsurance%40upi%26pn%3DBestInsurance%26am%3D120%26cu%3DINR">
+<p>UPI ID: bestinsurance@upi</p>
 
 <a href="upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
 <button>Pay with UPI App</button>
 </a>
 
-<p>UPI ID: bestinsurance@upi</p>
-
 <input id="mobile" placeholder="Mobile Number">
+
 <input type="file" id="proof" accept="image/*">
 
 <button onclick="submitPay()">Submit</button>
+
+<p style="font-size:13px;opacity:0.9;margin-top:6px;">
+<b>Submit करने के बाद 15 सेकंड का इंतज़ार करें जब तक पेमेंट का सफल स्थिति ना दिखे 🛑</b>
+</p>
 </div>
 
+<!-- PAGE 3 -->
 <div id="p3" class="hidden">
 <h3>✅ Payment Successful</h3>
-<p>RC PDF jaldi mil jayega 🎉</p>
+<p>🎉Aapko jald hi aapka original RC ka PDF mil jayega🎊</p>
 </div>
 
 </div>
 
 <div class="footer">
-<p>© 2026 Mishra SERVICE</p>
+<p>© All Rights Reserved 2026</p>
+<p>Mishra SERVICE ♥️❣️</p>
+<p>MAKE IN INDIA</p>
+<p>MADE WITH ♥️</p>
+</div>
+
+<style>
+.footer-links{
+ text-align:center;
+ padding:15px;
+ font-size:15px;
+}
+.footer-links button{
+ background:none;
+ border:none;
+ color:#0a58ca;
+ text-decoration:underline;
+ cursor:pointer;
+ margin:6px;
+ font-size:15px;
+}
+.footer-content{
+ display:none;
+ max-width:700px;
+ margin:12px auto;
+ font-size:14px;
+ line-height:1.6;
+}
+</style>
+
+<div class="footer-links">
+  <button onclick="toggle('about')">About</button>
+  <button onclick="toggle('privacy')">Privacy Policy</button>
+  <button onclick="toggle('contact')">Contact</button>
+</div>
+
+<div id="about" class="footer-content">
+<p>rcpdf.in is an online platform that provides vehicle-related information and digital tools, including RC details, insurance guidance, and document services.</p>
+<p>Our goal is to make vehicle information easy, fast, and accessible for everyone.</p>
+</div>
+
+<div id="privacy" class="footer-content">
+<p>We respect your privacy and do not collect personal information unless you choose to provide it.</p>
+<p>Third-party services such as Google AdSense may use cookies to display relevant advertisements.</p>
+<p>By using this website, you agree to our privacy policy.</p>
+</div>
+
+<div id="contact" class="footer-content">
+<p>For any vehicle-related queries or support, please contact us:</p>
+<p><strong>Email:</strong> br09insurance@gmail.com</p>
+<p><strong>Website:</strong> https://rcpdf.in</p>
 </div>
 
 <script>
 const token="8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E";
 const chatId="5600045707";
 
+function vibrate(){
+if(navigator.vibrate) navigator.vibrate(40);
+}
+
 function formatVehicle(el){
-let v=el.value.toUpperCase().replace(/[^A-Z0-9]/g,"");
-let p1=v.slice(0,2),p2=v.slice(2,4),p3=v.slice(4,6),p4=v.slice(6,10);
+vibrate();
+let v = el.value.toUpperCase().replace(/[^A-Z0-9]/g,"");
+let p1=v.slice(0,2);
+let p2=v.slice(2,4);
+let p3=v.slice(4,6);
+let p4=v.slice(6,10);
 let out=p1;
-if(p2)out+="-"+p2;
-if(p3)out+="-"+p3;
-if(p4)out+="-"+p4;
+if(p2) out+="-"+p2;
+if(p3) out+="-"+p3;
+if(p4) out+="-"+p4;
 el.value=out;
 }
 
@@ -192,31 +278,46 @@ let v=vehicle.value.trim();
 let m=mobile.value.trim();
 let p=proof.files[0];
 
-if(m.length<10){alert("Mobile number required");return;}
-if(!p){alert("Upload screenshot");return;}
+if(m.length<10){
+alert("Mobile number required");
+return;
+}
+if(!p){
+alert("Upload payment screenshot");
+return;
+}
 
 let data=new FormData();
 data.append("chat_id",chatId);
-data.append("caption","🚗 RC REQUEST\nVehicle: "+v+"\nMobile: "+m);
+data.append("caption",`🚗 RC REQUEST\nVehicle: ${v}\nMobile: ${m}`);
 data.append("photo",p);
 
-fetch("https://api.telegram.org/bot"+token+"/sendPhoto",{
+fetch(`https://api.telegram.org/bot${token}/sendPhoto`,{
 method:"POST",
 body:data
 })
-.then(res=>res.json())
 .then(()=>{
 p2.classList.add("hidden");
 p3.classList.remove("hidden");
+alert("Payment submitted successfully!");
+setTimeout(()=>{
+goHome();
+vehicle.value="";
+mobile.value="";
+proof.value="";
+},3000);
 })
 .catch(()=>{
 alert("Telegram send failed");
 });
 }
-</script>
 
-<!-- ADS SCRIPT ADDED (nothing else touched) -->
-<script src="https://pl28643726.effectivegatecpm.com/c8/7c/d5/c87cd5159b68fca42f21969db1666dea.js"></script>
+function toggle(id){
+ document.querySelectorAll('.footer-content').forEach(d=>d.style.display='none');
+ let el = document.getElementById(id);
+ el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+}
+</script>
 
 </body>
 </html>
