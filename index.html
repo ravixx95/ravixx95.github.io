@@ -24,6 +24,19 @@ min-height:100vh;
 100%{background-position:100%}
 }
 
+.home{
+position:fixed;
+top:12px;
+left:12px;
+background:white;
+color:black;
+padding:8px 16px;
+border-radius:10px;
+font-weight:bold;
+cursor:pointer;
+z-index:999;
+}
+
 .card{
 background:#000c;
 color:white;
@@ -34,7 +47,7 @@ max-width:420px;
 text-align:center;
 }
 
-/* IND VEHICLE BOX */
+/* IND PLATE */
 .vehicle-box{
 display:flex;
 align-items:center;
@@ -42,7 +55,7 @@ border:2px solid #000;
 border-radius:14px;
 overflow:hidden;
 background:white;
-margin:12px 0;
+margin-top:12px;
 }
 
 .ind-part{
@@ -72,8 +85,7 @@ flex:1;
 width:100%;
 }
 
-/* COMMON INPUTS */
-input{
+input,button{
 width:100%;
 padding:12px;
 margin-top:10px;
@@ -83,28 +95,46 @@ font-size:16px;
 }
 
 button{
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
-border-radius:10px;
 background:#00ffd5;
 font-weight:bold;
-font-size:16px;
 cursor:pointer;
 }
 
 .hidden{display:none;}
+
+img{
+width:220px;
+border-radius:14px;
+margin:12px 0;
+}
+
+.footer{
+margin-top:20px;
+padding:12px;
+width:92%;
+max-width:420px;
+text-align:center;
+color:white;
+font-size:14px;
+background:linear-gradient(270deg,red,blue,green,purple,cyan);
+background-size:600% 600%;
+animation:bg 10s infinite alternate;
+border-radius:12px;
+}
+
+.footer p{margin:4px 0;}
 </style>
 </head>
 
 <body>
 
+<div class="home" onclick="goHome()">🏠 Home</div>
+
 <div class="card">
 
 <!-- PAGE 1 -->
 <div id="p1">
-<h3>🚗 Enter Vehicle Number</h3>
+<h3>🚗 Enter Vehicle Number 🏍️</h3>
 
 <div class="vehicle-box">
 <div class="ind-part">
@@ -120,20 +150,38 @@ IND
 <!-- PAGE 2 -->
 <div id="p2" class="hidden">
 <h3>Pay ₹120</h3>
-<p>UPI: bestinsurance@upi</p>
+
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi%3A%2F%2Fpay%3Fpa%3Dbestinsurance%40upi%26pn%3DBestInsurance%26am%3D120%26cu%3DINR">
+
+<p>UPI ID: bestinsurance@upi</p>
+
+<a href="upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
+<button>Pay with UPI App</button>
+</a>
 
 <input id="mobile" placeholder="Mobile Number">
-<input type="file" id="proof">
+<input type="file" id="proof" accept="image/*">
 
 <button onclick="submitPay()">Submit</button>
+
+<p style="font-size:13px;margin-top:6px;">
+<b>Submit ke baad 15 sec wait karein</b>
+</p>
 </div>
 
 <!-- PAGE 3 -->
 <div id="p3" class="hidden">
 <h3>✅ Payment Successful</h3>
-<p>Your RC PDF will be delivered shortly</p>
+<p>Aapko jald RC PDF mil jayega 🎉</p>
 </div>
 
+</div>
+
+<div class="footer">
+<p>© All Rights Reserved 2026</p>
+<p>Mishra SERVICE ♥️</p>
+<p>MAKE IN INDIA</p>
+<p>MADE WITH ♥️</p>
 </div>
 
 <script>
@@ -151,6 +199,12 @@ if(p3) out+="-"+p3;
 if(p4) out+="-"+p4;
 
 el.value=out;
+}
+
+function goHome(){
+p2.classList.add("hidden");
+p3.classList.add("hidden");
+p1.classList.remove("hidden");
 }
 
 function goPay(){
