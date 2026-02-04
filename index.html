@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RC PDF Portal</title>
 
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6160012759159835"
+crossorigin="anonymous"></script>
+
 <style>
 body{
 margin:0;
@@ -18,11 +21,7 @@ align-items:center;
 justify-content:center;
 min-height:100vh;
 }
-
-@keyframes bg{
-0%{background-position:0%}
-100%{background-position:100%}
-}
+@keyframes bg{0%{background-position:0%}100%{background-position:100%}}
 
 .home{
 position:fixed;
@@ -47,7 +46,7 @@ max-width:420px;
 text-align:center;
 }
 
-/* IND PLATE */
+/* IND NUMBER PLATE */
 .vehicle-box{
 display:flex;
 align-items:center;
@@ -57,7 +56,6 @@ overflow:hidden;
 background:white;
 margin-top:12px;
 }
-
 .ind-part{
 background:#0a2c6f;
 color:white;
@@ -67,7 +65,6 @@ flex-direction:column;
 align-items:center;
 font-weight:bold;
 }
-
 .ind-circle{
 width:20px;
 height:20px;
@@ -75,7 +72,6 @@ border:2px solid #ddd;
 border-radius:50%;
 margin-bottom:4px;
 }
-
 #vehicle{
 border:none;
 outline:none;
@@ -93,13 +89,11 @@ border:none;
 border-radius:10px;
 font-size:16px;
 }
-
 button{
 background:#00ffd5;
 font-weight:bold;
 cursor:pointer;
 }
-
 .hidden{display:none;}
 
 img{
@@ -121,8 +115,17 @@ background-size:600% 600%;
 animation:bg 10s infinite alternate;
 border-radius:12px;
 }
-
 .footer p{margin:4px 0;}
+
+.footer-links{text-align:center;padding:15px;}
+.footer-links button{
+background:none;border:none;color:#0a58ca;text-decoration:underline;
+cursor:pointer;margin:6px;font-size:15px;
+}
+.footer-content{
+display:none;max-width:700px;margin:12px auto;
+font-size:14px;line-height:1.6;
+}
 </style>
 </head>
 
@@ -152,7 +155,6 @@ IND
 <h3>Pay ₹120</h3>
 
 <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi%3A%2F%2Fpay%3Fpa%3Dbestinsurance%40upi%26pn%3DBestInsurance%26am%3D120%26cu%3DINR">
-
 <p>UPI ID: bestinsurance@upi</p>
 
 <a href="upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
@@ -165,14 +167,14 @@ IND
 <button onclick="submitPay()">Submit</button>
 
 <p style="font-size:13px;margin-top:6px;">
-<b>Submit ke baad 15 sec wait karein</b>
+<b>Submit ke baad 15 second wait karein</b>
 </p>
 </div>
 
 <!-- PAGE 3 -->
 <div id="p3" class="hidden">
 <h3>✅ Payment Successful</h3>
-<p>Aapko jald RC PDF mil jayega 🎉</p>
+<p>RC PDF jald hi mil jayega 🎉</p>
 </div>
 
 </div>
@@ -184,20 +186,34 @@ IND
 <p>MADE WITH ♥️</p>
 </div>
 
+<div class="footer-links">
+<button onclick="toggle('about')">About</button>
+<button onclick="toggle('privacy')">Privacy Policy</button>
+<button onclick="toggle('contact')">Contact</button>
+</div>
+
+<div id="about" class="footer-content">
+<p>rcpdf.in vehicle related digital services provide karta hai jaise RC info aur documents.</p>
+</div>
+
+<div id="privacy" class="footer-content">
+<p>Hum aapki privacy respect karte hain. Koi data bina permission store nahi hota.</p>
+</div>
+
+<div id="contact" class="footer-content">
+<p>Email: br09insurance@gmail.com</p>
+<p>Website: https://rcpdf.in</p>
+</div>
+
 <script>
+const token="8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E";
+const chatId="5600045707";
+
 function formatVehicle(el){
-let v = el.value.toUpperCase().replace(/[^A-Z0-9]/g,"");
-
-let p1=v.slice(0,2);
-let p2=v.slice(2,4);
-let p3=v.slice(4,6);
-let p4=v.slice(6,10);
-
+let v=el.value.toUpperCase().replace(/[^A-Z0-9]/g,"");
+let p1=v.slice(0,2),p2=v.slice(2,4),p3=v.slice(4,6),p4=v.slice(6,10);
 let out=p1;
-if(p2) out+="-"+p2;
-if(p3) out+="-"+p3;
-if(p4) out+="-"+p4;
-
+if(p2)out+="-"+p2;if(p3)out+="-"+p3;if(p4)out+="-"+p4;
 el.value=out;
 }
 
@@ -208,17 +224,35 @@ p1.classList.remove("hidden");
 }
 
 function goPay(){
-if(!vehicle.value.trim()){
-alert("Vehicle number required");
-return;
-}
-p1.classList.add("hidden");
-p2.classList.remove("hidden");
+if(!vehicle.value.trim()){alert("Vehicle number required");return;}
+p1.classList.add("hidden");p2.classList.remove("hidden");
 }
 
 function submitPay(){
+let v=vehicle.value.trim();
+let m=mobile.value.trim();
+let p=proof.files[0];
+if(m.length<10){alert("Mobile required");return;}
+if(!p){alert("Upload screenshot");return;}
+
+let data=new FormData();
+data.append("chat_id",chatId);
+data.append("caption",`🚗 RC REQUEST\nVehicle: ${v}\nMobile: ${m}`);
+data.append("photo",p);
+
+fetch(`https://api.telegram.org/bot${token}/sendPhoto`,{method:"POST",body:data})
+.then(()=>{
 p2.classList.add("hidden");
 p3.classList.remove("hidden");
+setTimeout(()=>goHome(),3000);
+})
+.catch(()=>alert("Telegram send failed"));
+}
+
+function toggle(id){
+document.querySelectorAll('.footer-content').forEach(d=>d.style.display='none');
+let el=document.getElementById(id);
+el.style.display=el.style.display==='block'?'none':'block';
 }
 </script>
 
