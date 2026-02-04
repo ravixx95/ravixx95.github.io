@@ -5,9 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RC PDF Portal</title>
 
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6160012759159835"
-crossorigin="anonymous"></script>
-
 <style>
 body{
 margin:0;
@@ -28,7 +25,6 @@ position:fixed;
 top:12px;
 left:12px;
 background:white;
-color:black;
 padding:8px 16px;
 border-radius:10px;
 font-weight:bold;
@@ -46,10 +42,9 @@ max-width:420px;
 text-align:center;
 }
 
-/* IND NUMBER PLATE */
+/* IND BOX */
 .vehicle-box{
 display:flex;
-align-items:center;
 border:2px solid #000;
 border-radius:14px;
 overflow:hidden;
@@ -59,7 +54,7 @@ margin-top:12px;
 .ind-part{
 background:#0a2c6f;
 color:white;
-padding:12px 14px;
+padding:12px;
 display:flex;
 flex-direction:column;
 align-items:center;
@@ -110,21 +105,7 @@ max-width:420px;
 text-align:center;
 color:white;
 font-size:14px;
-background:linear-gradient(270deg,red,blue,green,purple,cyan);
-background-size:600% 600%;
-animation:bg 10s infinite alternate;
 border-radius:12px;
-}
-.footer p{margin:4px 0;}
-
-.footer-links{text-align:center;padding:15px;}
-.footer-links button{
-background:none;border:none;color:#0a58ca;text-decoration:underline;
-cursor:pointer;margin:6px;font-size:15px;
-}
-.footer-content{
-display:none;max-width:700px;margin:12px auto;
-font-size:14px;line-height:1.6;
 }
 </style>
 </head>
@@ -137,7 +118,7 @@ font-size:14px;line-height:1.6;
 
 <!-- PAGE 1 -->
 <div id="p1">
-<h3>🚗 Enter Vehicle Number 🏍️</h3>
+<h3>🚗 Enter Vehicle Number</h3>
 
 <div class="vehicle-box">
 <div class="ind-part">
@@ -154,55 +135,26 @@ IND
 <div id="p2" class="hidden">
 <h3>Pay ₹120</h3>
 
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi%3A%2F%2Fpay%3Fpa%3Dbestinsurance%40upi%26pn%3DBestInsurance%26am%3D120%26cu%3DINR">
-<p>UPI ID: bestinsurance@upi</p>
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
 
-<a href="upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
-<button>Pay with UPI App</button>
-</a>
+<p>UPI ID: bestinsurance@upi</p>
 
 <input id="mobile" placeholder="Mobile Number">
 <input type="file" id="proof" accept="image/*">
 
 <button onclick="submitPay()">Submit</button>
-
-<p style="font-size:13px;margin-top:6px;">
-<b>Submit ke baad 15 second wait karein</b>
-</p>
 </div>
 
 <!-- PAGE 3 -->
 <div id="p3" class="hidden">
 <h3>✅ Payment Successful</h3>
-<p>RC PDF jald hi mil jayega 🎉</p>
+<p>RC PDF jaldi mil jayega 🎉</p>
 </div>
 
 </div>
 
 <div class="footer">
-<p>© All Rights Reserved 2026</p>
-<p>Mishra SERVICE ♥️</p>
-<p>MAKE IN INDIA</p>
-<p>MADE WITH ♥️</p>
-</div>
-
-<div class="footer-links">
-<button onclick="toggle('about')">About</button>
-<button onclick="toggle('privacy')">Privacy Policy</button>
-<button onclick="toggle('contact')">Contact</button>
-</div>
-
-<div id="about" class="footer-content">
-<p>rcpdf.in vehicle related digital services provide karta hai jaise RC info aur documents.</p>
-</div>
-
-<div id="privacy" class="footer-content">
-<p>Hum aapki privacy respect karte hain. Koi data bina permission store nahi hota.</p>
-</div>
-
-<div id="contact" class="footer-content">
-<p>Email: br09insurance@gmail.com</p>
-<p>Website: https://rcpdf.in</p>
+<p>© 2026 Mishra SERVICE</p>
 </div>
 
 <script>
@@ -213,7 +165,9 @@ function formatVehicle(el){
 let v=el.value.toUpperCase().replace(/[^A-Z0-9]/g,"");
 let p1=v.slice(0,2),p2=v.slice(2,4),p3=v.slice(4,6),p4=v.slice(6,10);
 let out=p1;
-if(p2)out+="-"+p2;if(p3)out+="-"+p3;if(p4)out+="-"+p4;
+if(p2)out+="-"+p2;
+if(p3)out+="-"+p3;
+if(p4)out+="-"+p4;
 el.value=out;
 }
 
@@ -224,35 +178,39 @@ p1.classList.remove("hidden");
 }
 
 function goPay(){
-if(!vehicle.value.trim()){alert("Vehicle number required");return;}
-p1.classList.add("hidden");p2.classList.remove("hidden");
+if(!vehicle.value.trim()){
+alert("Vehicle number required");
+return;
+}
+p1.classList.add("hidden");
+p2.classList.remove("hidden");
 }
 
 function submitPay(){
 let v=vehicle.value.trim();
 let m=mobile.value.trim();
 let p=proof.files[0];
-if(m.length<10){alert("Mobile required");return;}
+
+if(m.length<10){alert("Mobile number required");return;}
 if(!p){alert("Upload screenshot");return;}
 
 let data=new FormData();
 data.append("chat_id",chatId);
-data.append("caption",`🚗 RC REQUEST\nVehicle: ${v}\nMobile: ${m}`);
+data.append("caption","🚗 RC REQUEST\nVehicle: "+v+"\nMobile: "+m);
 data.append("photo",p);
 
-fetch(`https://api.telegram.org/bot${token}/sendPhoto`,{method:"POST",body:data})
+fetch("https://api.telegram.org/bot"+token+"/sendPhoto",{
+method:"POST",
+body:data
+})
+.then(res=>res.json())
 .then(()=>{
 p2.classList.add("hidden");
 p3.classList.remove("hidden");
-setTimeout(()=>goHome(),3000);
 })
-.catch(()=>alert("Telegram send failed"));
-}
-
-function toggle(id){
-document.querySelectorAll('.footer-content').forEach(d=>d.style.display='none');
-let el=document.getElementById(id);
-el.style.display=el.style.display==='block'?'none':'block';
+.catch(()=>{
+alert("Telegram send failed");
+});
 }
 </script>
 
