@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RC PDF Portal</title>
 
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6160012759159835"
+crossorigin="anonymous"></script>
+
 <style>
 body{
 margin:0;
@@ -34,7 +37,7 @@ padding:8px 16px;
 border-radius:10px;
 font-weight:bold;
 cursor:pointer;
-z-index:99;
+z-index:999;
 }
 
 .card{
@@ -47,9 +50,7 @@ max-width:420px;
 text-align:center;
 }
 
-.hidden{display:none;}
-
-button,input{
+input,button{
 width:100%;
 padding:12px;
 margin-top:10px;
@@ -64,71 +65,51 @@ font-weight:bold;
 cursor:pointer;
 }
 
-/* IND input */
-.ind-box{
-display:flex;
-align-items:center;
-background:#fff;
-border-radius:12px;
-border:2px solid #000;
-overflow:hidden;
-margin-top:10px;
+.hidden{display:none;}
+
+img{
+width:220px;
+border-radius:14px;
+margin:12px 0;
 }
 
-.ind-tag{
-background:#0a3d91;
-color:#fff;
-padding:10px 14px;
+/* PREMIUM WHATSAPP BUTTON */
+.wa-premium{
+position:fixed;
+right:18px;
+bottom:20px;
 display:flex;
-flex-direction:column;
 align-items:center;
+gap:10px;
+background:linear-gradient(135deg,#25D366,#1ebe5d);
+color:white;
+padding:12px 18px;
+border-radius:60px;
+font-size:15px;
 font-weight:bold;
-font-size:14px;
+text-decoration:none;
+box-shadow:0 0 15px #25D366,0 8px 20px rgba(0,0,0,0.4);
+animation:bounce 2s infinite;
+z-index:9999;
 }
 
-.ind-tag img{
-width:26px;
-margin-bottom:4px;
-animation:spin 2s linear infinite;
+.wa-premium img{
+width:34px;
+height:34px;
+margin:0;
 }
 
-.ind-box input{
-border:none;
-padding:14px;
-font-size:16px;
-outline:none;
-flex:1;
+@keyframes bounce{
+0%,20%,50%,80%,100%{transform:translateY(0);}
+40%{transform:translateY(-12px);}
+60%{transform:translateY(-6px);}
 }
 
-@keyframes spin{
-from{transform:rotate(0deg);}
-to{transform:rotate(360deg);}
+.wa-premium:hover{
+transform:scale(1.05);
+box-shadow:0 0 25px #25D366;
 }
 
-/* Loader */
-.loader{
-width:100%;
-background:#222;
-border-radius:8px;
-overflow:hidden;
-margin-top:12px;
-display:none;
-}
-
-.progress{
-height:10px;
-width:0%;
-background:#00ffd5;
-transition:width 0.3s;
-}
-
-.loading-text{
-margin-top:6px;
-font-size:14px;
-display:none;
-}
-
-/* Footer */
 .footer{
 margin-top:20px;
 padding:12px;
@@ -142,177 +123,30 @@ background-size:600% 600%;
 animation:bg 10s infinite alternate;
 border-radius:12px;
 }
-
-.footer-links{
-display:flex;
-justify-content:flex-start;
-gap:25px;
-margin-top:8px;
-font-size:14px;
-}
-
-.footer-links span{
-cursor:pointer;
-text-decoration:underline;
-}
-
-.popup{
-display:none;
-background:#000c;
-color:white;
-padding:12px;
-margin-top:10px;
-border-radius:10px;
-font-size:13px;
-}
 </style>
 </head>
 
 <body>
 
-<div class="home" onclick="goHome()">🏠 Home</div>
+<div class="home">🏠 Home</div>
 
 <div class="card">
-
-<!-- PAGE 1 -->
-<div id="p1">
-<h3> 🏍️Enter Vehicle Number🚘</h3>
-
-<div class="ind-box">
-  <div class="ind-tag">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg">
-    IND
-  </div>
-  <input id="vehicle" placeholder="Enter vehicle No" maxlength="13" oninput="formatVehicle(this)">
-</div>
-
-<button onclick="goPay()">Continue</button>
-</div>
-
-<!-- PAGE 2 -->
-<div id="p2" class="hidden">
-<h3>Pay ₹120</h3>
-
-<img width="220" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=bestinsurance@upi&am=120">
-
-<p>UPI ID: bestinsurance@upi</p>
-
-<a href="upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
-<button>Pay with UPI App</button>
-</a>
-
-<input id="mobile" placeholder="Mobile Number">
-<input type="file" id="proof" accept="image/*">
-
-<div class="loader" id="loader">
-  <div class="progress" id="progress"></div>
-</div>
-<div class="loading-text" id="loadingText">अपलोडिंग हो रही हैँ इंटरनेट स्पीड काम हैँ कृपया रिफ्रेश ना करें </div>
-
-<button onclick="submitPay()">Submit</button>
-</div>
-
-<!-- PAGE 3 -->
-<div id="p3" class="hidden">
-<h3>✅ Payment Successful</h3>
-<p>RC PDF will be sent soon
-आपको आपकी RC जल्द से जल्द भेज दी जाएगी🎉🎊 </p>
-</div>
-
+<h3>🚗 Enter Vehicle Number 🏍️</h3>
+<input placeholder="BR-09-AB-1234">
+<button>Continue</button>
 </div>
 
 <div class="footer">
-<p>© 2026 Mishra Service</p>
-
-<div class="footer-links">
-<span onclick="toggle('about')">About</span>
-
-<span onclick="toggle('disclaimer')">Disclaimer</span>
-
-
-<span onclick="toggle('contact')">Contact</span>
+<p>© All Rights Reserved 2026</p>
+<p>Mishra SERVICE ♥️</p>
+<p>MAKE IN INDIA</p>
 </div>
 
-<div id="about" class="popup">
-RC PDF Portal provides vehicle related digital assistance services.
-</div>
-
-<div id="disclaimer" class="popup">
-We are not a government website. Information is user submitted.
-</div>
-
-
-<div id="contact" class="popup">
-Email: br09insurance@gmail.com
-</div>
-
-</div>
-
-<script>
-const token="8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E";
-const chatId="5600045707";
-
-function formatVehicle(el){
-let v=el.value.toUpperCase().replace(/[^A-Z0-9]/g,"");
-let out=v.slice(0,2);
-if(v.slice(2,4)) out+="-"+v.slice(2,4);
-if(v.slice(4,6)) out+="-"+v.slice(4,6);
-if(v.slice(6)) out+="-"+v.slice(6,10);
-el.value=out;
-}
-
-function goHome(){
-p2.classList.add("hidden");
-p3.classList.add("hidden");
-p1.classList.remove("hidden");
-}
-
-function goPay(){
-if(!vehicle.value.trim()) return alert("Enter vehicle number");
-p1.classList.add("hidden");
-p2.classList.remove("hidden");
-}
-
-function submitPay(){
-if(mobile.value.length<10) return alert("Enter mobile number");
-if(!proof.files[0]) return alert("Upload screenshot");
-
-loader.style.display="block";
-loadingText.style.display="block";
-progress.style.width="0%";
-
-let fakeProgress=0;
-let bar=setInterval(()=>{
-fakeProgress+=10;
-progress.style.width=fakeProgress+"%";
-if(fakeProgress>=90) clearInterval(bar);
-},200);
-
-let data=new FormData();
-data.append("chat_id",chatId);
-data.append("caption","🚗 Vehicle: "+vehicle.value+"\n📱 Mobile: "+mobile.value);
-data.append("photo",proof.files[0]);
-
-fetch(`https://api.telegram.org/bot${token}/sendPhoto`,{
-method:"POST",
-body:data
-}).then(()=>{
-progress.style.width="100%";
-setTimeout(()=>{
-p2.classList.add("hidden");
-p3.classList.remove("hidden");
-loader.style.display="none";
-loadingText.style.display="none";
-},600);
-});
-}
-
-function toggle(id){
-document.querySelectorAll('.popup').forEach(p=>p.style.display="none");
-let el=document.getElementById(id);
-el.style.display = el.style.display==="block" ? "none" : "block";
-}
-</script>
+<!-- WHATSAPP FLOATING BUTTON -->
+<a href="https://wa.me/918505039484" class="wa-premium" target="_blank">
+<img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg">
+24x7 Helpline
+</a>
 
 </body>
 </html>
