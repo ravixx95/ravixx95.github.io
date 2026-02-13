@@ -13,8 +13,9 @@ background:linear-gradient(270deg,red,blue,green,purple,cyan);
 background-size:600% 600%;
 animation:bg 12s infinite alternate;
 display:flex;
-justify-content:center;
+flex-direction:column;
 align-items:center;
+justify-content:center;
 min-height:100vh;
 }
 
@@ -34,10 +35,25 @@ text-align:center;
 position:relative;
 }
 
-.menu{
+.topbar{
 position:absolute;
 top:10px;
+left:10px;
 right:10px;
+display:flex;
+justify-content:space-between;
+}
+
+.homeBtn{
+background:white;
+color:black;
+padding:6px 12px;
+border-radius:8px;
+font-size:14px;
+cursor:pointer;
+}
+
+.menu{
 font-size:22px;
 cursor:pointer;
 }
@@ -45,14 +61,14 @@ cursor:pointer;
 .dropdown{
 display:none;
 position:absolute;
-top:40px;
+top:45px;
 right:10px;
 background:white;
 color:black;
 border-radius:10px;
 padding:10px;
 font-size:14px;
-width:200px;
+width:220px;
 text-align:left;
 }
 
@@ -76,6 +92,20 @@ cursor:pointer;
 img{
 width:220px;
 margin:12px 0;
+border-radius:12px;
+}
+
+.footer{
+margin-top:20px;
+padding:12px;
+width:92%;
+max-width:420px;
+text-align:center;
+color:white;
+font-size:14px;
+background:linear-gradient(270deg,red,blue,green,purple,cyan);
+background-size:600% 600%;
+animation:bg 10s infinite alternate;
 border-radius:12px;
 }
 
@@ -118,21 +148,21 @@ margin-bottom:15px;
 
 <div class="loader" id="loader">
 <div class="spinner"></div>
-<div id="loaderText">
-आपकी पेमेंट verify की जा रही है।<br>
-कृपया back button न दबाएं।
-</div>
+<div id="loaderText">कृपया प्रतीक्षा करें...</div>
 </div>
 
 <div class="card">
 
-<div class="menu" onclick="toggleMenu()">⋮</div>
+<div class="topbar">
+<div class="homeBtn" onclick="goHome()">🏠 Home</div>
+<div class="menu" onclick="toggleMenu()">☰</div>
+</div>
 
 <div class="dropdown" id="menuBox">
 <b>About:</b><br>
 Independent Vehicle Assistance Platform.<br><br>
 <b>Disclaimer:</b><br>
-This is a private service platform. We are not affiliated with RTO or any government authority.
+This is a private service platform and not affiliated with any government authority.
 </div>
 
 <!-- PAGE 1 -->
@@ -162,11 +192,17 @@ This is a private service platform. We are not affiliated with RTO or any govern
 
 <!-- PAGE 3 -->
 <div id="p3" class="hidden">
-<h3>🎉 Request Submitted</h3>
-<p>Your request has been received successfully.</p>
+<h3>🎉 Congratulations!</h3>
+<p>मुझे आपकी request मिल गई है।<br>
+हम जल्द ही आपसे संपर्क करेंगे।</p>
 <button onclick="goHome()">Home</button>
 </div>
 
+</div>
+
+<div class="footer">
+© 2026 Mishra Service<br>
+Independent Digital Assistance Platform
 </div>
 
 <script>
@@ -203,20 +239,12 @@ if(!vehicle.value.trim()){
 alert("Vehicle number required");
 return;
 }
-showLoader("Please wait...");
-setTimeout(()=>{
-hideLoader();
 p1.classList.add("hidden");
 p2.classList.remove("hidden");
-},1000);
 }
 
 function openUPI(){
-showLoader("UPI app open हो रही है...");
-setTimeout(()=>{
 window.location.href="upi://pay?pa=bestinsurance@upi&pn=Best%20Insurance&am=120.00&cu=INR";
-hideLoader();
-},800);
 }
 
 function submitForm(){
@@ -229,17 +257,18 @@ alert("Upload payment screenshot");
 return;
 }
 
-showLoader("आपकी पेमेंट verify की जा रही है।<br>कृपया back button न दबाएं।");
+showLoader("आपकी request process की जा रही है।<br>कृपया back button न दबाएं।");
 
 setTimeout(()=>{
 hideLoader();
 p2.classList.add("hidden");
 p3.classList.remove("hidden");
-},3000);
+},2500);
 }
 
 function goHome(){
 p3.classList.add("hidden");
+p2.classList.add("hidden");
 p1.classList.remove("hidden");
 vehicle.value="";
 mobile.value="";
