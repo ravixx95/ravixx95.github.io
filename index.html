@@ -25,7 +25,6 @@ align-items:center;
 100%{background-position:0% 50%}
 }
 
-/* Top Bar */
 .topbar{
 position:fixed;
 top:0;
@@ -50,11 +49,6 @@ border-radius:8px;
 font-size:14px;
 cursor:pointer;
 box-shadow:0 4px 10px rgba(0,0,0,0.2);
-}
-
-.topbar button:active{
-transform:scale(0.95);
-box-shadow:0 2px 5px rgba(0,0,0,0.3);
 }
 
 .menuBox{
@@ -168,6 +162,12 @@ font-size:13px;
 color:white;
 padding:15px;
 }
+
+.footer a{
+color:white;
+text-decoration:underline;
+margin:0 5px;
+}
 </style>
 </head>
 
@@ -221,7 +221,9 @@ Pay with UPI
 </div>
 
 <div class="footer">
-© 2026 Mishra Service
+© 2026 Mishra Service <br>
+<a href="#">About</a> |
+<a href="#">Disclaimer</a>
 </div>
 
 <script>
@@ -235,7 +237,7 @@ box.style.display=box.style.display==="block"?"none":"block";
 }
 
 function openInsurance(){
-alert("Insurance page yahan open hoga");
+window.location.href="https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1";
 }
 
 function goHome(){
