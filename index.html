@@ -8,7 +8,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,Arial}
 
-/* RGB Animated Background */
+/* RGB Background */
 body{
 min-height:100vh;
 background:linear-gradient(-45deg,#005BAC,#0083b0,#004a94,#00c6ff);
@@ -18,15 +18,15 @@ display:flex;
 flex-direction:column;
 align-items:center;
 color:#fff;
+overflow-x:hidden;
 }
-
 @keyframes bgMove{
 0%{background-position:0% 50%}
 50%{background-position:100% 50%}
 100%{background-position:0% 50%}
 }
 
-/* Watermark Floating */
+/* Floating watermark */
 body::before{
 content:"🚗 RC 🏍 RC 🚚 🚘 RC 🏍 🚗";
 position:fixed;
@@ -49,7 +49,7 @@ animation:float 20s linear infinite;
 
 /* Card */
 .card{
-margin-top:100px;
+margin-top:110px;
 width:92%;
 max-width:420px;
 background:rgba(255,255,255,0.12);
@@ -61,11 +61,8 @@ box-shadow:0 15px 40px rgba(0,0,0,0.25);
 z-index:2;
 }
 
-h2{
-margin-bottom:15px;
-}
+h2{margin-bottom:15px}
 
-/* Inputs */
 input{
 width:100%;
 padding:14px;
@@ -89,18 +86,15 @@ background:#ffffff;
 color:#005BAC;
 transition:0.15s;
 }
-
 .btn:active{
-transform:scale(0.92);
+transform:scale(0.9);
 box-shadow:0 8px 25px rgba(0,0,0,0.4);
 }
-
 .btnBlue{
 background:#005BAC;
 color:#fff;
 }
 
-/* QR */
 .qr{
 width:180px;
 margin-top:15px;
@@ -121,7 +115,6 @@ justify-content:center;
 align-items:center;
 z-index:9999;
 }
-
 .barContainer{
 width:85%;
 height:22px;
@@ -129,20 +122,17 @@ background:#ddd;
 border-radius:40px;
 overflow:hidden;
 }
-
 .bar{
 height:100%;
 width:0%;
 background:#005BAC;
 transition:width 0.2s;
 }
-
 .progressText{
 margin-top:10px;
 font-weight:600;
 color:#005BAC;
 }
-
 .loaderMsg{
 margin-top:10px;
 font-size:14px;
@@ -157,17 +147,23 @@ padding:20px;
 font-size:14px;
 opacity:0.9;
 }
+.hidden{display:none}
 </style>
 </head>
 <body>
 
 <div class="card">
 
+<!-- PAGE 1 -->
+<div id="page1">
 <h2>Enter Vehicle Number</h2>
-
 <input id="vehicle" placeholder="BR-09-AB-1234" oninput="formatVehicle(this)">
+<button class="btn btnBlue" onclick="goNext()">Continue</button>
+</div>
 
-<h3 style="margin-top:20px;">Service Fee ₹120</h3>
+<!-- PAGE 2 -->
+<div id="page2" class="hidden">
+<h2>Service Fee ₹120</h2>
 
 <button class="btn btnBlue"
 onclick="window.location.href='upi://pay?pa=8709610091@okbizaxis&pn=Best%20Insurance&am=120.00&cu=INR'">
@@ -181,6 +177,8 @@ src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=
 <input type="file" id="proof">
 
 <button class="btn btnBlue" onclick="submitForm()">Submit</button>
+<button class="btn" onclick="goBack()">Back</button>
+</div>
 
 </div>
 
@@ -188,6 +186,7 @@ src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=
 © 2026 Mishra Insurance Service. All rights reserved.
 </div>
 
+<!-- Loader -->
 <div class="loader" id="loader">
 <div class="barContainer">
 <div class="bar" id="bar"></div>
@@ -208,8 +207,18 @@ if(v.length>8) v=v.slice(0,8)+"-"+v.slice(8,12);
 input.value=v;
 }
 
-function submitForm(){
+function goNext(){
 if(!vehicle.value.trim()){alert("Enter vehicle number");return;}
+page1.classList.add("hidden");
+page2.classList.remove("hidden");
+}
+
+function goBack(){
+page2.classList.add("hidden");
+page1.classList.remove("hidden");
+}
+
+function submitForm(){
 if(mobile.value.length<10){alert("Enter valid mobile");return;}
 if(!proof.files[0]){alert("Upload screenshot");return;}
 
