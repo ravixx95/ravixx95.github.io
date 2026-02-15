@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RC Service</title>
+<title>Mishra Insurance Service</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,Arial}
 
-/* RGB Background */
+/* ===== RGB BACKGROUND ===== */
 body{
 min-height:100vh;
-background:linear-gradient(-45deg,#005BAC,#0083b0,#004a94,#00c6ff);
+background:linear-gradient(-45deg,#ff0066,#005BAC,#00c6ff,#00ff99);
 background-size:400% 400%;
-animation:bgMove 10s ease infinite;
+animation:bgMove 8s ease infinite;
 display:flex;
 flex-direction:column;
 align-items:center;
@@ -26,9 +26,9 @@ overflow-x:hidden;
 100%{background-position:0% 50%}
 }
 
-/* Floating watermark */
+/* ===== WATERMARK ===== */
 body::before{
-content:"🚗 RC DOWNLOAD 🏍 RC 🚚 🚘 RC 🏍 🚗";
+content:"🚗 RC 🏍 RC 🚚 🚘 RC 🏍 🚗";
 position:fixed;
 width:100%;
 height:100%;
@@ -36,18 +36,18 @@ display:flex;
 flex-wrap:wrap;
 justify-content:center;
 align-items:center;
-font-size:40px;
+font-size:42px;
 color:rgba(255,255,255,0.05);
 pointer-events:none;
-animation:float 20s linear infinite;
+animation:float 18s linear infinite;
 }
 @keyframes float{
 0%{transform:translateY(0)}
-50%{transform:translateY(-30px)}
+50%{transform:translateY(-40px)}
 100%{transform:translateY(0)}
 }
 
-/* Topbar */
+/* ===== TOPBAR ===== */
 .topbar{
 position:fixed;
 top:0;
@@ -60,26 +60,25 @@ justify-content:space-between;
 align-items:center;
 padding:0 20px;
 z-index:1000;
-color:#005BAC;
-box-shadow:0 2px 10px rgba(0,0,0,0.15);
+box-shadow:0 2px 10px rgba(0,0,0,0.2);
 }
 .topbar button{
-background:#005BAC;
+background:#ff0066;
 color:#fff;
 border:none;
 padding:8px 14px;
 border-radius:8px;
 cursor:pointer;
+font-weight:600;
 }
 .topbar button:active{transform:scale(0.9)}
 
-/* Hamburger */
 .menu-icon{cursor:pointer}
 .menu-icon div{
-width:25px;height:3px;background:#005BAC;margin:5px 0;
+width:25px;height:3px;background:#ff0066;margin:5px 0;
 }
 
-/* Side Menu */
+/* ===== SIDE MENU ===== */
 .sideMenu{
 position:fixed;
 right:-260px;
@@ -89,7 +88,7 @@ height:100%;
 background:#fff;
 padding-top:80px;
 transition:0.3s;
-box-shadow:-4px 0 20px rgba(0,0,0,0.2);
+box-shadow:-4px 0 20px rgba(0,0,0,0.3);
 z-index:999;
 }
 .sideMenu button{
@@ -98,25 +97,27 @@ margin:10px 5%;
 padding:12px;
 border:none;
 border-radius:8px;
-background:#005BAC;
+background:#ff0066;
 color:#fff;
 cursor:pointer;
+font-weight:600;
 }
 .openMenu{right:0}
 
-/* Card */
+/* ===== CARD ===== */
 .card{
 margin-top:110px;
 width:92%;
 max-width:420px;
-background:rgba(255,255,255,0.12);
+background:rgba(255,255,255,0.15);
 backdrop-filter:blur(15px);
 padding:30px;
 border-radius:20px;
 text-align:center;
-box-shadow:0 15px 40px rgba(0,0,0,0.25);
+box-shadow:0 15px 40px rgba(0,0,0,0.3);
 z-index:2;
 }
+
 input{
 width:100%;
 padding:14px;
@@ -126,7 +127,9 @@ border:none;
 font-size:15px;
 text-transform:uppercase;
 }
-.btn{
+
+/* ===== NEON BUTTON ===== */
+.neonBtn{
 width:100%;
 padding:14px;
 margin-top:14px;
@@ -134,17 +137,21 @@ border:none;
 border-radius:12px;
 font-weight:600;
 cursor:pointer;
-background:#fff;
-color:#005BAC;
+background:#111;
+color:#fff;
+animation:neon 2s infinite alternate;
 }
-.btn:active{transform:scale(0.9)}
-.btnBlue{background:#005BAC;color:#fff}
-
-.qr{width:180px;margin-top:15px;border-radius:12px}
+@keyframes neon{
+0%{box-shadow:0 0 10px #ff0066}
+50%{box-shadow:0 0 20px #00ff99}
+100%{box-shadow:0 0 20px #00c6ff}
+}
+.neonBtn:active{transform:scale(0.9)}
 
 .hidden{display:none}
+.qr{width:180px;margin-top:15px;border-radius:12px}
 
-/* Loader */
+/* ===== LOADER ===== */
 .loader{
 position:fixed;
 top:0;
@@ -160,7 +167,7 @@ z-index:9999;
 }
 .barContainer{
 width:85%;
-height:22px;
+height:24px;
 background:#ddd;
 border-radius:40px;
 overflow:hidden;
@@ -168,35 +175,44 @@ overflow:hidden;
 .bar{
 height:100%;
 width:0%;
-background:#005BAC;
+background:#ff0066;
 transition:width 0.2s;
 }
-.progressText{margin-top:10px;font-weight:600;color:#005BAC}
+.progressText{margin-top:10px;font-weight:700;color:#ff0066}
 .loaderMsg{margin-top:10px;font-size:14px;color:#333;text-align:center;padding:0 20px}
 
-/* Success Popup */
+/* ===== SUCCESS POPUP ===== */
 .popup{
 position:fixed;
 top:50%;
 left:50%;
 transform:translate(-50%,-50%);
-background:linear-gradient(135deg,#00c853,#64dd17);
+background:linear-gradient(135deg,#ff0066,#00ff99);
 color:#fff;
-padding:25px;
-border-radius:15px;
+padding:30px;
+border-radius:18px;
 text-align:center;
 display:none;
 z-index:10000;
-box-shadow:0 10px 30px rgba(0,0,0,0.4);
+box-shadow:0 15px 40px rgba(0,0,0,0.4);
 }
 .popup button{
 margin-top:15px;
 background:#fff;
-color:#00c853;
+color:#ff0066;
 border:none;
 padding:8px 14px;
 border-radius:8px;
 cursor:pointer;
+font-weight:600;
+}
+
+/* ===== FOOTER ===== */
+.footer{
+margin-top:50px;
+padding:20px;
+font-size:14px;
+opacity:0.9;
 }
 </style>
 </head>
@@ -211,9 +227,9 @@ cursor:pointer;
 
 <div class="sideMenu" id="menu">
 <button onclick="openInsurance()">Insurance</button>
-<button onclick="openAbout()">About</button>
-<button onclick="openDisclaimer()">Disclaimer</button>
-<button onclick="openContact()">Contact</button>
+<button onclick="alert('About Page')">About</button>
+<button onclick="alert('Private Assistance Platform')">Disclaimer</button>
+<button onclick="window.location.href='https://t.me/yourtelegramusername'">Contact</button>
 </div>
 
 <div class="card">
@@ -221,12 +237,12 @@ cursor:pointer;
 <div id="page1">
 <h2>Enter Vehicle Number</h2>
 <input id="vehicle" placeholder="BR-09-AB-1234" oninput="formatVehicle(this)">
-<button class="btn btnBlue" onclick="goNext()">Continue</button>
+<button class="neonBtn" onclick="goNext()">Continue</button>
 </div>
 
 <div id="page2" class="hidden">
 <h2>Service Fee ₹120</h2>
-<button class="btn btnBlue"
+<button class="neonBtn"
 onclick="window.location.href='upi://pay?pa=8709610091@okbizaxis&pn=Best%20Insurance&am=120.00&cu=INR'">
 Pay ₹120 with UPI
 </button>
@@ -234,10 +250,14 @@ Pay ₹120 with UPI
 src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=8709610091@okbizaxis&pn=Best%20Insurance&am=120.00&cu=INR">
 <input id="mobile" placeholder="Mobile Number">
 <input type="file" id="proof">
-<button class="btn btnBlue" onclick="submitForm()">Submit</button>
-<button class="btn" onclick="goBack()">Back</button>
+<button class="neonBtn" onclick="submitForm()">Submit</button>
+<button class="neonBtn" onclick="goBack()">Back</button>
 </div>
 
+</div>
+
+<div class="footer">
+© 2026 Mishra Insurance Service. All rights reserved.
 </div>
 
 <div class="loader" id="loader">
@@ -247,7 +267,7 @@ src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=
 </div>
 
 <div class="popup" id="popup">
-<h3>🎉 Mubarak Ho!</h3>
+<h2>🎉 Mubarak Ho!</h2>
 <p>Hum aapse jald hi sampark karenge.</p>
 <button onclick="closePopup()">OK</button>
 </div>
@@ -259,9 +279,6 @@ const chatId="5600045707";
 function toggleMenu(){menu.classList.toggle("openMenu")}
 function goHome(){location.reload()}
 function openInsurance(){window.location.href="https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1"}
-function openAbout(){alert("About Page")}
-function openDisclaimer(){alert("Private Assistance Platform")}
-function openContact(){window.location.href="https://t.me/yourtelegramusername"}
 
 function formatVehicle(input){
 let v=input.value.replace(/[^a-zA-Z0-9]/g,'').toUpperCase();
@@ -271,15 +288,28 @@ if(v.length>8) v=v.slice(0,8)+"-"+v.slice(8,12);
 input.value=v;
 }
 
+function showLoader(){
+loader.style.display="flex";
+progressText.innerText="Loading...";
+bar.style.width="100%";
+setTimeout(()=>{loader.style.display="none";bar.style.width="0%";progressText.innerText="0%";},600);
+}
+
 function goNext(){
 if(!vehicle.value.trim()){alert("Enter vehicle number");return;}
+showLoader();
+setTimeout(()=>{
 page1.classList.add("hidden");
 page2.classList.remove("hidden");
+},600);
 }
 
 function goBack(){
+showLoader();
+setTimeout(()=>{
 page2.classList.add("hidden");
 page1.classList.remove("hidden");
+},600);
 }
 
 function submitForm(){
