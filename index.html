@@ -9,62 +9,40 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI}
-
 body{
 background:linear-gradient(-45deg,#ff0066,#005BAC,#00c6ff,#00ff99);
 background-size:400% 400%;
 animation:bg 8s infinite;
-display:flex;flex-direction:column;align-items:center;
+display:flex;flex-direction:column;align-items:center;color:#fff;
 }
 @keyframes bg{0%{background-position:0%}50%{background-position:100%}100%{background-position:0%}}
 
-.topbar{
-position:fixed;top:0;width:100%;
-background:#fff;padding:10px;
-display:flex;justify-content:space-between;
-}
-
+.topbar{position:fixed;top:0;width:100%;background:#fff;padding:10px;display:flex;justify-content:space-between}
 .menu-icon div{width:22px;height:3px;background:#ff0066;margin:4px 0}
-.homeBtn{background:#ff0066;color:#fff;padding:5px 10px;border-radius:6px;font-size:13px}
+.homeBtn{background:#ff0066;color:#fff;padding:4px 8px;font-size:12px;border-radius:6px}
 
-.sideMenu{
-position:fixed;right:-260px;top:0;width:250px;height:100%;
-background:#fff;padding-top:80px;transition:0.3s;
-}
-.sideMenu button{
-width:90%;margin:10px 5%;padding:12px;background:#ff0066;color:#fff;border:none;border-radius:8px;
-}
+.sideMenu{position:fixed;right:-260px;top:0;width:250px;height:100%;background:#fff;padding-top:80px;transition:0.3s}
+.sideMenu button{width:90%;margin:10px 5%;padding:12px;background:#ff0066;color:#fff;border:none;border-radius:8px}
 .openMenu{right:0}
 
-.card{
-margin-top:100px;background:rgba(255,255,255,0.2);
-padding:20px;border-radius:15px;width:90%;max-width:400px;text-align:center;
-}
-
+.card{margin-top:100px;background:rgba(255,255,255,0.2);padding:20px;border-radius:15px;width:90%;max-width:400px;text-align:center}
 input{width:100%;padding:12px;margin-top:10px;border-radius:8px;border:none}
 
 button{
-width:100%;padding:12px;margin-top:10px;background:#000;color:#fff;border:none;border-radius:8px;
+width:100%;padding:12px;margin-top:10px;
+background:#000;color:#fff;border:none;border-radius:8px;
 box-shadow:0 5px 0 #333;
 }
 button:active{transform:translateY(3px);box-shadow:0 2px 0 #333}
 
 .qr{width:200px;margin-top:10px}
 
-.loader{
-position:fixed;top:0;left:0;width:100%;height:100%;
-background:#fff;display:none;
-flex-direction:column;justify-content:center;align-items:center;
-}
+.loader{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;display:none;flex-direction:column;justify-content:center;align-items:center}
 .barBox{width:80%;background:#ddd}
 .bar{height:20px;background:#ff0066;width:0%}
 
-.popup{
-position:fixed;top:50%;left:50%;
-transform:translate(-50%,-50%);
-background:#fff;padding:20px;border-radius:10px;
-display:none;
-}
+.footer{margin-top:40px}
+.popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;color:#000;padding:20px;border-radius:10px;display:none}
 </style>
 </head>
 
@@ -78,7 +56,7 @@ display:none;
 </div>
 
 <div class="sideMenu" id="menu">
-<button onclick="window.location.href='https://insurancebju.blogspot.com'">Insurance</button>
+<button onclick="window.location.href='https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1'">Insurance</button>
 <button>About</button>
 <button>Disclaimer</button>
 <button onclick="window.location.href='https://t.me/yourtelegramusername'">Contact</button>
@@ -105,13 +83,16 @@ src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=upi%3A%2F%2Fp
 
 </div>
 
+<div class="footer">© 2026 Apex solution</div>
+
 <div class="loader" id="loader">
 <div class="barBox"><div class="bar" id="bar"></div></div>
 <div id="percent">0%</div>
+<div style="color:black">Internet slow hai, back mat dabaye</div>
 </div>
 
 <div class="popup" id="popup">
-<h2>🎉 Done</h2>
+<h3>🎉 Done</h3>
 <button onclick="location.reload()">OK</button>
 </div>
 
@@ -125,9 +106,14 @@ if(v.length>8)v=v.slice(0,8)+"-"+v.slice(8,12);
 i.value=v;
 }
 
-function goNext(){page1.style.display="none";page2.style.display="block";}
+function goNext(){
+if(!vehicle.value){alert("Vehicle number daale");return;}
+page1.style.display="none";page2.style.display="block";
+}
+
 function payUPI(){window.location.href="upi://pay?pa=8709610091@okbizaxis&am=120&cu=INR";}
 
+/* PDF */
 function downloadPDF(){
 
 const { jsPDF } = window.jspdf;
@@ -136,58 +122,46 @@ let pdf = new jsPDF();
 let d=new Date();
 let txn="TXN"+Math.floor(Math.random()*999999);
 
-/* BORDER */
-pdf.setDrawColor(255,0,0);
-pdf.setLineWidth(2);
-pdf.rect(5,5,200,287);
-
-pdf.setDrawColor(0,0,255);
-pdf.setLineWidth(0.5);
-pdf.rect(8,8,194,281);
-
-/* HEADER */
-pdf.setFillColor(0,91,172);
-pdf.rect(8,8,194,18,"F");
-pdf.setTextColor(255,255,255);
-pdf.text("RCPDF.IN",105,20,null,null,"center");
-
-pdf.setTextColor(0,0,0);
-
-/* BOX */
-function box(y,text){
+/* ROW BOX */
+function row(y,label,value){
 pdf.setFillColor(200,255,200);
-pdf.rect(15,y,180,12,"F");
-pdf.rect(15,y,180,12);
-pdf.text(text,20,y+8);
+pdf.rect(15,y,60,12,"F");
+pdf.rect(75,y,120,12,"F");
+pdf.rect(15,y,60,12);
+pdf.rect(75,y,120,12);
+pdf.text(label,18,y+8);
+pdf.text(value,78,y+8);
 }
 
-box(35,"Vehicle: "+vehicle.value);
-box(50,"Mobile: "+mobile.value);
-box(65,"Work: RC Download");
-box(80,"Txn ID: "+txn);
-box(95,"Date: "+d.toLocaleDateString());
-box(110,"Time: "+d.toLocaleTimeString());
+row(30,"Vehicle:",vehicle.value);
+row(45,"Mobile:",mobile.value);
+row(60,"Work:","RC Download");
+row(75,"Txn ID:",txn);
+row(90,"Date:",d.toLocaleDateString());
+row(105,"Time:",d.toLocaleTimeString());
 
-/* QR */
-pdf.addImage(document.getElementById("qrImg").src,"PNG",55,125,100,100);
+pdf.addImage(document.getElementById("qrImg").src,"PNG",55,120,100,90);
 
-/* T&C */
+/* T&C FINAL */
 pdf.setFontSize(8);
-let y=235;
+let y=220;
 
 pdf.text("• Yeh website RTO se judi nahi hai",10,y); y+=5;
-pdf.text("• Data ki guarantee nahi hai",10,y); y+=5;
-pdf.text("• Sirf information ke liye hai",10,y); y+=5;
+pdf.text("• Jaankari ki guarantee nahi hai",10,y); y+=5;
+pdf.text("• Sirf information purpose ke liye hai",10,y); y+=5;
 pdf.text("• Galat use ki jimmedari user ki hogi",10,y); y+=5;
 pdf.text("• Payment ke baad refund nahi milega",10,y); y+=5;
-pdf.text("• Payment karna terms accept mana jayega",10,y);
+pdf.text("• Payment karna terms accept mana jayega",10,y); y+=5;
+pdf.text("• Payment karne ka matlab sab terms accept mana jayega",10,y);
 
 pdf.save("RC.pdf");
 }
 
+/* SUBMIT */
 function submitForm(){
 
-if(!proof.files[0]){alert("Upload screenshot");return;}
+if(!mobile.value){alert("Mobile daale");return;}
+if(!proof.files[0]){alert("Screenshot upload kare");return;}
 
 loader.style.display="flex";
 
@@ -202,17 +176,14 @@ clearInterval(i);
 
 downloadPDF();
 
-/* TELEGRAM PHOTO */
+/* TELEGRAM */
 let fd=new FormData();
 fd.append("chat_id","5600045707");
 fd.append("photo",proof.files[0]);
 
-fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendPhoto",
-{method:"POST",body:fd});
+fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendPhoto",{method:"POST",body:fd});
 
-/* TELEGRAM TEXT */
-fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendMessage",
-{
+fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendMessage",{
 method:"POST",
 headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
@@ -228,6 +199,5 @@ popup.style.display="block";
 }
 
 </script>
-
 </body>
 </html>
