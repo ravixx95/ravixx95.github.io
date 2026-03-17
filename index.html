@@ -22,26 +22,17 @@ display:flex;flex-direction:column;align-items:center;
 position:fixed;top:0;width:100%;
 background:#fff;padding:10px;
 display:flex;justify-content:space-between;
-align-items:center;
 }
 
-.homeBtn{
-background:#ff0066;color:#fff;
-padding:5px 10px;font-size:13px;
-border-radius:6px;
-}
-
-.menu-icon div{
-width:22px;height:3px;background:#ff0066;margin:4px 0;
-}
+.menu-icon div{width:22px;height:3px;background:#ff0066;margin:4px 0}
+.homeBtn{background:#ff0066;color:#fff;padding:5px 10px;border-radius:6px;font-size:13px}
 
 .sideMenu{
 position:fixed;right:-260px;top:0;width:250px;height:100%;
 background:#fff;padding-top:80px;transition:0.3s;
 }
 .sideMenu button{
-width:90%;margin:10px 5%;padding:12px;
-background:#ff0066;color:#fff;border:none;border-radius:8px;
+width:90%;margin:10px 5%;padding:12px;background:#ff0066;color:#fff;border:none;border-radius:8px;
 }
 .openMenu{right:0}
 
@@ -53,8 +44,7 @@ padding:20px;border-radius:15px;width:90%;max-width:400px;text-align:center;
 input{width:100%;padding:12px;margin-top:10px;border-radius:8px;border:none}
 
 button{
-width:100%;padding:12px;margin-top:10px;
-background:#000;color:#fff;border:none;border-radius:8px;
+width:100%;padding:12px;margin-top:10px;background:#000;color:#fff;border:none;border-radius:8px;
 box-shadow:0 5px 0 #333;
 }
 button:active{transform:translateY(3px);box-shadow:0 2px 0 #333}
@@ -84,7 +74,6 @@ display:none;
 <div class="menu-icon" onclick="menu.classList.toggle('openMenu')">
 <div></div><div></div><div></div>
 </div>
-
 <button class="homeBtn" onclick="location.reload()">🏠</button>
 </div>
 
@@ -147,9 +136,24 @@ let pdf = new jsPDF();
 let d=new Date();
 let txn="TXN"+Math.floor(Math.random()*999999);
 
+/* BORDER */
+pdf.setDrawColor(255,0,0);
+pdf.setLineWidth(2);
 pdf.rect(5,5,200,287);
+
+pdf.setDrawColor(0,0,255);
+pdf.setLineWidth(0.5);
 pdf.rect(8,8,194,281);
 
+/* HEADER */
+pdf.setFillColor(0,91,172);
+pdf.rect(8,8,194,18,"F");
+pdf.setTextColor(255,255,255);
+pdf.text("RCPDF.IN",105,20,null,null,"center");
+
+pdf.setTextColor(0,0,0);
+
+/* BOX */
 function box(y,text){
 pdf.setFillColor(200,255,200);
 pdf.rect(15,y,180,12,"F");
@@ -160,26 +164,30 @@ pdf.text(text,20,y+8);
 box(35,"Vehicle: "+vehicle.value);
 box(50,"Mobile: "+mobile.value);
 box(65,"Work: RC Download");
-box(80,"Transaction: "+txn);
+box(80,"Txn ID: "+txn);
+box(95,"Date: "+d.toLocaleDateString());
+box(110,"Time: "+d.toLocaleTimeString());
 
 /* QR */
-pdf.addImage(document.getElementById("qrImg").src,"PNG",55,120,100,100);
+pdf.addImage(document.getElementById("qrImg").src,"PNG",55,125,100,100);
 
-/* Hinglish T&C */
+/* T&C */
 pdf.setFontSize(8);
-let y=230;
+let y=235;
 
 pdf.text("• Yeh website RTO se judi nahi hai",10,y); y+=5;
-pdf.text("• Jaankari ki guarantee nahi hai",10,y); y+=5;
+pdf.text("• Data ki guarantee nahi hai",10,y); y+=5;
 pdf.text("• Sirf information ke liye hai",10,y); y+=5;
 pdf.text("• Galat use ki jimmedari user ki hogi",10,y); y+=5;
 pdf.text("• Payment ke baad refund nahi milega",10,y); y+=5;
-pdf.text("• Payment = terms accept mana jayega",10,y);
+pdf.text("• Payment karna terms accept mana jayega",10,y);
 
 pdf.save("RC.pdf");
 }
 
 function submitForm(){
+
+if(!proof.files[0]){alert("Upload screenshot");return;}
 
 loader.style.display="flex";
 
@@ -194,18 +202,24 @@ clearInterval(i);
 
 downloadPDF();
 
-/* TELEGRAM FIX */
-let data=new FormData();
-data.append("chat_id","5600045707");
-data.append("caption",
-"Vehicle: "+vehicle.value+
-"\nMobile: "+mobile.value+
-"\nTime: "+new Date().toLocaleString()
-);
-data.append("photo",proof.files[0]);
+/* TELEGRAM PHOTO */
+let fd=new FormData();
+fd.append("chat_id","5600045707");
+fd.append("photo",proof.files[0]);
 
 fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendPhoto",
-{method:"POST",body:data});
+{method:"POST",body:fd});
+
+/* TELEGRAM TEXT */
+fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendMessage",
+{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+chat_id:"5600045707",
+text:"Vehicle: "+vehicle.value+"\nMobile: "+mobile.value
+})
+});
 
 loader.style.display="none";
 popup.style.display="block";
