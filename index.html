@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,98 +9,30 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,Arial}
-
-/* RGB BACKGROUND */
 body{
+background:linear-gradient(45deg,#ff0066,#005BAC,#00c6ff,#00ff99);
 min-height:100vh;
-background:linear-gradient(-45deg,#ff0066,#005BAC,#00c6ff,#00ff99);
-background-size:400% 400%;
-animation:bgMove 8s ease infinite;
 display:flex;
-flex-direction:column;
+justify-content:center;
 align-items:center;
+font-family:Arial;
 color:#fff;
 }
-@keyframes bgMove{
-0%{background-position:0% 50%}
-50%{background-position:100% 50%}
-100%{background-position:0% 50%}
-}
-
-/* TOPBAR */
-.topbar{
-position:fixed;
-top:0;
-width:100%;
-height:60px;
-background:#fff;
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:0 20px;
-z-index:1000;
-}
-.topbar button{
-background:#ff0066;color:#fff;border:none;padding:8px 14px;border-radius:8px;
-}
-
-/* MENU */
-.menu-icon{cursor:pointer}
-.menu-icon div{
-width:25px;height:3px;background:#ff0066;margin:5px 0;
-}
-
-.sideMenu{
-position:fixed;
-right:-260px;
-top:0;
-width:250px;
-height:100%;
-background:#fff;
-padding-top:80px;
-transition:0.3s;
-z-index:999;
-}
-.sideMenu button{
-width:90%;
-margin:10px 5%;
-padding:12px;
-border:none;
-border-radius:8px;
-background:#ff0066;
-color:#fff;
-}
-.openMenu{right:0}
-
-/* CARD */
 .card{
-margin-top:100px;
+background:rgba(255,255,255,0.15);
+padding:20px;
+border-radius:15px;
 width:90%;
 max-width:400px;
-background:rgba(255,255,255,0.15);
-padding:25px;
-border-radius:15px;
 text-align:center;
 }
-
-input{
+input,button{
 width:100%;
-padding:12px;
-margin-top:10px;
-border-radius:8px;
-border:none;
-}
-
-button{
-width:100%;
-padding:12px;
+padding:10px;
 margin-top:10px;
 border:none;
 border-radius:8px;
-cursor:pointer;
 }
-
 .qr{width:180px;margin-top:10px}
 .hidden{display:none}
 </style>
@@ -107,144 +40,132 @@ cursor:pointer;
 
 <body>
 
-<div class="topbar">
-<button onclick="location.reload()">Home</button>
-
-<div class="menu-icon" onclick="toggleMenu()">
-<div></div><div></div><div></div>
-</div>
-</div>
-
-<div class="sideMenu" id="menu">
-<button onclick="openInsurance()">Insurance</button>
-<button onclick="alert('About Page')">About</button>
-<button onclick="alert('Private Assistance Platform')">Disclaimer</button>
-<button onclick="window.location.href='https://t.me/yourtelegramusername'">Contact</button>
-</div>
-
 <div class="card">
 
 <div id="page1">
-<h2>Enter Vehicle Number</h2>
-<input id="vehicle" placeholder="BR-09-AB-1234">
-<button onclick="goNext()">Continue</button>
+<h2>वाहन नंबर दर्ज करें</h2>
+<input id="vehicle">
+<button onclick="goNext()">आगे बढ़ें</button>
 </div>
 
 <div id="page2" class="hidden">
-<h2>Service Fee ₹120</h2>
+<h2>₹120 भुगतान करें</h2>
 
-<button onclick="payUPI()">Pay ₹120</button>
+<button onclick="payUPI()">UPI Pay</button>
 
 <img class="qr"
-src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi%3A%2F%2Fpay%3Fpa%3D8709610091%40okbizaxis%26pn%3DBest%20Insurance%26am%3D120%26cu%3DINR%26tn%3DRC%20PDF">
+src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi%3A%2F%2Fpay%3Fpa%3D8709610091%40okbizaxis%26pn%3DBest%20Insurance%26am%3D120%26cu%3DINR">
 
-<input id="mobile" placeholder="Mobile Number">
+<input id="mobile" placeholder="मोबाइल नंबर">
 <input type="file" id="proof">
 
-<button onclick="submitForm()">Submit</button>
+<button onclick="submitForm()">सबमिट करें</button>
 </div>
 
 </div>
 
 <script>
 
-/* MENU */
-function toggleMenu(){
-document.getElementById("menu").classList.toggle("openMenu");
-}
-function openInsurance(){
-window.location.href="https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1";
-}
-
-/* NAVIGATION */
 function goNext(){
-if(!vehicle.value){alert("Enter vehicle number");return;}
+if(!vehicle.value){alert("वाहन नंबर डालें");return;}
 page1.classList.add("hidden");
 page2.classList.remove("hidden");
 }
 
 function payUPI(){
-window.location.href="upi://pay?pa=8709610091@okbizaxis&pn=Best%20Insurance&am=120&cu=INR&tn=RC%20PDF";
+window.location.href="upi://pay?pa=8709610091@okbizaxis&am=120&cu=INR";
 }
 
-/* PDF */
+/* ===== CANVAS PDF ===== */
 function downloadPDF(){
-const { jsPDF } = window.jspdf;
-const doc = new jsPDF();
 
 let v = vehicle.value;
 let m = mobile.value;
 
-/* BORDER */
-doc.setLineWidth(1.5);
-doc.rect(5,5,200,287);
-doc.setLineWidth(0.5);
-doc.rect(8,8,194,281);
+let canvas = document.createElement("canvas");
+canvas.width = 600;
+canvas.height = 900;
+let ctx = canvas.getContext("2d");
 
-/* HEADER */
-doc.setFillColor(0,102,204);
-doc.rect(5,5,200,20,"F");
-doc.setTextColor(255,255,255);
-doc.setFontSize(14);
-doc.text("RCPDF.IN",105,18,null,null,"center");
+/* बैकग्राउंड */
+ctx.fillStyle="#ffffff";
+ctx.fillRect(0,0,600,900);
 
-/* TITLE */
-doc.setTextColor(0,0,0);
-doc.setFontSize(12);
-doc.text("RC DOWNLOAD REQUEST",105,35,null,null,"center");
+/* बॉर्डर */
+ctx.lineWidth=6;
+ctx.strokeRect(10,10,580,880);
 
-/* INFO */
-doc.setFontSize(11);
-doc.text("Vehicle Number: "+v,20,55);
-doc.text("Mobile Number: "+m,20,65);
-doc.text("Work: RC Download",20,75);
+ctx.lineWidth=2;
+ctx.strokeRect(20,20,560,860);
 
-/* MESSAGE */
-doc.setFontSize(10);
-doc.text("आपको RC की PDF जल्द ही आपके मोबाइल नंबर "+m+" पर भेज दी जाएगी।",20,95);
+/* हेडर */
+ctx.fillStyle="#0066cc";
+ctx.fillRect(10,10,580,60);
 
-doc.line(20,100,190,100);
+ctx.fillStyle="#ffffff";
+ctx.font="bold 24px Arial";
+ctx.textAlign="center";
+ctx.fillText("RCPDF.IN",300,45);
 
-/* TERMS */
-doc.setFontSize(7);
-let y=110;
+/* टेक्स्ट */
+ctx.fillStyle="#000";
+ctx.font="bold 18px Arial";
+ctx.fillText("RC डाउनलोड अनुरोध",300,120);
 
-doc.text("• यह वेबसाइट किसी भी प्रकार से RTO से जुड़ी नहीं है",20,y); y+=5;
-doc.text("• हम जानकारी की सही होने की पुष्टि नहीं करते",20,y); y+=5;
-doc.text("• यह साइट केवल जानकारी के लिए है",20,y); y+=5;
-doc.text("• गलत उपयोग की जिम्मेदारी उपयोगकर्ता की होगी",20,y); y+=5;
-doc.text("• भुगतान के बाद राशि वापस नहीं होगी",20,y); y+=5;
-doc.text("• भुगतान करना सभी शर्तों की स्वीकृति है",20,y);
+ctx.textAlign="left";
+ctx.font="16px Arial";
 
-doc.save("RC_PDF_Request.pdf");
+ctx.fillText("वाहन नंबर: "+v,40,180);
+ctx.fillText("मोबाइल नंबर: "+m,40,210);
+ctx.fillText("कार्य: RC डाउनलोड",40,240);
+
+ctx.fillText("आपको RC की PDF जल्द ही आपके मोबाइल नंबर "+m+" पर भेज दी जाएगी।",40,290);
+
+/* लाइन */
+ctx.beginPath();
+ctx.moveTo(40,320);
+ctx.lineTo(560,320);
+ctx.stroke();
+
+/* शर्तें */
+ctx.font="12px Arial";
+
+let y=360;
+
+ctx.fillText("• यह वेबसाइट किसी भी प्रकार से RTO से जुड़ी नहीं है",40,y); y+=25;
+ctx.fillText("• हम जानकारी की पूरी तरह सही होने की पुष्टि नहीं करते",40,y); y+=25;
+ctx.fillText("• यह साइट केवल जानकारी के उद्देश्य से है",40,y); y+=25;
+ctx.fillText("• किसी भी गलत उपयोग की जिम्मेदारी उपयोगकर्ता की होगी",40,y); y+=25;
+ctx.fillText("• भुगतान के बाद राशि वापस नहीं की जाएगी",40,y); y+=25;
+ctx.fillText("• भुगतान करने का अर्थ है कि उपयोगकर्ता सभी शर्तों से सहमत है",40,y);
+
+/* PDF */
+const { jsPDF } = window.jspdf;
+const pdf = new jsPDF();
+
+let img = canvas.toDataURL("image/png");
+pdf.addImage(img,"PNG",0,0,210,297);
+
+pdf.save("RC_PDF.pdf");
 }
 
 /* SUBMIT */
 function submitForm(){
 
 if(mobile.value.length<10){
-alert("Enter valid mobile");
+alert("सही मोबाइल नंबर डालें");
 return;
 }
 
 if(!proof.files[0]){
-alert("Upload screenshot");
+alert("स्क्रीनशॉट अपलोड करें");
 return;
 }
 
 /* PDF */
 downloadPDF();
 
-/* TELEGRAM */
-let data=new FormData();
-data.append("chat_id","5600045707");
-data.append("caption","Vehicle: "+vehicle.value+"\nMobile: "+mobile.value);
-data.append("photo",proof.files[0]);
-
-fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendPhoto",
-{method:"POST",body:data});
-
-alert("Submitted Successfully");
+alert("सफलतापूर्वक सबमिट हुआ");
 }
 
 </script>
