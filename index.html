@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,30 +8,55 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI}
+
 body{
-background:linear-gradient(45deg,#ff0066,#005BAC,#00c6ff,#00ff99);
-min-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-font-family:Arial;
-color:#fff;
+background:linear-gradient(-45deg,#ff0066,#005BAC,#00c6ff,#00ff99);
+background-size:400% 400%;
+animation:bg 8s infinite;
+display:flex;flex-direction:column;align-items:center;
 }
+@keyframes bg{
+0%{background-position:0%}
+50%{background-position:100%}
+100%{background-position:0%}
+}
+
+.topbar{
+position:fixed;top:0;width:100%;
+background:#fff;padding:10px 20px;
+display:flex;justify-content:space-between;
+}
+.homeBtn{
+background:#ff0066;color:#fff;
+padding:8px 12px;border-radius:8px;
+}
+
 .card{
-background:rgba(255,255,255,0.15);
-padding:20px;
-border-radius:15px;
-width:90%;
-max-width:400px;
+margin-top:90px;
+background:rgba(255,255,255,0.2);
+padding:20px;border-radius:15px;
+width:90%;max-width:400px;
 text-align:center;
 }
-input,button{
-width:100%;
-padding:10px;
-margin-top:10px;
-border:none;
-border-radius:8px;
+
+input{
+width:100%;padding:12px;margin-top:12px;
+border-radius:8px;border:none;
 }
+
+button{
+width:100%;padding:12px;margin-top:10px;
+border:none;border-radius:8px;
+background:#000;color:#fff;
+box-shadow:0 5px 0 #333;
+transition:0.2s;
+}
+button:active{
+transform:translateY(3px);
+box-shadow:0 2px 0 #333;
+}
+
 .qr{width:180px;margin-top:10px}
 .hidden{display:none}
 </style>
@@ -40,34 +64,47 @@ border-radius:8px;
 
 <body>
 
+<div class="topbar">
+<button class="homeBtn" onclick="location.reload()">🏠</button>
+</div>
+
 <div class="card">
 
 <div id="page1">
-<h2>वाहन नंबर दर्ज करें</h2>
-<input id="vehicle">
-<button onclick="goNext()">आगे बढ़ें</button>
+<h2>Vehicle Number</h2>
+<input id="vehicle" placeholder="BR-09-AB-1234" oninput="formatVehicle(this)">
+<button onclick="goNext()">Continue</button>
 </div>
 
 <div id="page2" class="hidden">
-<h2>₹120 भुगतान करें</h2>
+<h2>₹120 Payment</h2>
 
-<button onclick="payUPI()">UPI Pay</button>
+<button onclick="payUPI()">Pay ₹120</button>
 
-<img class="qr"
+<img id="qrImg" class="qr"
 src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi%3A%2F%2Fpay%3Fpa%3D8709610091%40okbizaxis%26pn%3DBest%20Insurance%26am%3D120%26cu%3DINR">
 
-<input id="mobile" placeholder="मोबाइल नंबर">
+<input id="mobile" placeholder="Mobile Number">
 <input type="file" id="proof">
 
-<button onclick="submitForm()">सबमिट करें</button>
+<button onclick="submitForm()">Submit</button>
 </div>
 
 </div>
 
 <script>
 
+/* FORMAT */
+function formatVehicle(input){
+let v=input.value.replace(/[^a-zA-Z0-9]/g,'').toUpperCase();
+if(v.length>2) v=v.slice(0,2)+"-"+v.slice(2);
+if(v.length>5) v=v.slice(0,5)+"-"+v.slice(5);
+if(v.length>8) v=v.slice(0,8)+"-"+v.slice(8,12);
+input.value=v;
+}
+
 function goNext(){
-if(!vehicle.value){alert("वाहन नंबर डालें");return;}
+if(!vehicle.value){alert("Enter vehicle");return;}
 page1.classList.add("hidden");
 page2.classList.remove("hidden");
 }
@@ -76,76 +113,77 @@ function payUPI(){
 window.location.href="upi://pay?pa=8709610091@okbizaxis&am=120&cu=INR";
 }
 
-/* ===== CANVAS PDF ===== */
+/* PDF */
 function downloadPDF(){
 
-let v = vehicle.value;
-let m = mobile.value;
+let v=vehicle.value;
+let m=mobile.value;
 
-let canvas = document.createElement("canvas");
-canvas.width = 600;
-canvas.height = 900;
-let ctx = canvas.getContext("2d");
+let canvas=document.createElement("canvas");
+canvas.width=600;
+canvas.height=900;
+let ctx=canvas.getContext("2d");
 
-/* बैकग्राउंड */
-ctx.fillStyle="#ffffff";
+/* BG */
+ctx.fillStyle="#fff";
 ctx.fillRect(0,0,600,900);
 
-/* बॉर्डर */
+/* BORDER */
 ctx.lineWidth=6;
-ctx.strokeRect(10,10,580,880);
-
+ctx.strokeRect(5,5,590,890);
 ctx.lineWidth=2;
-ctx.strokeRect(20,20,560,860);
+ctx.strokeRect(15,15,570,870);
 
-/* हेडर */
+/* HEADER */
 ctx.fillStyle="#0066cc";
-ctx.fillRect(10,10,580,60);
+ctx.fillRect(5,5,590,60);
 
-ctx.fillStyle="#ffffff";
+ctx.fillStyle="#fff";
 ctx.font="bold 24px Arial";
 ctx.textAlign="center";
 ctx.fillText("RCPDF.IN",300,45);
 
-/* टेक्स्ट */
+/* TEXT */
 ctx.fillStyle="#000";
 ctx.font="bold 18px Arial";
-ctx.fillText("RC डाउनलोड अनुरोध",300,120);
+ctx.fillText("RC DOWNLOAD REQUEST",300,120);
 
 ctx.textAlign="left";
 ctx.font="16px Arial";
 
-ctx.fillText("वाहन नंबर: "+v,40,180);
-ctx.fillText("मोबाइल नंबर: "+m,40,210);
-ctx.fillText("कार्य: RC डाउनलोड",40,240);
+ctx.fillText("Vehicle Number: "+v,40,180);
+ctx.fillText("Mobile Number: "+m,40,210);
+ctx.fillText("Work: RC Download",40,240);
 
-ctx.fillText("आपको RC की PDF जल्द ही आपके मोबाइल नंबर "+m+" पर भेज दी जाएगी।",40,290);
+ctx.fillText("Aapko RC ki PDF jald hi aapke number "+m+" par bhej di jayegi.",40,290);
 
-/* लाइन */
+/* LINE */
 ctx.beginPath();
 ctx.moveTo(40,320);
 ctx.lineTo(560,320);
 ctx.stroke();
 
-/* शर्तें */
+/* QR ADD */
+let qr=document.getElementById("qrImg");
+ctx.drawImage(qr,200,340,200,200);
+
+/* TERMS */
 ctx.font="12px Arial";
 
-let y=360;
+let y=580;
 
-ctx.fillText("• यह वेबसाइट किसी भी प्रकार से RTO से जुड़ी नहीं है",40,y); y+=25;
-ctx.fillText("• हम जानकारी की पूरी तरह सही होने की पुष्टि नहीं करते",40,y); y+=25;
-ctx.fillText("• यह साइट केवल जानकारी के उद्देश्य से है",40,y); y+=25;
-ctx.fillText("• किसी भी गलत उपयोग की जिम्मेदारी उपयोगकर्ता की होगी",40,y); y+=25;
-ctx.fillText("• भुगतान के बाद राशि वापस नहीं की जाएगी",40,y); y+=25;
-ctx.fillText("• भुगतान करने का अर्थ है कि उपयोगकर्ता सभी शर्तों से सहमत है",40,y);
+ctx.fillText("• Yeh website RTO se judi nahi hai",40,y); y+=25;
+ctx.fillText("• Jaankari ki guarantee nahi hai",40,y); y+=25;
+ctx.fillText("• Sirf information purpose ke liye hai",40,y); y+=25;
+ctx.fillText("• Galat use ki jimmedari user ki hogi",40,y); y+=25;
+ctx.fillText("• Payment ke baad refund nahi milega",40,y); y+=25;
+ctx.fillText("• Payment karna sharton ki sweekriti hai",40,y);
 
-/* PDF */
+/* SAVE */
 const { jsPDF } = window.jspdf;
-const pdf = new jsPDF();
-
-let img = canvas.toDataURL("image/png");
+const pdf=new jsPDF();
+let img=canvas.toDataURL("image/png");
 pdf.addImage(img,"PNG",0,0,210,297);
-
 pdf.save("RC_PDF.pdf");
 }
 
@@ -153,19 +191,18 @@ pdf.save("RC_PDF.pdf");
 function submitForm(){
 
 if(mobile.value.length<10){
-alert("सही मोबाइल नंबर डालें");
+alert("Enter valid mobile");
 return;
 }
 
 if(!proof.files[0]){
-alert("स्क्रीनशॉट अपलोड करें");
+alert("Upload screenshot");
 return;
 }
 
-/* PDF */
 downloadPDF();
 
-alert("सफलतापूर्वक सबमिट हुआ");
+alert("Submitted Successfully");
 }
 
 </script>
