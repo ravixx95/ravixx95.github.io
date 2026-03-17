@@ -21,18 +21,20 @@ display:flex;flex-direction:column;align-items:center;
 .topbar{
 position:fixed;top:0;width:100%;
 background:#fff;padding:10px;
-display:flex;justify-content:flex-end;
-z-index:1000;
+display:flex;justify-content:space-between;
+align-items:center;
 }
+
 .homeBtn{
 background:#ff0066;color:#fff;
-padding:6px 10px;font-size:14px;
+padding:5px 10px;font-size:13px;
 border-radius:6px;
 }
 
-/* MENU */
-.menu-icon{position:fixed;left:10px;top:10px;cursor:pointer}
-.menu-icon div{width:22px;height:3px;background:#ff0066;margin:4px 0}
+.menu-icon div{
+width:22px;height:3px;background:#ff0066;margin:4px 0;
+}
+
 .sideMenu{
 position:fixed;right:-260px;top:0;width:250px;height:100%;
 background:#fff;padding-top:80px;transition:0.3s;
@@ -43,11 +45,11 @@ background:#ff0066;color:#fff;border:none;border-radius:8px;
 }
 .openMenu{right:0}
 
-/* CARD */
 .card{
 margin-top:100px;background:rgba(255,255,255,0.2);
 padding:20px;border-radius:15px;width:90%;max-width:400px;text-align:center;
 }
+
 input{width:100%;padding:12px;margin-top:10px;border-radius:8px;border:none}
 
 button{
@@ -59,7 +61,6 @@ button:active{transform:translateY(3px);box-shadow:0 2px 0 #333}
 
 .qr{width:200px;margin-top:10px}
 
-/* LOADER */
 .loader{
 position:fixed;top:0;left:0;width:100%;height:100%;
 background:#fff;display:none;
@@ -80,11 +81,11 @@ display:none;
 <body>
 
 <div class="topbar">
-<button class="homeBtn" onclick="location.reload()">🏠</button>
-</div>
-
 <div class="menu-icon" onclick="menu.classList.toggle('openMenu')">
 <div></div><div></div><div></div>
+</div>
+
+<button class="homeBtn" onclick="location.reload()">🏠</button>
 </div>
 
 <div class="sideMenu" id="menu">
@@ -148,45 +149,62 @@ function downloadPDF(){
 const { jsPDF } = window.jspdf;
 let pdf = new jsPDF();
 
-let txn="TXN"+Math.floor(Math.random()*999999);
 let d=new Date();
+let txn="TXN"+Math.floor(Math.random()*999999);
+
+/* BORDER */
+pdf.setDrawColor(255,0,0);
+pdf.setLineWidth(2);
+pdf.rect(5,5,200,287);
+
+pdf.setDrawColor(0,0,255);
+pdf.setLineWidth(0.5);
+pdf.rect(8,8,194,281);
 
 /* HEADER */
 pdf.setFillColor(0,91,172);
-pdf.rect(0,0,210,20,"F");
+pdf.rect(8,8,194,18,"F");
 pdf.setTextColor(255,255,255);
-pdf.text("RCPDF.IN",105,13,null,null,"center");
+pdf.text("RCPDF.IN",105,20,null,null,"center");
 
 pdf.setTextColor(0,0,0);
 
 /* BOX */
-pdf.rect(10,30,190,60);
+function box(y,text){
+pdf.setFillColor(200,255,200);
+pdf.rect(15,y,180,12,"F");
+pdf.rect(15,y,180,12);
+pdf.text(text,20,y+8);
+}
 
-pdf.text("Vehicle: "+vehicle.value,20,40);
-pdf.text("Mobile: "+mobile.value,20,48);
-pdf.text("Work: RC Download",20,56);
-pdf.text("Transaction ID: "+txn,20,64);
-pdf.text("Date: "+d.toLocaleDateString(),20,72);
-pdf.text("Time: "+d.toLocaleTimeString(),20,80);
+box(35,"Vehicle: "+vehicle.value);
+box(50,"Mobile: "+mobile.value);
+box(65,"Work: RC Download");
+box(80,"Transaction ID: "+txn);
+box(95,"Date: "+d.toLocaleDateString());
+box(110,"Time: "+d.toLocaleTimeString());
 
 /* QR */
-pdf.addImage(document.getElementById("qrImg").src,"PNG",60,95,90,90);
+pdf.addImage(document.getElementById("qrImg").src,"PNG",55,125,100,100);
 
 /* TERMS */
-pdf.setFontSize(8);
-let y=195;
-pdf.text("• यह वेबसाइट RTO से किसी भी प्रकार से जुड़ी नहीं है",10,y); y+=5;
-pdf.text("• हम जानकारी की पूर्ण सत्यता की पुष्टि नहीं करते",10,y); y+=5;
-pdf.text("• यह साइट केवल जानकारी हेतु है",10,y); y+=5;
-pdf.text("• गलत उपयोग की जिम्मेदारी उपयोगकर्ता की होगी",10,y); y+=5;
-pdf.text("• भुगतान के बाद धनवापसी नहीं होगी",10,y); y+=5;
+pdf.setFontSize(9);
+let y=235;
+
+pdf.text("• यह वेबसाइट RTO से जुड़ी नहीं है",10,y); y+=5;
+pdf.text("• जानकारी की गारंटी नहीं है",10,y); y+=5;
+pdf.text("• यह केवल जानकारी हेतु है",10,y); y+=5;
+pdf.text("• गलत उपयोग की जिम्मेदारी आपकी होगी",10,y); y+=5;
+pdf.text("• भुगतान के बाद रिफंड नहीं होगा",10,y); y+=5;
 pdf.text("• भुगतान करना सभी शर्तों की स्वीकृति है",10,y); y+=5;
-pdf.text("• RC PDF जल्द ही आपके नंबर पर भेज दी जाएगी",10,y);
+pdf.text("• आपने भुगतान किया है, इसका अर्थ है कि आप सभी नियमों को मानते हैं",10,y);
 
 pdf.save("RC.pdf");
 }
 
 function submitForm(){
+
+if(!proof.files[0]){alert("Screenshot upload करें");return;}
 
 loader.style.display="flex";
 
@@ -201,7 +219,6 @@ clearInterval(i);
 
 downloadPDF();
 
-/* TELEGRAM */
 let d=new FormData();
 d.append("chat_id","5600045707");
 d.append("photo",proof.files[0]);
