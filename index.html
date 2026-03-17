@@ -15,21 +15,16 @@ background-size:400% 400%;
 animation:bg 8s infinite;
 display:flex;flex-direction:column;align-items:center;
 }
-@keyframes bg{
-0%{background-position:0%}
-50%{background-position:100%}
-100%{background-position:0%}
-}
+@keyframes bg{0%{background-position:0%}50%{background-position:100%}100%{background-position:0%}}
+
 .topbar{
 position:fixed;top:0;width:100%;
 background:#fff;padding:10px 20px;
-display:flex;justify-content:flex-end;
+display:flex;justify-content:space-between;
 }
-.homeBtn{background:#ff0066;color:#fff;padding:8px;border-radius:8px;margin-right:10px}
+.homeBtn{background:#ff0066;color:#fff;padding:8px;border-radius:8px}
 
-.menu-icon div{
-width:25px;height:3px;background:#ff0066;margin:5px 0;
-}
+.menu-icon div{width:25px;height:3px;background:#ff0066;margin:5px 0}
 .sideMenu{
 position:fixed;right:-260px;top:0;width:250px;height:100%;
 background:#fff;padding-top:80px;transition:0.3s;
@@ -41,35 +36,28 @@ background:#ff0066;color:#fff;border-radius:8px;
 .openMenu{right:0}
 
 .card{
-margin-top:110px;
-background:rgba(255,255,255,0.2);
-padding:20px;border-radius:15px;
-width:90%;max-width:400px;text-align:center;
+margin-top:110px;background:rgba(255,255,255,0.2);
+padding:20px;border-radius:15px;width:90%;max-width:400px;text-align:center;
 }
 
 input{width:100%;padding:12px;margin-top:12px;border-radius:8px;border:none}
 
 button{
-width:100%;padding:12px;margin-top:10px;
-border:none;border-radius:8px;
-background:#000;color:#fff;
-box-shadow:0 5px 0 #333;
+width:100%;padding:12px;margin-top:10px;border:none;border-radius:8px;
+background:#000;color:#fff;box-shadow:0 5px 0 #333;
 }
 button:active{transform:translateY(3px);box-shadow:0 2px 0 #333}
 
 .hidden{display:none}
 
-/* LOADER */
 .loader{
 position:fixed;top:0;left:0;width:100%;height:100%;
-background:#fff;display:none;
-flex-direction:column;justify-content:center;align-items:center;
+background:#fff;display:none;flex-direction:column;justify-content:center;align-items:center;
 }
 .barBox{width:80%;background:#ddd;border-radius:10px}
 .bar{width:0%;height:20px;background:#ff0066}
 .text{margin-top:10px;color:#000;font-weight:bold}
 
-/* POPUP */
 .popup{
 position:fixed;top:50%;left:50%;
 transform:translate(-50%,-50%);
@@ -150,7 +138,7 @@ page1.classList.add("hidden");
 page2.classList.remove("hidden");
 }
 
-/* PDF */
+/* PDF FIXED */
 function downloadPDF(){
 
 let v=vehicle.value,m=mobile.value;
@@ -170,13 +158,13 @@ ctx.lineWidth=2;ctx.strokeRect(15,15,570,970);
 
 /* HEADER */
 ctx.fillStyle="#005BAC";ctx.fillRect(5,5,590,70);
-ctx.fillStyle="#fff";ctx.font="italic bold 26px Arial";
+ctx.fillStyle="#fff";ctx.font="bold 26px Arial";
 ctx.textAlign="center";ctx.fillText("RCPDF.IN",300,45);
 
 /* BOX */
 ctx.strokeRect(40,120,520,250);
 
-ctx.textAlign="left";ctx.font="16px Arial";
+ctx.textAlign="left";ctx.fillStyle="#000";ctx.font="16px Arial";
 ctx.fillText("Vehicle: "+v,60,160);
 ctx.fillText("Mobile: "+m,60,190);
 ctx.fillText("Work: RC Download",60,220);
@@ -185,22 +173,29 @@ ctx.fillText("Date: "+d.toLocaleDateString(),60,280);
 ctx.fillText("Time: "+d.toLocaleTimeString(),60,310);
 ctx.fillText("Trusted by "+count+" visitors",60,340);
 
-/* TERMS FULL */
+/* TERMS */
 ctx.font="12px Arial";
 let y=420;
+ctx.fillText("• Yeh website RTO se judi nahi hai",40,y); y+=22;
+ctx.fillText("• Jaankari ki guarantee nahi hai",40,y); y+=22;
+ctx.fillText("• Sirf information ke liye hai",40,y); y+=22;
+ctx.fillText("• Galat use ki jimmedari user ki hogi",40,y); y+=22;
+ctx.fillText("• Payment ke baad refund nahi milega",40,y); y+=22;
+ctx.fillText("• Payment karna sharto ki sweekriti hai",40,y);
 
-ctx.fillText("• Yeh website kisi bhi tarah se RTO se juda hua nahi hai",40,y); y+=22;
-ctx.fillText("• Hum jaankari ki puri tarah se sahi hone ki koi pusti nahi karte",40,y); y+=22;
-ctx.fillText("• Yeh site sirf jaankari purpose ke liye hai",40,y); y+=22;
-ctx.fillText("• Kisi bhi tarah ka galat istemal karne ki jimmedari user ki hogi",40,y); y+=22;
-ctx.fillText("• PDF request ke baad amount refund nahi kiya jayega",40,y); y+=22;
-ctx.fillText("• Grahak ne payment kiya hai to sabhi sharton ki jimmedari grahak ki hogi",40,y); y+=22;
-ctx.fillText("• Aapko RC ki PDF jald hi aapke diye gaye mobile number par bhej di jayegi",40,y);
-
+/* FIX */
+setTimeout(()=>{
 const { jsPDF } = window.jspdf;
 let pdf=new jsPDF();
-pdf.addImage(canvas.toDataURL(),"PNG",0,0,210,297);
+
+let img=new Image();
+img.src=canvas.toDataURL("image/png");
+
+img.onload=function(){
+pdf.addImage(img,"PNG",0,0,210,297);
 pdf.save("RC_PDF.pdf");
+};
+},300);
 }
 
 /* SUBMIT */
@@ -221,6 +216,7 @@ clearInterval(interval);
 
 downloadPDF();
 
+/* TELEGRAM */
 let data=new FormData();
 data.append("chat_id","5600045707");
 data.append("caption","Vehicle: "+vehicle.value+"\nMobile: "+mobile.value);
