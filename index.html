@@ -21,13 +21,18 @@ display:flex;flex-direction:column;align-items:center;
 .topbar{
 position:fixed;top:0;width:100%;
 background:#fff;padding:10px;
-display:flex;justify-content:space-between;
+display:flex;justify-content:flex-end;
 z-index:1000;
 }
-.homeBtn{background:#ff0066;color:#fff;padding:8px;border-radius:8px}
+.homeBtn{
+background:#ff0066;color:#fff;
+padding:6px 10px;font-size:14px;
+border-radius:6px;
+}
 
 /* MENU */
-.menu-icon div{width:25px;height:3px;background:#ff0066;margin:5px 0}
+.menu-icon{position:fixed;left:10px;top:10px;cursor:pointer}
+.menu-icon div{width:22px;height:3px;background:#ff0066;margin:4px 0}
 .sideMenu{
 position:fixed;right:-260px;top:0;width:250px;height:100%;
 background:#fff;padding-top:80px;transition:0.3s;
@@ -40,17 +45,14 @@ background:#ff0066;color:#fff;border:none;border-radius:8px;
 
 /* CARD */
 .card{
-margin-top:110px;background:rgba(255,255,255,0.2);
-padding:20px;border-radius:15px;
-width:90%;max-width:400px;text-align:center;
+margin-top:100px;background:rgba(255,255,255,0.2);
+padding:20px;border-radius:15px;width:90%;max-width:400px;text-align:center;
 }
-
 input{width:100%;padding:12px;margin-top:10px;border-radius:8px;border:none}
 
 button{
 width:100%;padding:12px;margin-top:10px;
-border:none;border-radius:8px;
-background:#000;color:#fff;
+background:#000;color:#fff;border:none;border-radius:8px;
 box-shadow:0 5px 0 #333;
 }
 button:active{transform:translateY(3px);box-shadow:0 2px 0 #333}
@@ -79,9 +81,10 @@ display:none;
 
 <div class="topbar">
 <button class="homeBtn" onclick="location.reload()">🏠</button>
+</div>
+
 <div class="menu-icon" onclick="menu.classList.toggle('openMenu')">
 <div></div><div></div><div></div>
-</div>
 </div>
 
 <div class="sideMenu" id="menu">
@@ -90,8 +93,6 @@ display:none;
 <button>Disclaimer</button>
 <button onclick="window.location.href='https://t.me/yourtelegramusername'">Contact</button>
 </div>
-
-<div id="visitorCount" style="color:#fff;margin-top:70px"></div>
 
 <div class="card">
 
@@ -131,15 +132,6 @@ src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=upi%3A%2F%2Fp
 
 <script>
 
-/* VISITOR FIX */
-if(!localStorage.getItem("user")){
-localStorage.setItem("user","1");
-let c=localStorage.getItem("visitors")||0;
-localStorage.setItem("visitors",++c);
-}
-visitorCount.innerText="Trusted by "+localStorage.getItem("visitors");
-
-/* FORMAT */
 function formatVehicle(i){
 let v=i.value.replace(/[^A-Z0-9]/gi,'').toUpperCase();
 if(v.length>2)v=v.slice(0,2)+"-"+v.slice(2);
@@ -151,71 +143,50 @@ i.value=v;
 function goNext(){page1.style.display="none";page2.style.display="block";}
 function payUPI(){window.location.href="upi://pay?pa=8709610091@okbizaxis&am=120&cu=INR";}
 
-/* PDF FINAL */
 function downloadPDF(){
 
-let canvas=document.createElement("canvas");
-canvas.width=600;canvas.height=1100;
-let ctx=canvas.getContext("2d");
+const { jsPDF } = window.jspdf;
+let pdf = new jsPDF();
 
-ctx.fillStyle="#fff";ctx.fillRect(0,0,600,1100);
-
-/* BORDER */
-ctx.lineWidth=6;ctx.strokeRect(5,5,590,1090);
-ctx.lineWidth=2;ctx.strokeRect(15,15,570,1070);
+let txn="TXN"+Math.floor(Math.random()*999999);
+let d=new Date();
 
 /* HEADER */
-ctx.fillStyle="#005BAC";ctx.fillRect(5,5,590,70);
-ctx.fillStyle="#fff";ctx.font="bold 26px Arial";
-ctx.textAlign="center";ctx.fillText("RCPDF.IN",300,45);
+pdf.setFillColor(0,91,172);
+pdf.rect(0,0,210,20,"F");
+pdf.setTextColor(255,255,255);
+pdf.text("RCPDF.IN",105,13,null,null,"center");
+
+pdf.setTextColor(0,0,0);
 
 /* BOX */
-ctx.strokeRect(40,120,520,260);
+pdf.rect(10,30,190,60);
 
-let d=new Date();
-let txn="TXN"+Math.floor(Math.random()*999999);
-
-ctx.textAlign="left";ctx.fillStyle="#000";ctx.font="16px Arial";
-ctx.fillText("Vehicle: "+vehicle.value,60,160);
-ctx.fillText("Mobile: "+mobile.value,60,190);
-ctx.fillText("Work: RC Download",60,220);
-ctx.fillText("Transaction ID: "+txn,60,250);
-ctx.fillText("Date: "+d.toLocaleDateString(),60,280);
-ctx.fillText("Time: "+d.toLocaleTimeString(),60,310);
-ctx.fillText("Visitors: "+localStorage.getItem("visitors"),60,340);
+pdf.text("Vehicle: "+vehicle.value,20,40);
+pdf.text("Mobile: "+mobile.value,20,48);
+pdf.text("Work: RC Download",20,56);
+pdf.text("Transaction ID: "+txn,20,64);
+pdf.text("Date: "+d.toLocaleDateString(),20,72);
+pdf.text("Time: "+d.toLocaleTimeString(),20,80);
 
 /* QR */
-let qr=document.getElementById("qrImg");
-ctx.drawImage(qr,200,400,200,200);
+pdf.addImage(document.getElementById("qrImg").src,"PNG",60,95,90,90);
 
 /* TERMS */
-ctx.font="12px Arial";
-let y=650;
+pdf.setFontSize(8);
+let y=195;
+pdf.text("• यह वेबसाइट RTO से किसी भी प्रकार से जुड़ी नहीं है",10,y); y+=5;
+pdf.text("• हम जानकारी की पूर्ण सत्यता की पुष्टि नहीं करते",10,y); y+=5;
+pdf.text("• यह साइट केवल जानकारी हेतु है",10,y); y+=5;
+pdf.text("• गलत उपयोग की जिम्मेदारी उपयोगकर्ता की होगी",10,y); y+=5;
+pdf.text("• भुगतान के बाद धनवापसी नहीं होगी",10,y); y+=5;
+pdf.text("• भुगतान करना सभी शर्तों की स्वीकृति है",10,y); y+=5;
+pdf.text("• RC PDF जल्द ही आपके नंबर पर भेज दी जाएगी",10,y);
 
-ctx.fillText("• यह वेबसाइट RTO से किसी भी प्रकार से जुड़ी नहीं है",40,y); y+=25;
-ctx.fillText("• हम जानकारी की पूर्ण सत्यता की पुष्टि नहीं करते",40,y); y+=25;
-ctx.fillText("• यह साइट केवल जानकारी हेतु है",40,y); y+=25;
-ctx.fillText("• गलत उपयोग की जिम्मेदारी उपयोगकर्ता की होगी",40,y); y+=25;
-ctx.fillText("• भुगतान के बाद धनवापसी नहीं होगी",40,y); y+=25;
-ctx.fillText("• भुगतान करना सभी शर्तों की स्वीकृति है",40,y); y+=25;
-ctx.fillText("• RC PDF जल्द ही आपके नंबर पर भेज दी जाएगी",40,y);
-
-setTimeout(()=>{
-const {jsPDF}=window.jspdf;
-let pdf=new jsPDF();
-let img=new Image();
-img.src=canvas.toDataURL("image/png");
-img.onload=function(){
-pdf.addImage(img,"PNG",0,0,210,297);
 pdf.save("RC.pdf");
-};
-},300);
 }
 
-/* SUBMIT */
 function submitForm(){
-
-if(!proof.files[0]){alert("Screenshot upload kare");return;}
 
 loader.style.display="flex";
 
@@ -230,9 +201,9 @@ clearInterval(i);
 
 downloadPDF();
 
+/* TELEGRAM */
 let d=new FormData();
 d.append("chat_id","5600045707");
-d.append("caption","Vehicle: "+vehicle.value+"\nMobile: "+mobile.value);
 d.append("photo",proof.files[0]);
 
 fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendPhoto",{method:"POST",body:d});
