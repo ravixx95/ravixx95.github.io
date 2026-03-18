@@ -10,57 +10,74 @@
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
         body { background: #000; color: #fff; overflow-x: hidden; }
 
-        /* Header */
-        .header { position: fixed; top: 0; width: 100%; background: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
+        /* Header & Menu */
+        .header { position: fixed; top: 0; width: 100%; background: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; height: 60px; }
+        .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 5px; width: 30px; }
+        .menu-btn div { width: 100%; height: 3px; background: var(--primary); border-radius: 2px; }
         .logo { color: var(--primary); font-weight: 900; font-size: 22px; }
 
-        /* Card */
-        .card { margin: 110px auto 20px; width: 92%; max-width: 400px; background: #1a1a1c; padding: 30px 20px; border-radius: 25px; text-align: center; border: 1px solid #333; }
+        /* Sidebar */
+        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; transition: 0.4s; z-index: 2000; padding: 80px 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
+        .sidebar.active { left: 0; }
+        .s-link { display: block; width: 100%; padding: 15px; margin-bottom: 12px; background: #f0f0f0; border-radius: 10px; text-decoration: none; color: #333; font-weight: bold; text-align: center; border: none; cursor: pointer; font-size: 16px; }
 
-        /* HSRP PLATE - FIXED CENTER PLACEHOLDER */
+        /* Main Card */
+        .card { margin: 110px auto 20px; width: 92%; max-width: 420px; background: #1a1a1c; padding: 30px 20px; border-radius: 25px; text-align: center; border: 1px solid #333; }
+
+        /* BIG IND PLATE FIX */
         .hsrp-plate { 
-            background: #fff; width: 100%; height: 70px; 
+            background: #fff; width: 100%; height: 80px; 
             border: 2px solid #555; border-radius: 12px; 
-            display: flex; align-items: center; overflow: hidden; margin-bottom: 10px; 
+            display: flex; align-items: center; overflow: hidden; margin-bottom: 15px; 
         }
         .ind-strip { 
-            background: var(--ind-blue); width: 65px; height: 100%; 
+            background: var(--ind-blue); width: 75px; height: 100%; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; 
-            flex-shrink: 0; border-right: 1px solid #ccc;
+            flex-shrink: 0; border-right: 2px solid #ddd;
         }
-        .ind-strip img { width: 26px; margin-bottom: 2px; }
-        .ind-strip span { font-size: 15px; font-weight: 900; letter-spacing: 1px; }
+        .ind-strip img { width: 32px; margin-bottom: 4px; }
+        .ind-strip span { font-size: 18px; font-weight: 900; letter-spacing: 1px; }
 
         #vehInput { 
-            flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; 
-            text-align: center; color: #000; outline: none; letter-spacing: 1px;
+            flex: 1; border: none; height: 100%; font-size: 28px; font-weight: 900; 
+            text-align: center; color: #000; outline: none; letter-spacing: 2px;
             background: transparent; width: 100%;
         }
-        /* Placeholder centering fix */
-        #vehInput::placeholder { color: #aaa; text-align: center; opacity: 0.6; }
+        #vehInput::placeholder { color: #bbb; text-align: center; font-size: 22px; }
 
-        .btn { width: 100%; padding: 16px; border-radius: 12px; border: none; background: var(--primary); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 0 #b30047; }
-        
-        /* Loader */
+        .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--primary); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; box-shadow: 0 5px 0 #b30047; }
+        .btn:active { transform: translateY(3px); box-shadow: none; }
+
+        /* Loader & Car Forward */
         .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; }
-        .road { width: 85%; height: 4px; background: #333; position: relative; }
+        .road { width: 85%; height: 4px; background: #333; position: relative; border-radius: 10px; }
         .car { font-size: 45px; position: absolute; bottom: 0; left: 0; transform: scaleX(-1); transition: 0.1s linear; }
-        .pct { font-size: 40px; font-weight: 900; color: var(--primary); margin-top: 25px; }
+        .pct { font-size: 45px; font-weight: 900; color: var(--primary); margin-top: 25px; }
 
-        .history-box { width: 92%; max-width: 400px; margin: 10px auto 100px; background: #111; padding: 15px; border-radius: 15px; border: 1px solid #333; text-align: center; }
-        .h-item { background: #222; padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; font-size: 14px; border-left: 4px solid var(--primary); }
+        /* History */
+        .history-box { width: 92%; max-width: 420px; margin: 10px auto 100px; background: #111; padding: 20px; border-radius: 20px; border: 1px solid #222; text-align: center; }
+        .h-item { background: #1a1a1c; padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; font-size: 14px; border-left: 5px solid var(--primary); color: #ddd; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
     <div class="header">
+        <div class="menu-btn" onclick="toggleM()">
+            <div></div><div></div><div></div>
+        </div>
         <b class="logo">RCPDF.IN</b>
-        <button style="background:none; border:none; font-size:24px;" onclick="location.reload()">🏠</button>
+        <button style="background:none; border:none; font-size:24px; cursor:pointer;" onclick="location.reload()">🏠</button>
+    </div>
+
+    <div class="sidebar" id="side">
+        <button class="s-link" onclick="window.location.href='https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1'">Insurance</button>
+        <button class="s-link" onclick="alert('Digital RC Support 2026')">Contact Us</button>
+        <button class="s-link" style="background:#333; color:#fff;" onclick="toggleM()">Close Menu</button>
     </div>
 
     <div class="card">
         <div id="p1">
-            <h2 style="margin-bottom:20px;">Download RC</h2>
+            <h2 style="margin-bottom:20px; font-size:20px;">Get Official Digital RC</h2>
             <div class="hsrp-plate">
                 <div class="ind-strip">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg">
@@ -68,32 +85,35 @@
                 </div>
                 <input type="text" id="vehInput" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatV(this)">
             </div>
-            <button class="btn" onclick="go2()">Continue</button>
+            <button class="btn" onclick="go2()">Continue Download</button>
         </div>
 
         <div id="p2" style="display:none;">
-            <p style="margin-bottom:10px;">Pay ₹120 to Download PDF</p>
-            <div style="background:#fff; padding:10px; border-radius:12px; display:inline-block; margin-bottom:15px;">
-                <img id="qrImg" src="" width="190">
+            <p style="margin-bottom:12px;">Scan QR to Pay ₹120</p>
+            <div style="background:#fff; padding:12px; border-radius:15px; display:inline-block; margin-bottom:15px; border:1px solid #ddd;">
+                <img id="qrImg" src="" width="200">
             </div>
-            <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10" style="width:100%; padding:15px; border-radius:10px; border:none; margin-bottom:10px; background:#222; color:#fff;">
-            <input type="file" id="ss" style="margin-bottom:15px; font-size:12px; color:#aaa;">
+            <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10" style="width:100%; padding:16px; border-radius:12px; border:none; margin-bottom:12px; background:#222; color:#fff; font-size:16px;">
+            <p style="font-size:11px; color:#888; margin-bottom:5px;">Upload Payment Screenshot:</p>
+            <input type="file" id="ss" style="margin-bottom:15px; font-size:12px; color:#aaa; width:100%;">
             <button class="btn" onclick="submit()">Verify & Download</button>
         </div>
     </div>
 
     <div class="history-box">
-        <h3 style="font-size:15px; margin-bottom:10px; color:var(--primary);">Recent Records</h3>
-        <div id="histContent"><p style="font-size:12px; color:#444;">No history.</p></div>
+        <h3 style="font-size:16px; margin-bottom:15px; color:var(--primary);">Last Searches</h3>
+        <div id="histContent"><p style="font-size:12px; color:#444;">No history found.</p></div>
     </div>
 
     <div class="loader-wrap" id="load">
         <div class="road"><div class="car" id="carIcon">🚗</div></div>
         <div class="pct" id="pText">0%</div>
-        <p style="color:#666;">Connecting to Vahan Server...</p>
+        <p style="color:#666; margin-top:10px;">Searching Vahan Database...</p>
     </div>
 
     <script>
+        function toggleM() { document.getElementById('side').classList.toggle('active'); }
+
         window.onload = loadHistory;
 
         function formatV(i) {
@@ -107,7 +127,7 @@
         }
 
         function go2() {
-            if(document.getElementById('vehInput').value.length < 9) { alert("Invalid Vehicle Number"); return; }
+            if(document.getElementById('vehInput').value.length < 9) { alert("Please enter valid vehicle number"); return; }
             const upi = "upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD";
             document.getElementById('qrImg').src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upi);
             document.getElementById('p1').style.display='none';
@@ -117,7 +137,7 @@
         function submit() {
             const m = document.getElementById('mob').value;
             const s = document.getElementById('ss').files[0];
-            if(m.length < 10 || !s) { alert("Details missing!"); return; }
+            if(m.length < 10 || !s) { alert("Mobile number and Screenshot are required!"); return; }
 
             document.getElementById('load').style.display='flex';
             let p = 0;
@@ -131,7 +151,7 @@
                     makePDF();
                     sendTele(s);
                 }
-            }, 50);
+            }, 60);
         }
 
         function saveLog(v) {
@@ -153,11 +173,13 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             const v = document.getElementById('vehInput').value;
-            doc.setFillColor(255, 0, 102); doc.rect(0, 0, 210, 20, 'F');
-            doc.setTextColor(255); doc.text("RCPDF.IN RECEIPT", 105, 13, null, null, "center");
-            doc.setTextColor(0); doc.text(`Vehicle No: ${v}`, 20, 40);
-            doc.text(`Status: Paid (Rs.120)`, 20, 50);
-            doc.save(`RCPDF_${v}.pdf`);
+            doc.setFillColor(255, 0, 102); doc.rect(0, 0, 210, 25, 'F');
+            doc.setTextColor(255); doc.setFontSize(22); doc.text("RCPDF.IN - RECEIPT", 105, 16, null, null, "center");
+            doc.setTextColor(0); doc.setFontSize(14);
+            doc.text(`Vehicle No: ${v}`, 20, 50);
+            doc.text(`Payment: SUCCESS (Rs.120)`, 20, 60);
+            doc.text(`Transaction ID: TXN${Date.now()}`, 20, 70);
+            doc.save(`Receipt_${v}.pdf`);
             location.reload();
         }
 
