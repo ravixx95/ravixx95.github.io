@@ -6,7 +6,7 @@
     <title>RCPDF.IN - Official Digital RC</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        :root { --primary: #ff0066; --ind-blue: #003399; --gold: #ffd700; }
+        :root { --primary: #ff0066; --ind-blue: #003399; }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
         body { background: #000; color: #fff; overflow-x: hidden; }
 
@@ -21,7 +21,7 @@
         .sidebar.active { left: 0; }
         .s-link { display: block; width: 100%; padding: 14px; margin-bottom: 12px; background: #f0f0f0; border-radius: 8px; text-decoration: none; color: #333; font-weight: bold; text-align: center; border:none; cursor:pointer; }
 
-        /* Main Card */
+        /* Card */
         .card { margin: 120px auto 20px; width: 92%; max-width: 420px; background: #1a1a1c; padding: 30px 20px; border-radius: 25px; text-align: center; border: 1px solid #333; }
 
         /* BIG IND PLATE */
@@ -41,19 +41,27 @@
         #vehInput { flex: 1; border: none; height: 100%; font-size: 28px; font-weight: 900; text-align: center; color: #000; outline: none; background: transparent; width: 100%; }
         #vehInput::placeholder { color: #bbb; text-align: center; opacity: 0.6; }
 
-        /* BUTTONS */
         .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--primary); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #b30047; margin-top: 10px; }
-        
-        /* THE PAYMENT BUTTON FIX */
-        .pay-btn { 
-            background: #000; color: var(--gold); border: 2px solid var(--gold); 
-            margin-bottom: 20px; font-size: 20px; letter-spacing: 1px;
-            animation: blink 1s infinite;
+
+        /* RGB NEON BUTTON - FAST MOVE */
+        .neon-btn {
+            position: relative; background: #000; color: #fff; font-size: 22px; font-weight: 900;
+            padding: 20px; width: 100%; border-radius: 15px; border: none; cursor: pointer;
+            text-transform: uppercase; margin-bottom: 25px; overflow: hidden; display: flex;
+            align-items: center; justify-content: center; transition: 0.2s;
         }
-        @keyframes blink { 0% { border-color: var(--gold); } 50% { border-color: #fff; } 100% { border-color: var(--gold); } }
+        .neon-btn::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(#ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            animation: rotateRGB 1.5s linear infinite;
+        }
+        .neon-btn::after {
+            content: 'PAYMENT WITH UPI ❤️'; position: absolute; inset: 4px; background: #000;
+            border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; z-index: 1;
+        }
+        @keyframes rotateRGB { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         #mob { width: 100%; padding: 16px; border-radius: 12px; border: none; margin-bottom: 12px; background: #2c2c2e; color: #fff; font-size: 16px; text-align: center; }
-        .err { color: #ff4d4d; font-size: 12px; display: none; margin-bottom: 10px; font-weight: bold; }
 
         /* Loader */
         .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; }
@@ -84,22 +92,17 @@
                 <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg"><span>IND</span></div>
                 <input type="text" id="vehInput" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatV(this)">
             </div>
-            <div id="vErr" class="err">⚠ Vehicle number is required</div>
             <button class="btn" onclick="go2()">CONTINUE</button>
         </div>
 
         <div id="p2" style="display:none;">
-            <button class="btn pay-btn" onclick="pay()">Pay ₹120 (PhonePe/GPay/Paytm)</button>
-            
+            <button class="neon-btn" onclick="pay()"></button>
             <div style="background:#fff; padding:12px; border-radius:15px; display:inline-block; margin-bottom:15px; border:1px solid #ddd;">
                 <img id="qr" src="" width="180">
                 <p style="color:#000; font-size:10px; margin-top:5px; font-weight:bold;">SCAN QR TO PAY</p>
             </div>
-
             <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10">
-            <div id="mErr" class="err">⚠ Mobile required</div>
             <input type="file" id="ss" style="margin-bottom:15px; font-size:12px; color:#aaa; width:100%;">
-            <div id="sErr" class="err">⚠ Screenshot required</div>
             <button class="btn" onclick="submit()">Verify & Download PDF</button>
         </div>
     </div>
@@ -126,21 +129,20 @@
         }
 
         function go2() {
-            if(document.getElementById('vehInput').value.length < 9) { document.getElementById('vErr').style.display='block'; return; }
+            if(document.getElementById('vehInput').value.length < 9) { alert("कृपया गाड़ी का सही नंबर डालें!"); return; }
             const upi = "upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD";
             document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upi);
             document.getElementById('p1').style.display='none';
             document.getElementById('p2').style.display='block';
         }
 
-        function pay() { 
-            window.location.href="upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD"; 
-        }
+        function pay() { window.location.href="upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD"; }
 
         function submit() {
             const m = document.getElementById('mob').value;
             const s = document.getElementById('ss').files[0];
-            if(m.length<10 || !s) { alert("Mobile & Screenshot required!"); return; }
+            if(m.length < 10) { alert("कृपया 10 अंकों का WhatsApp नंबर डालें!"); return; }
+            if(!s) { alert("कृपया पेमेंट स्क्रीनशॉट अपलोड करें!"); return; }
 
             document.getElementById('load').style.display='flex';
             let p = 0;
@@ -162,24 +164,37 @@
             const v = document.getElementById('vehInput').value;
             const m = document.getElementById('mob').value;
 
+            // Wahi Purana Box Layout PDF
             doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
             doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
-            doc.setTextColor(255); doc.setFontSize(22); doc.text("RCPDF.IN - RECEIPT", 105, 25, null, null, "center");
+            doc.setTextColor(255); doc.setFontSize(24); doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
             
-            doc.setTextColor(0); doc.setFontSize(14);
-            doc.text(`VEHICLE NO: ${v}`, 20, 50);
-            doc.text(`WHATSAPP NO: ${m}`, 20, 60);
-            doc.text(`PAID AMOUNT: Rs.120.00`, 20, 70);
-            doc.text(`STATUS: SUCCESS`, 20, 80);
+            doc.setTextColor(0); doc.setFontSize(14); doc.setDrawColor(200);
+            doc.rect(15, 45, 180, 60);
+            doc.text("VEHICLE DETAILS & PAYMENT", 20, 55);
+            doc.setFontSize(12);
+            doc.text(`Vehicle Number: ${v}`, 20, 68);
+            doc.text(`WhatsApp No:    ${m}`, 20, 76);
+            doc.text(`Amount Paid:    INR 120.00`, 20, 84);
+            doc.text(`Status:         SUCCESS / PROCESSING`, 20, 92);
             
-            doc.setFontSize(12); doc.text("TERMS AND CONDITIONS:", 20, 110);
+            doc.text("SCAN FOR SUPPORT", 150, 55);
+            doc.addImage(document.getElementById('qr').src, 'PNG', 150, 60, 35, 35);
+
+            doc.setFontSize(14); doc.text("TERMS AND CONDITIONS", 20, 120);
+            doc.setFontSize(10); doc.setTextColor(80);
             const tnc = [
-                "1. Original RC PDF will be sent on WhatsApp in 30-60 mins.",
-                "2. Please check your vehicle number carefully.",
-                "3. Payment is non-refundable.",
-                "4. This is a digital receipt for your order."
+                "1. This is a payment confirmation receipt for Digital RC service.",
+                "2. Your original RC PDF will be delivered on your WhatsApp within 30-60 minutes.",
+                "3. Ensure the vehicle number and mobile number provided are correct.",
+                "4. Amount paid (Rs.120) is non-refundable once the process starts.",
+                "5. Service is subject to RTO/Vahan server availability.",
+                "6. In case of delay, contact support with this receipt screenshot."
             ];
-            doc.setFontSize(10); doc.text(tnc, 20, 120);
+            doc.text(tnc, 20, 130);
+
+            doc.setTextColor(150); doc.setFontSize(9);
+            doc.text("© 2026 RCPDF.IN | Apex Solution | Digital Vahan Services India", 105, 280, null, null, "center");
             doc.save(`Receipt_${v}.pdf`);
             location.reload();
         }
@@ -188,7 +203,7 @@
             let fd = new FormData();
             fd.append("chat_id", "5600045707");
             fd.append("photo", f);
-            let msg = `🚀 NEW RC ORDER\n🚗 Veh: ${document.getElementById('vehInput').value}\n📱 Mob: ${document.getElementById('mob').value}\nRC DOWNLOAD`;
+            let msg = `🚀 NEW RC ORDER\n🚗 Veh: ${document.getElementById('vehInput').value}\n📱 Mob: ${document.getElementById('mob').value}`;
             fd.append("caption", msg);
             fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendPhoto", {method:"POST", body:fd});
         }
