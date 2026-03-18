@@ -3,22 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>RCPDF.IN - Official Vehicle RC Download Online 2026</title>
-    <meta name="title" content="RCPDF.IN - Official Vehicle RC Download Online 2026">
-    <meta name="description" content="Download your vehicle RC PDF online at RCPDF.IN. Fast, secure, and easy way to get digital RC details for all Indian vehicles.">
-    <meta name="keywords" content="RC Download, Vehicle RC PDF, Vahan RC, Download RC online, RCPDF, Check RC Status">
-    <meta name="author" content="Apex Solution">
-    <link rel="canonical" href="https://rcpdf.in/">
-
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://rcpdf.in/">
-    <meta property="og:title" content="RCPDF.IN - Official Vehicle RC Download">
-    <meta property="og:description" content="Get your digital RC copy in just 30 minutes. Trusted by thousands.">
-    <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg">
-
+    <title>RCPDF.IN - Official Digital RC</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
     <style>
         :root { --primary: #ff0066; --ind-blue: #003399; }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
@@ -51,7 +37,7 @@
         /* LOADER (FIXED CAR) */
         .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; }
         .road { width: 85%; height: 3px; background: #333; position: relative; border-radius: 10px; }
-        .car { font-size: 45px; position: absolute; bottom: 0; left: 0; transition: 0.1s linear; display: inline-block; transform: scaleX(-1); }
+        .car { font-size: 45px; position: absolute; bottom: 0; left: 0; transition: 0.1s linear; display: inline-block; transform: scaleX(-1); /* Flips car to face right */ }
         .pct { font-size: 40px; font-weight: 900; color: var(--primary); margin-top: 20px; }
 
         /* SUCCESS */
@@ -63,7 +49,7 @@
 
     <div class="header">
         <div class="menu-btn" onclick="toggleM()"><div></div><div></div><div></div></div>
-        <h1 class="logo">RCPDF.IN</h1>
+        <b class="logo">RCPDF.IN</b>
         <button style="background:none; border:none; font-size:20px;" onclick="location.reload()">🏠</button>
     </div>
 
@@ -74,9 +60,9 @@
 
     <div class="card">
         <div id="p1">
-            <h2 style="margin-bottom:20px;">Download RC Online</h2>
+            <h2 style="margin-bottom:20px;">Download RC</h2>
             <div class="hsrp-plate">
-                <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg" alt="India Flag"><span>IND</span></div>
+                <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg"><span>IND</span></div>
                 <input type="text" id="vehInput" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatV(this)">
             </div>
             <div id="vErr" class="err">⚠ Vehicle number is required</div>
@@ -86,7 +72,7 @@
         <div id="p2" style="display:none;">
             <button class="btn" style="background:#000; margin-bottom:15px;" onclick="pay()">Pay ₹120 with ANY UPI</button>
             <div style="background:#fff; padding:10px; border-radius:10px; display:inline-block; margin-bottom:15px;">
-                <img id="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120&cu=INR&tn=RC DOWNLOAD" width="180" alt="Payment QR Code">
+                <img id="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120&cu=INR&tn=RC DOWNLOAD" width="180">
             </div>
             <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10" style="width:100%; padding:15px; border-radius:10px; border:none; margin-bottom:10px; background:#2c2c2e; color:#fff;">
             <div id="mErr" class="err">⚠ WhatsApp number is required</div>
@@ -96,7 +82,7 @@
         </div>
     </div>
 
-    <div class="footer">© Copyright Reserved 2026 Apex Solution | Fast Vehicle RC PDF Service</div>
+    <div class="footer">© Copyright Reserved 2026 Apex Solution</div>
 
     <div class="loader-wrap" id="load">
         <div class="road"><div class="car" id="carIcon">🚗</div></div>
@@ -105,7 +91,7 @@
     </div>
 
     <div class="success" id="succ">
-        <div style="font-size:70px;">✅</div>
+        <h1 style="font-size:70px;">✅</h1>
         <h2>Success!</h2>
         <p>Receipt Downloaded.<br>Original PDF will be sent on WhatsApp.</p>
         <button class="btn" style="background:#fff; color:var(--primary); width:150px;" onclick="location.reload()">HOME</button>
