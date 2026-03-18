@@ -85,7 +85,7 @@ display:none;
 <button onclick="goNext()">Continue</button>
 </div><div id="page2" style="display:none">
 <button onclick="payUPI()">Pay ₹120 with UPI</button><!-- ✅ FIXED QR (AUTO ₹120 WORKING) --><img id="qrImg" class="qr"
-src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120&cu=INR&tn=RC%20Download">
+src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=upi%3A%2F%2Fpay%3Fpa%3D8709610091%40okbizaxis%26pn%3DRCPDF%26am%3D120%26cu%3DINR%26tn%3DRC%20Download">
 
 <input id="mobile" placeholder="Mobile Number">
 <input type="file" id="proof"><button onclick="submitForm()">Submit</button>
