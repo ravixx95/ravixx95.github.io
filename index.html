@@ -3,237 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCPDF.IN - Online RC Download</title>
+    <title>RCPDF.IN - Fast RC Download</title>
     
-    <meta name="description" content="Download Vehicle RC Online at RCPDF.IN. Fast and Secure Service.">
-    <meta name="keywords" content="RC Download, Online RTO, Vehicle RC PDF">
+    <meta name="description" content="Download Vehicle RC PDF online at RCPDF.IN. Safe and Secure Service.">
+    <meta name="keywords" content="RC Download, Online RTO, Vehicle RC PDF, BR-09 RC">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <style>
-        :root {
-            --primary: #00ffcc; /* Cyan Highlight */
-            --bg-dark: #0a0a0c;
-            --card-bg: rgba(255, 255, 255, 0.05);
+        :root { --primary: #ff0066; --bg: #0f0f12; --card-glass: rgba(255, 255, 255, 0.1); }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif; }
+        
+        body { background: var(--bg); color: #fff; overflow-x: hidden; min-height: 100vh; }
+
+        /* Header */
+        .topbar {
+            position: fixed; top: 0; width: 100%; background: #fff; padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center; z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .menu-icon { cursor: pointer; display: flex; flex-direction: column; gap: 4px; }
+        .menu-icon div { width: 25px; height: 3px; background: var(--primary); border-radius: 2px; }
+        .home-btn { background: var(--primary); color: #fff; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed; top: 0; right: -280px; width: 260px; height: 100%;
+            background: #fff; transition: 0.4s ease; z-index: 2000; padding: 80px 20px;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.5); color: #333;
+        }
+        .sidebar.active { right: 0; }
+        .side-btn { width: 100%; padding: 12px; margin-bottom: 10px; border: none; background: var(--primary); color: #fff; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .history-item { font-size: 13px; border-bottom: 1px solid #eee; padding: 10px 0; color: #444; }
+
+        /* Main UI Card */
+        .main-card {
+            margin: 100px auto 30px; width: 92%; max-width: 420px;
+            background: var(--card-glass); backdrop-filter: blur(15px);
+            padding: 25px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.1);
+            text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-
-        body {
-            background-color: var(--bg-dark);
-            background-image: radial-gradient(circle at top right, #1a1a2e, transparent), 
-                              radial-gradient(circle at bottom left, #16213e, transparent);
-            color: #fff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-x: hidden;
-        }
-
-        /* Top Bar */
-        .header {
-            width: 100%;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: 1px; color: var(--primary); }
-
-        /* Main Card */
-        .container {
-            width: 90%;
-            max-width: 420px;
-            margin-top: 40px;
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 24px;
-            padding: 30px;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-        }
-
-        h2 { font-size: 1.2rem; margin-bottom: 20px; text-align: center; color: #eee; }
-
+        h2 { font-size: 1.4rem; margin-bottom: 15px; }
         input {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.05);
-            color: #fff;
-            font-size: 1rem;
-            outline: none;
-            transition: 0.3s;
+            width: 100%; padding: 16px; margin: 12px 0; border-radius: 12px;
+            border: none; font-size: 18px; text-align: center; font-weight: bold; outline: none;
         }
 
-        input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0,255,204,0.2); }
-
-        .btn {
-            width: 100%;
-            padding: 16px;
-            border-radius: 12px;
-            border: none;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
+        .action-btn {
+            width: 100%; padding: 16px; border-radius: 12px; border: none;
+            background: var(--primary); color: #fff; font-size: 16px; font-weight: bold;
+            box-shadow: 0 5px 0 #b30047; cursor: pointer; transition: 0.2s;
         }
+        .action-btn:active { transform: translateY(3px); box-shadow: none; }
 
-        .btn-pay { background: var(--primary); color: #000; box-shadow: 0 10px 20px -5px rgba(0,255,204,0.4); }
-        .btn-upi { background: #fff; color: #000; margin-bottom: 20px; }
+        /* UPI Grid */
+        .upi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
+        .upi-item { background: #fff; padding: 12px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid #ddd; }
+        .upi-item img { height: 22px; width: auto; pointer-events: none; }
 
-        /* Modern Loader */
-        .loader-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
+        .qr-box { background: #fff; padding: 15px; border-radius: 15px; margin: 15px 0; display: inline-block; }
+        .qr-box img { width: 180px; height: 180px; }
+
+        /* Loader */
+        .loader-screen {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 5000;
             display: none; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 9999;
+        }
+        .progress-bar { width: 75%; height: 12px; background: #222; border-radius: 10px; overflow: hidden; margin-bottom: 15px; border: 1px solid #444; }
+        .progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #ff0066, #00d2ff); transition: 0.1s; }
+
+        /* Full Screen Success Popup */
+        .success-popup {
+            position: fixed; inset: 0; background: var(--primary); z-index: 6000;
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; color: #fff; padding: 30px;
         }
 
-        .loader-circle {
-            width: 120px; height: 120px;
-            border: 3px solid rgba(255,255,255,0.1);
-            border-top: 3px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .progress-text { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
-
-        /* Refund Text */
-        .refund-note {
-            background: rgba(255, 68, 68, 0.1);
-            border: 1px solid rgba(255, 68, 68, 0.2);
-            padding: 12px;
-            border-radius: 10px;
-            margin-top: 20px;
-            font-size: 0.85rem;
-            color: #ffbbbb;
-            text-align: center;
-        }
-
-        .footer { margin-top: 40px; font-size: 0.8rem; opacity: 0.5; padding-bottom: 20px; }
-
-        #qr-wrap { background: #fff; padding: 15px; border-radius: 15px; margin: 0 auto 20px; width: 200px; }
-        #qr-wrap img { width: 100%; display: block; }
+        .refund-note { font-size: 11px; color: #ff99bb; margin-top: 15px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 8px; }
+        
+        #ssInput { margin-top: 5px; color: #fff; font-size: 14px; background: transparent; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <div class="header">
-        <div class="logo">RCPDF.IN</div>
+    <div class="topbar">
+        <div class="menu-icon" onclick="toggleMenu()">
+            <div></div><div></div><div></div>
+        </div>
+        <div style="color:var(--primary); font-weight:900; font-size: 20px;">RCPDF.IN</div>
+        <button class="home-btn" onclick="location.reload()">🏠 Home</button>
     </div>
 
-    <div class="container">
-        <div id="step1">
-            <h2>Vehicle Registration</h2>
-            <input type="text" id="veh_num" placeholder="BR 01 AB 1234" oninput="this.value=this.value.toUpperCase()">
-            <button class="btn btn-pay" onclick="toStep2()">Next Process</button>
+    <div class="sidebar" id="sidebar">
+        <h3 style="margin-bottom:20px; border-bottom: 2px solid var(--primary); padding-bottom: 5px;">User Menu</h3>
+        <button class="side-btn" onclick="showHistory()">My Request History</button>
+        <button class="side-btn" style="background:#00c853;" onclick="window.open('https://t.me/yourtelegramusername')">Support (Telegram)</button>
+        
+        <div id="history-list" style="margin-top:20px; max-height: 350px; overflow-y: auto;">
+            </div>
+        <button class="side-btn" style="background:#333; margin-top:20px;" onclick="toggleMenu()">Close Menu</button>
+    </div>
+
+    <div class="main-card">
+        <div id="page1">
+            <h2>Download RC PDF</h2>
+            <p style="font-size:13px; opacity:0.7;">Enter vehicle number below</p>
+            <input type="text" id="vehInput" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatVehicle(this)">
+            <button class="action-btn" onclick="showPage2()">Proceed to Payment</button>
         </div>
 
-        <div id="step2" style="display:none;">
-            <button class="btn btn-upi" onclick="openUPI()">Pay ₹120 (UPI App)</button>
-            <div id="qr-wrap">
-                <img id="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120&cu=INR">
+        <div id="page2" style="display:none;">
+            <p style="font-size: 14px; font-weight: bold; margin-bottom: 10px;">Select App & Pay ₹120</p>
+            
+            <div class="upi-grid">
+                <div class="upi-item" onclick="payNow()"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="GPay"></div>
+                <div class="upi-item" onclick="payNow()"><img src="https://download.logo.wine/logo/PhonePe/PhonePe-Logo.wine.png" alt="PhonePe"></div>
+                <div class="upi-item" onclick="payNow()"><img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm"></div>
+                <div class="upi-item" onclick="payNow()"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/BHIM_logo.svg" alt="BHIM"></div>
             </div>
-            <input type="tel" id="user_mob" placeholder="WhatsApp Number" maxlength="10">
-            <p style="font-size: 0.8rem; margin-bottom: 5px;">Upload Screenshot:</p>
-            <input type="file" id="ss_img" accept="image/*">
-            <button class="btn btn-pay" onclick="processOrder()">Verify & Download</button>
 
-            <div class="refund-note">
-                ⚠️ <b>ध्यान दें:</b> एक बार भुगतान सफल होने के बाद, किसी भी स्थिति में <b>Refund (पैसे वापस)</b> नहीं किया जाएगा।
+            <div class="qr-box">
+                <img id="qrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120&cu=INR&tn=RC-Download-Service">
             </div>
+
+            <input type="tel" id="mobInput" placeholder="WhatsApp Number" maxlength="10">
+            <p style="font-size:12px; margin-bottom:5px; text-align: left;">Upload Payment Screenshot:</p>
+            <input type="file" id="ssInput" accept="image/*">
+            
+            <button class="action-btn" style="margin-top: 15px;" onclick="startProcess()">Verify & Download</button>
+            <p class="refund-note">⚠️ Note: No refund will be initiated after payment.</p>
         </div>
     </div>
 
-    <div class="footer">© 2026 Apex Solution | Secure Digital Portal</div>
+    <div class="loader-screen" id="loader">
+        <div class="progress-bar"><div class="progress-fill" id="fill"></div></div>
+        <div id="percentText" style="font-size:32px; font-weight:bold; color: var(--primary);">0%</div>
+        <p style="margin-top:10px; color:#eee; letter-spacing: 1px;">Fetching RC from Vahan Server...</p>
+    </div>
 
-    <div class="loader-overlay" id="loading">
-        <div class="loader-circle"></div>
-        <div class="progress-text" id="prog_val">0%</div>
-        <p style="margin-top: 10px; letter-spacing: 1px; color: #888;">Fetching RC Details from Vahan Server...</p>
+    <div class="success-popup" id="successPopup">
+        <div style="font-size: 80px; margin-bottom: 10px;">✅</div>
+        <h1 style="font-size: 28px;">Request Submitted!</h1>
+        <p style="margin: 20px 0; font-size: 18px; line-height: 1.5;">Your receipt is downloaded.<br>Final RC PDF will be sent to your WhatsApp shortly.</p>
+        <button class="action-btn" style="background:#fff; color:var(--primary); width:220px; box-shadow: 0 5px 0 #ddd;" onclick="location.reload()">Back to Home</button>
     </div>
 
     <script>
-        // Security: F12 Disable
+        // Security: Disable F12 and Ctrl+Shift+I
         document.onkeydown = function(e) {
             if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73)) return false;
         };
 
-        const B_TOK = "8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E";
-        const C_ID = "5600045707";
+        // Vehicle Format: BR-09-AB-1234
+        function formatVehicle(i) {
+            let v = i.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            let out = "";
+            if (v.length > 0) out += v.substring(0, 2);
+            if (v.length > 2) out += "-" + v.substring(2, 4);
+            if (v.length > 4) out += "-" + v.substring(4, 6);
+            if (v.length > 6) out += "-" + v.substring(6, 10);
+            i.value = out;
+        }
 
-        function toStep2() {
-            if(document.getElementById('veh_num').value.length < 6) {
-                alert("Please enter valid Vehicle Number"); return;
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
+
+        function showPage2() {
+            const veh = document.getElementById('vehInput').value;
+            if(veh.length < 10) { alert("Please enter valid vehicle number"); return; }
+            document.getElementById('page1').style.display='none';
+            document.getElementById('page2').style.display='block';
+        }
+
+        function payNow() {
+            window.location.href = "upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120&cu=INR&tn=RC-Download-Service";
+        }
+
+        // Local History Storage
+        function saveToHistory(v) {
+            let history = JSON.parse(localStorage.getItem('rc_history') || "[]");
+            history.push({veh: v, date: new Date().toLocaleString()});
+            localStorage.setItem('rc_history', JSON.stringify(history));
+        }
+
+        function showHistory() {
+            let list = document.getElementById('history-list');
+            let data = JSON.parse(localStorage.getItem('rc_history') || "[]");
+            list.innerHTML = data.length ? "" : "<p style='color:#888'>No recent requests.</p>";
+            data.reverse().forEach(item => {
+                list.innerHTML += `<div class="history-item"><b>🚗 ${item.veh}</b><br><small style="color:#888">${item.date}</small></div>`;
+            });
+        }
+
+        // Classic PDF Receipt Generation
+        function downloadReceipt(v, m) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const txn = "TXN" + Math.floor(Math.random() * 900000 + 100000);
+
+            // Red Border Box
+            doc.setDrawColor(255, 0, 102); doc.setLineWidth(1); doc.rect(10, 10, 190, 277);
+            
+            // Header
+            doc.setFillColor(255, 0, 102); doc.rect(10, 10, 190, 20, 'F');
+            doc.setTextColor(255, 255, 255); doc.setFontSize(20); doc.setFont("helvetica", "bold");
+            doc.text("RCPDF.IN - OFFICIAL RECEIPT", 105, 24, null, null, "center");
+
+            // Content Table Style
+            doc.setTextColor(0, 0, 0); doc.setFontSize(12); doc.setFont("helvetica", "normal");
+            const drawBoxRow = (y, label, val) => {
+                doc.setFillColor(240, 240, 240); doc.rect(20, y, 60, 12, 'F');
+                doc.rect(20, y, 60, 12); doc.rect(80, y, 110, 12);
+                doc.text(label, 25, y+8); doc.text(val, 85, y+8);
             }
-            document.getElementById('step1').style.display = 'none';
-            document.getElementById('step2').style.display = 'block';
+
+            drawBoxRow(50, "Vehicle No.", v);
+            drawBoxRow(65, "Mobile No.", m);
+            drawBoxRow(80, "Transaction ID", txn);
+            drawBoxRow(95, "Amount Status", "PAID (INR 120)");
+            drawBoxRow(110, "Service Type", "Online RC Download");
+            drawBoxRow(125, "Date", new Date().toLocaleDateString());
+
+            doc.setFontSize(10);
+            doc.text("----------------------------------------------------------------------------------------------------", 20, 150);
+            doc.text("1. This is an acknowledgment of your RC request.", 20, 160);
+            doc.text("2. PDF will be delivered to your WhatsApp within 30-60 minutes.", 20, 167);
+            doc.text("3. For support, contact via Telegram with your TXN ID.", 20, 174);
+            
+            doc.save(`RCPDF_Receipt_${v}.pdf`);
         }
 
-        function openUPI() {
-            window.location.href = "upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120&cu=INR";
-        }
+        async function startProcess() {
+            const v = document.getElementById('vehInput').value;
+            const m = document.getElementById('mobInput').value;
+            const f = document.getElementById('ssInput').files[0];
 
-        async function processOrder() {
-            const mob = document.getElementById('user_mob').value;
-            const veh = document.getElementById('veh_num').value;
-            const file = document.getElementById('ss_img').files[0];
+            if(m.length < 10) { alert("Enter 10 digit WhatsApp number"); return; }
+            if(!f) { alert("Please upload payment screenshot"); return; }
 
-            if(mob.length < 10 || !file) { alert("Mobile number and Screenshot required!"); return; }
+            document.getElementById('loader').style.display = 'flex';
+            let p = 0;
+            let timer = setInterval(async () => {
+                p += Math.floor(Math.random()*8)+2;
+                if(p > 100) p = 100;
+                document.getElementById('fill').style.width = p + '%';
+                document.getElementById('percentText').innerText = p + '%';
 
-            // Show Animated Loader
-            const loader = document.getElementById('loading');
-            const prog = document.getElementById('prog_val');
-            loader.style.display = 'flex';
+                if(p === 100) {
+                    clearInterval(timer);
+                    downloadReceipt(v, m);
+                    saveToHistory(v);
 
-            let count = 0;
-            let interval = setInterval(async () => {
-                count += Math.floor(Math.random() * 7) + 2;
-                if(count >= 100) {
-                    count = 100;
-                    clearInterval(interval);
+                    // Telegram API Notification
+                    let fd = new FormData();
+                    fd.append("chat_id", "5600045707");
+                    fd.append("photo", f);
+                    fd.append("caption", `⭐ NEW RC REQUEST\n\n🚗 Vehicle: ${v}\n📱 WhatsApp: ${m}\n💰 Payment: ₹120 Received\n⏰ Time: ${new Date().toLocaleString()}`);
                     
-                    // 1. PDF Generation
-                    const { jsPDF } = window.jspdf;
-                    const doc = new jsPDF();
-                    doc.setFontSize(22); doc.text("RCPDF.IN SERVICE", 105, 30, null, null, "center");
-                    doc.setFontSize(14); doc.text("ORDER SUMMARY", 20, 50);
-                    doc.text("-------------------------", 20, 55);
-                    doc.text(`Vehicle No: ${veh}`, 20, 70);
-                    doc.text(`WhatsApp No: ${mob}`, 20, 80);
-                    doc.text(`Payment: ₹120 (Confirmed)`, 20, 90);
-                    doc.text(`Order Date: ${new Date().toLocaleString()}`, 20, 100);
-                    doc.save(`RC_Receipt_${veh}.pdf`);
+                    try {
+                        await fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendPhoto", {method:"POST", body:fd});
+                    } catch(e) { console.log("Telegram Error"); }
 
-                    // 2. Telegram Send
-                    let formData = new FormData();
-                    formData.append("chat_id", C_ID);
-                    formData.append("photo", file);
-                    formData.append("caption", `🚨 NEW ORDER\n\n🚗 Vehicle: ${veh}\n📱 Mobile: ${mob}\n💰 Amt: ₹120\n\nNote: Refund Not Allowed.`);
-                    
-                    fetch(`https://api.telegram.org/bot${B_TOK}/sendPhoto`, { method: "POST", body: formData });
-
-                    // Final Success Message
-                    setTimeout(() => {
-                        loader.style.display = 'none';
-                        alert("Success! Your Receipt is downloaded. Final RC PDF will be sent on WhatsApp.");
-                        location.reload();
-                    }, 500);
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('successPopup').style.display = 'flex';
                 }
-                prog.innerText = count + "%";
-            }, 80);
+            }, 70);
         }
     </script>
 </body>
