@@ -84,7 +84,13 @@ display:none;
 <input id="vehicle" placeholder="BR-09-AB-1234" oninput="formatVehicle(this)">
 <button onclick="goNext()">Continue</button>
 </div><div id="page2" style="display:none">
-<button onclick="payUPI()">Pay ₹120 with UPI</button><!-- ✅ FIXED QR (AUTO ₹120 WORKING) --><img id="qrImg" class="qr"
+<button onclick="payUPI()">
+Pay ₹120 with UPI<br>
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/PhonePe_Logo.svg/100px-PhonePe_Logo.svg.png" height="20">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Google_Pay_Logo.svg/100px-Google_Pay_Logo.svg.png" height="20">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Paytm_logo.png/100px-Paytm_logo.png" height="20">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/BHIM_logo.svg/100px-BHIM_logo.svg.png" height="20">
+</button><!-- ✅ FIXED QR (AUTO ₹120 WORKING) --><img id="qrImg" class="qr"
 src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=upi%3A%2F%2Fpay%3Fpa%3D8709610091%40okbizaxis%26pn%3DRCPDF%26am%3D120%26cu%3DINR%26tn%3DRC%20Download">
 
 <input id="mobile" placeholder="Mobile Number">
