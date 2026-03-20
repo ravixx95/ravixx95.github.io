@@ -203,18 +203,52 @@
         function makePDF(d, t, tx) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
+            
+            // Header
             doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
-            doc.setTextColor(255); doc.setFontSize(22); doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
-            doc.setTextColor(0); doc.setFontSize(12);
+            doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(22);
+            doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
+
+            // Transaction Details
+            doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
             let y = 50;
-            const data = [["TRANSACTION ID:", tx], ["DATE & TIME:", `${d} | ${t}`], ["VEHICLE NO:", document.getElementById('vehInput').value], ["WHATSAPP NO:", document.getElementById('mob').value], ["AMOUNT PAID:", "INR 120.00"], ["STATUS:", "SUCCESS"]];
+            const data = [
+                ["TRANSACTION ID:", tx], 
+                ["DATE & TIME:", `${d} | ${t}`], 
+                ["VEHICLE NO:", document.getElementById('vehInput').value], 
+                ["WHATSAPP NO:", document.getElementById('mob').value], 
+                ["AMOUNT PAID:", "INR 120.00"], 
+                ["STATUS:", "SUCCESS"]
+            ];
+            
             data.forEach(item => {
                 doc.rect(15, y, 180, 10);
                 doc.setFont("helvetica", "bold"); doc.text(item[0], 20, y + 7);
                 doc.setFont("helvetica", "normal"); doc.text(item[1], 85, y + 7);
                 y += 10;
             });
-            doc.rect(15, y + 5, 180, 45); doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 10, 35, 35);
+
+            // Support QR
+            doc.rect(15, y + 5, 180, 45);
+            doc.setFont("helvetica", "bold"); doc.text("SUPPORT QR CODE", 25, y + 15);
+            doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 10, 35, 35);
+            
+            // New Terms & Conditions (Exact points as requested)
+            y += 65;
+            doc.setFontSize(14); doc.setFont("helvetica", "bold"); doc.text("TERMS AND CONDITIONS", 15, y);
+            doc.setFontSize(10); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
+            const tnc = [
+                "1. Ye website SIRF information use ke liye hai.",
+                "2. Galat use ki jimmedari sirf user ki hogi.",
+                "3. Payment hone ke baad refund nahi hogi.",
+                "4. Ye site kisi bhi tarah se RTO ya mParivahan se koi matlab nahi rakhti hai.",
+                "",
+                "* Your original RC PDF will be delivered on WhatsApp (30-60 mins)."
+            ];
+            doc.text(tnc, 15, y + 8);
+
+            // Save and Reload
+            doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
             doc.save(`Receipt_${tx}.pdf`);
             setTimeout(() => location.reload(), 1500);
         }
