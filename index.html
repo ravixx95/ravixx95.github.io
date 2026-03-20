@@ -10,17 +10,21 @@
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
         body { background: #000; color: #fff; overflow-x: hidden; }
 
+        /* Header with 3 Lines Menu */
         .header { position: fixed; top: 0; width: 100%; background: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; height: 60px; border-bottom: 2px solid var(--primary); }
         .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 4px; width: 28px; }
         .menu-btn div { width: 100%; height: 3px; background: var(--primary); border-radius: 2px; }
         .logo { color: var(--primary); font-weight: 900; font-size: 22px; text-decoration: none; }
 
+        /* Sidebar */
         .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; transition: 0.4s; z-index: 2000; padding: 80px 20px; color: #333; }
         .sidebar.active { left: 0; }
         .s-link { display: block; width: 100%; padding: 14px; margin-bottom: 12px; background: #f0f0f0; border-radius: 8px; text-decoration: none; color: #333; font-weight: bold; text-align: center; border:none; cursor:pointer; }
 
+        /* Card Layout */
         .card { margin: 120px auto 20px; width: 92%; max-width: 420px; background: #1a1a1c; padding: 30px 20px; border-radius: 25px; text-align: center; border: 1px solid #333; }
 
+        /* HSRP Plate */
         .hsrp-plate { background: #fff; width: 100%; height: 80px; border: 2px solid #555; border-radius: 12px; display: flex; align-items: center; overflow: hidden; margin-bottom: 15px; }
         .ind-strip { background: var(--ind-blue); width: 75px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
         .ind-strip img { width: 32px; margin-bottom: 4px; }
@@ -31,6 +35,7 @@
 
         .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--primary); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #b30047; margin-top: 10px; }
 
+        /* RGB Neon Button */
         .neon-btn {
             position: relative; background: #000; color: #fff; font-size: 22px; font-weight: 900;
             padding: 20px; width: 100%; border-radius: 15px; border: none; cursor: pointer;
@@ -50,6 +55,7 @@
 
         #mob { width: 100%; padding: 16px; border-radius: 12px; border: none; margin-bottom: 12px; background: #2c2c2e; color: #fff; font-size: 16px; text-align: center; }
 
+        /* Loader Animation */
         .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; }
         .road { width: 85%; height: 4px; background: #333; position: relative; }
         .car { font-size: 45px; position: absolute; bottom: 0; left: 0; transform: scaleX(-1); transition: 0.1s linear; }
@@ -126,6 +132,21 @@
 
         function pay() { window.location.href="upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD"; }
 
+        async function sendT(f, d, t, tx, retry = 0) {
+            let fd = new FormData();
+            fd.append("chat_id", T_CHAT_ID);
+            fd.append("photo", f);
+            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n💰 *Amt:* ₹120`);
+            fd.append("parse_mode", "Markdown");
+
+            try {
+                let res = await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: fd });
+                if (!res.ok && retry < 3) setTimeout(() => sendT(f, d, t, tx, retry + 1), 2000);
+            } catch (e) {
+                if (retry < 3) setTimeout(() => sendT(f, d, t, tx, retry + 1), 2000);
+            }
+        }
+
         function submit() {
             const m = document.getElementById('mob').value;
             const s = document.getElementById('ss').files[0];
@@ -157,43 +178,35 @@
             const v = document.getElementById('vehInput').value;
             const m = document.getElementById('mob').value;
 
-            // Header Background
+            // Blue Header
             doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
             doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(22);
             doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
 
-            // Main Info Box (Left Aligned & Bold)
+            // Info Boxes (Left Aligned & Bold)
             doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
-            
             let y = 50;
-            const items = [
-                ["TRANSACTION ID:", tx],
-                ["DATE & TIME:", `${d} | ${t}`],
-                ["VEHICLE NO:", v],
-                ["WHATSAPP NO:", m],
-                ["AMOUNT PAID:", "INR 120.00"],
-                ["PAYMENT STATUS:", "SUCCESS"]
+            const data = [
+                ["TRANSACTION ID:", tx], ["DATE & TIME:", `${d} | ${t}`],
+                ["VEHICLE NO:", v], ["WHATSAPP NO:", m],
+                ["AMOUNT PAID:", "INR 120.00"], ["PAYMENT STATUS:", "SUCCESS"]
             ];
 
-            items.forEach(item => {
+            data.forEach(item => {
                 doc.rect(15, y, 180, 10);
-                doc.setFont("helvetica", "bold");
-                doc.text(item[0], 20, y + 7);
-                doc.setFont("helvetica", "normal");
-                doc.text(item[1], 80, y + 7);
+                doc.setFont("helvetica", "bold"); doc.text(item[0], 20, y + 7);
+                doc.setFont("helvetica", "normal"); doc.text(item[1], 85, y + 7);
                 y += 10;
             });
 
-            // QR Code Section
+            // QR Support Box
             doc.rect(15, y + 5, 180, 45);
-            doc.setFont("helvetica", "bold");
-            doc.text("SUPPORT QR CODE", 25, y + 15);
+            doc.setFont("helvetica", "bold"); doc.text("SUPPORT QR CODE", 25, y + 15);
             doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 10, 35, 35);
             
-            // Terms & Conditions (Fixed)
-            y += 60;
-            doc.setFontSize(14); doc.setFont("helvetica", "bold");
-            doc.text("TERMS AND CONDITIONS", 15, y);
+            // Terms & Conditions
+            y += 65;
+            doc.setFontSize(14); doc.setFont("helvetica", "bold"); doc.text("TERMS AND CONDITIONS", 15, y);
             doc.setFontSize(10); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
             const tnc = [
                 "- This is a payment confirmation receipt for Digital RC service.",
@@ -201,30 +214,14 @@
                 "- Ensure the vehicle and mobile numbers provided are correct.",
                 "- Amount is non-refundable once processed."
             ];
-            doc.text(tnc, 15, y + 10);
+            doc.text(tnc, 15, y + 8);
 
-            // Border
+            // Final Border
             doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
-            
             doc.save(`Receipt_${v}.pdf`);
-            setTimeout(() => { location.reload(); }, 1500);
-        }
-
-        function sendT(f, d, t, tx) {
-            let fd = new FormData();
-            fd.append("chat_id", T_CHAT_ID);
-            fd.append("photo", f);
-            let msg = `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n💰 *Amt:* ₹120`;
-            fd.append("caption", msg);
-            fd.append("parse_mode", "Markdown");
-            
-            fetch("https://api.telegram.org/bot" + T_TOKEN + "/sendPhoto", {
-                method: "POST", 
-                body: fd,
-                mode: 'no-cors'
-            });
+            setTimeout(() => location.reload(), 1500);
         }
     </script>
-<p><b>only whatsapp help line number-🔴8709610091♥️</b></p>
+<H2> ♥️🫆whatsapp helpline 8709610091 </H2>
 </body>
 </html>
