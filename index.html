@@ -156,7 +156,7 @@
             window.speechSynthesis.cancel();
             let u = new SpeechSynthesisUtterance(t);
             u.lang = 'hi-IN';
-            u.rate = 0.9;
+            u.rate = 0.8; // Speed slow kar di gayi hai
             window.speechSynthesis.speak(u);
         }
 
@@ -177,8 +177,13 @@
             if(document.getElementById('vehInput').value.length < 9) { alert("Sahi number!"); return; }
             const upi = "upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD";
             document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upi);
-            document.getElementById('p1').style.display='none'; document.getElementById('p2').style.display='block';
-            speak("ऊपर पे विथ यू पी आई बटन से पेमेंट कीजिए या क्यू आर कोड स्कैन कर के पेमेंट का स्क्रीनशॉट जरूर ले जब पेमेंट करके वापस पेज पर आये तब ही, या फिर क्यू आर पर पेमेंट होने के बाद अपना व्हाट्सएप नंबर डालें और अपने पेमेंट का स्क्रीनशॉट जरूर लगाएं पेमेंट पुष्टि के लिए जरूरी है");
+            document.getElementById('p1').style.display='none'; 
+            document.getElementById('p2').style.display='block';
+            
+            // 2nd Page speech with delay
+            setTimeout(() => {
+                speak("ऊपर पे विथ यू पी आई बटन से पेमेंट कीजिए या क्यू आर कोड स्कैन कर के पेमेंट का स्क्रीनशॉट जरूर ले जब पेमेंट करके वापस पेज पर आये तब ही, या फिर क्यू आर पर पेमेंट होने के बाद अपना व्हाट्सएप नंबर डालें और अपने पेमेंट का स्क्रीनशॉट जरूर लगाएं पेमेंट पुष्टि के लिए जरूरी है");
+            }, 800);
         }
 
         function pay() { window.location.href="upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD"; }
