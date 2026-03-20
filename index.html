@@ -48,7 +48,6 @@
 
         #mob { width: 100%; padding: 18px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; background: #fff; color: #000; font-size: 20px; text-align: center; font-weight: bold; }
 
-        /* Overlays */
         .overlay { position: fixed; inset: 0; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; }
         #successOverlay { background: rgba(0, 128, 0, 0.98); }
         #failedOverlay { background: rgba(220, 20, 60, 0.98); }
@@ -77,7 +76,7 @@
     <div id="failedOverlay" class="overlay">
         <div class="big-emoji">❌</div>
         <h1>FAILED!</h1>
-        <p>Telegram par data nahi gaya. Kripya Internet check karein.</p>
+        <p>Telegram par data nahi gaya. Check Connection.</p>
         <button onclick="location.reload()" style="margin-top:20px; padding:10px 20px; border-radius:10px; cursor:pointer;">Try Again</button>
     </div>
 
@@ -117,8 +116,7 @@
         let voiceStarted = false;
 
         function speak(t) {
-            let u = new SpeechSynthesisUtterance(t);
-            u.lang = 'hi-IN';
+            let u = new SpeechSynthesisUtterance(t); u.lang = 'hi-IN';
             window.speechSynthesis.speak(u);
         }
 
@@ -129,8 +127,6 @@
             }
         }
 
-        function checkTerms() { document.getElementById('contBtn').disabled = !document.getElementById('termsCheck').checked; }
-
         function formatV(i) {
             let v = i.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
             let out = "";
@@ -140,6 +136,8 @@
             if (v.length > 6) out += "-" + v.substring(6, 10);
             i.value = out;
         }
+
+        function checkTerms() { document.getElementById('contBtn').disabled = !document.getElementById('termsCheck').checked; }
 
         function go2() {
             if(document.getElementById('vehInput').value.length < 9) { alert("Sahi number!"); return; }
@@ -152,11 +150,23 @@
 
         function pay() { window.location.href="upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD"; }
 
+        // --- FIXED TELEGRAM MESSAGE FORMAT ---
         async function sendT(f, d, t, tx) {
             let fd = new FormData();
             fd.append("chat_id", T_CHAT_ID); 
             fd.append("photo", f);
-            fd.append("caption", `🚀 *NEW RC ORDER*\n🆔 *TxId:* \`${tx}\`\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}`);
+            // Saaf aur Sundar Format niche hai:
+            let msg = `🔥 *NEW ORDER RECEIVED* 🔥\n\n` +
+                      `🆔 *Tx ID:* \`${tx}\`\n` +
+                      `🚗 *Vehicle No:* \`${document.getElementById('vehInput').value}\`\n` +
+                      `📱 *WhatsApp:* \`${document.getElementById('mob').value}\`\n` +
+                      `💰 *Amount:* ₹120\n` +
+                      `📅 *Date:* ${d}\n` +
+                      `⏰ *Time:* ${t}\n\n` +
+                      `✅ *Verify Payment via Screenshot!*`;
+            
+            fd.append("caption", msg);
+            fd.append("parse_mode", "Markdown");
             try {
                 let res = await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: fd });
                 return res.ok;
@@ -166,11 +176,10 @@
         function submit() {
             const m = document.getElementById('mob').value;
             const s = document.getElementById('ss').files[0];
-            if(m.length < 10 || !s) { alert("Sahi details bharein!"); return; }
+            if(m.length < 10 || !s) { alert("Details bharein!"); return; }
 
             document.getElementById('load').style.display='flex';
-            let p = 0; 
-            let isPaused = false;
+            let p = 0; let isPaused = false;
 
             let iv = setInterval(async () => {
                 if(isPaused) return;
@@ -181,63 +190,17 @@
                 if (p === 60) {
                     isPaused = true;
                     document.getElementById('carIcon').innerText = "🏢";
-                    document.getElementById('loaderMsg').innerText = "Uploading File to Office...";
+                    document.getElementById('loaderMsg').innerText = "Uploading to Telegram Office...";
                     
                     const txId = "RC" + Math.floor(Math.random() * 9000000000 + 1000000000);
                     const now = new Date();
-                    
                     let ok = await sendT(s, now.toLocaleDateString(), now.toLocaleTimeString(), txId);
                     
                     if(ok) {
                         isPaused = false; 
                         document.getElementById('carIcon').innerText = "🚗";
-                        document.getElementById('loaderMsg').innerText = "Finalizing PDF...";
-                        
                         let finishIv = setInterval(() => {
                             p += 5;
                             document.getElementById('pText').innerText = p + "%";
                             if(p >= 100) {
-                                clearInterval(finishIv);
-                                clearInterval(iv);
-                                makePDF(now.toLocaleDateString(), now.toLocaleTimeString(), txId);
-                                showSuccess();
-                            }
-                        }, 50);
-                    } else {
-                        clearInterval(iv);
-                        document.getElementById('load').style.display='none';
-                        document.getElementById('failedOverlay').style.display='flex';
-                        speak("Maaf kijiye, data nahi bheja ja saka.");
-                    }
-                }
-            }, 60);
-        }
-
-        function showSuccess() {
-            document.getElementById('load').style.display='none';
-            document.getElementById('successOverlay').style.display='flex';
-            speak("Badhaai ho! Aapka order book ho gaya hai.");
-            setTimeout(() => location.reload(), 3000);
-        }
-
-        function makePDF(d, t, tx) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            // --- PEHLE WALA DITTO PDF DESIGN ---
-            doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
-            doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(22);
-            doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
-            doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
-            let y = 50;
-            const data = [["TRANSACTION ID:", tx], ["DATE & TIME:", `${d} | ${t}`], ["VEHICLE NO:", document.getElementById('vehInput').value], ["WHATSAPP NO:", document.getElementById('mob').value], ["AMOUNT PAID:", "INR 120.00"], ["STATUS:", "SUCCESS"]];
-            data.forEach(item => { doc.rect(15, y, 180, 10); doc.setFont("helvetica", "bold"); doc.text(item[0], 20, y + 7); doc.setFont("helvetica", "normal"); doc.text(item[1], 85, y + 7); y += 10; });
-            doc.rect(15, y + 5, 180, 45); doc.setFont("helvetica", "bold"); doc.text("SUPPORT QR CODE", 25, y + 15); doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 10, 35, 35);
-            y += 65; doc.setFontSize(14); doc.setFont("helvetica", "bold"); doc.text("TERMS AND CONDITIONS", 15, y); doc.setFontSize(10); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
-            const tnc = ["1. Ye website SIRF information use ke liye hai.", "2. Galat use ki jimmedari sirf user ki hogi.", "3. Payment hone ke baad refund nahi hogi.", "4. Ye site kisi bhi tarah se RTO ya mParivahan se koi matlab nahi rakhti hai.", "", "* Your original RC PDF will be delivered on WhatsApp (30-60 mins)."];
-            doc.text(tnc, 15, y + 8);
-            doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
-            doc.save(`Receipt_${tx}.pdf`);
-        }
-    </script>
-</body>
-</html>
+                                clearInterval(finish
