@@ -74,7 +74,7 @@
         .footer { margin-top: 30px; font-size: 13px; font-weight: bold; color: #333; text-align: center; padding-bottom: 40px; }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body oncontextmenu="return false;" onclick="initVoice()">
 
     <div class="header">
         <div class="menu-btn" onclick="toggleM()"><div></div><div></div><div></div></div>
@@ -91,15 +91,13 @@
     <div id="failedOverlay" class="overlay">
         <div class="big-emoji">❌</div>
         <h1 style="font-size: 30px;">FAILED!</h1>
-        <p style="font-size: 18px; margin-top: 10px;">Server connection fail ho gaya. Kripya Token aur Chat ID check karein.</p>
-        <button onclick="location.reload()" style="margin-top:25px; padding:12px 30px; background:#fff; color:red; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">Dubara Koshish Karein</button>
+        <p style="font-size: 18px; margin-top: 10px;">Telegram par message nahi gaya. Check Token/ID.</p>
+        <button onclick="location.reload()" style="margin-top:25px; padding:12px 30px; background:#fff; color:red; border:none; border-radius:10px; font-weight:bold;">Try Again</button>
     </div>
 
     <div class="sidebar" id="side">
         <button class="s-link" onclick="alert('ABOUT US:\nVehicle Information Only.')"><i class="fas fa-info-circle"></i> About Us</button>
-        <button class="s-link" onclick="alert('DISCLAIMER:\nPayment refund nahi hogi. Kisi bhi galat use karne ki jimmedari sirf user ki hogi. Ye website sirf education purpose ke liye hai.')"><i class="fas fa-exclamation-triangle"></i> Disclaimer</button>
-        <button class="s-link" onclick="alert('TERMS & CONDITIONS:\n1. Ye website sirf information use ke liye hai.\n2. Galat use ki jimmedari user ki hogi.\n3. Payment refund nahi hogi.\n4. Site RTO/mParivahan se sambandhit nahi hai.')"><i class="fas fa-file-contract"></i> Terms & Conditions</button>
-        <button class="s-link" onclick="window.location.href='https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1'"><i class="fas fa-shield-alt"></i> Insurance</button>
+        <button class="s-link" onclick="alert('DISCLAIMER:\nPayment refund nahi hogi.')"><i class="fas fa-exclamation-triangle"></i> Disclaimer</button>
         <button class="s-link" onclick="toggleM()" style="background:#ffdddd;">Close Menu</button>
     </div>
 
@@ -112,12 +110,8 @@
             </div>
             
             <div class="disclaimer-box">
-                <label style="cursor:pointer;">
-                    <input type="checkbox" id="termsCheck" onchange="checkTerms()">
-                    <span>I Accept Terms & Conditions</span>
-                </label>
+                <label style="cursor:pointer;"><input type="checkbox" id="termsCheck" onchange="checkTerms()"> I Accept Terms</label>
             </div>
-
             <button class="btn" id="contBtn" onclick="go2()" disabled>CONTINUE</button>
         </div>
 
@@ -125,17 +119,15 @@
             <button class="neon-btn" onclick="pay()"></button>
             <div style="background:#fff; padding:12px; border-radius:15px; display:inline-block; margin-bottom:15px; border:1px solid #ddd;">
                 <img id="qr" src="" width="180">
-                <p style="color:#000; font-size:10px; margin-top:5px; font-weight:bold;">SCAN QR TO PAY ₹120</p>
             </div>
             <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10">
-            <input type="file" id="ss" style="margin-bottom:15px; font-size:12px; color:#333; width:100%;">
+            <input type="file" id="ss" style="margin-bottom:15px; width:100%;">
             <button class="btn" onclick="submit()">Verify & Download PDF</button>
         </div>
     </div>
 
     <div class="footer">
         <p>© 2026 RCPDF.IN | Official Digital Services</p>
-        <p style="margin-top:5px;">Make in India with ❤️</p>
     </div>
 
     <a href="https://wa.me/918709610091" class="wa-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
@@ -143,13 +135,27 @@
     <div class="loader-wrap" id="load">
         <div class="road"><div class="car" id="carIcon">🚗</div></div>
         <div class="pct" id="pText">0%</div>
-        <p id="loaderMsg" style="color:#fff;">Generating PDF Receipt...</p>
+        <p id="loaderMsg" style="color:#fff;">Generating PDF...</p>
     </div>
 
     <script>
-        // Your Verified Telegram Details
         const T_TOKEN = "8138238341:AAGi4LxV7247hUvs_HoGLSKRhkcEapMCSuA";
         const T_CHAT_ID = "5600045707";
+        let voiceStarted = false;
+
+        // --- VOICE FUNCTION ---
+        function speak(t) {
+            let u = new SpeechSynthesisUtterance(t);
+            u.lang = 'hi-IN';
+            window.speechSynthesis.speak(u);
+        }
+
+        function initVoice() {
+            if(!voiceStarted) {
+                speak("Welcome to R C P D F dot IN. Kripya apni gaadi ka number daalein.");
+                voiceStarted = true;
+            }
+        }
 
         function toggleM() { document.getElementById('side').classList.toggle('active'); }
         function checkTerms() { document.getElementById('contBtn').disabled = !document.getElementById('termsCheck').checked; }
@@ -168,105 +174,62 @@
             if(document.getElementById('vehInput').value.length < 9) { alert("Sahi number!"); return; }
             const upi = "upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD";
             document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upi);
-            document.getElementById('p1').style.display='none'; document.getElementById('p2').style.display='block';
+            document.getElementById('p1').style.display='none'; 
+            document.getElementById('p2').style.display='block';
+            speak("Upar diye gaye payment button se payment karein, phir apna whatsapp number daalein aur screenshot upload karein.");
         }
 
         function pay() { window.location.href="upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD"; }
 
         async function sendT(f, d, t, tx) {
             let fd = new FormData();
-            fd.append("chat_id", T_CHAT_ID); 
-            fd.append("photo", f);
-            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n💰 *Amt:* ₹120`);
-            fd.append("parse_mode", "Markdown");
-            
+            fd.append("chat_id", T_CHAT_ID); fd.append("photo", f);
+            fd.append("caption", `🚀 NEW RC ORDER\n🚗 Veh: ${document.getElementById('vehInput').value}\n📱 Mob: ${document.getElementById('mob').value}`);
             try {
-                let res = await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { 
-                    method: "POST", 
-                    body: fd 
-                });
+                let res = await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: fd });
                 return res.ok;
-            } catch (e) { 
-                console.error(e);
-                return false; 
-            }
+            } catch (e) { return false; }
         }
 
         function submit() {
             const m = document.getElementById('mob').value;
             const s = document.getElementById('ss').files[0];
-            if(m.length < 10 || !s) { alert("Details sahi bhare!"); return; }
+            if(m.length < 10 || !s) { alert("Sahi details bharein!"); return; }
 
             document.getElementById('load').style.display='flex';
             let p = 0; 
-            let isPaused = false;
-
             let iv = setInterval(async () => {
-                if (isPaused) return;
                 p += 2;
                 document.getElementById('pText').innerText = p + "%";
                 document.getElementById('carIcon').style.left = (p * 0.85) + "%";
 
                 if (p === 60) {
-                    isPaused = true;
-                    document.getElementById('loaderMsg').innerText = "Sending Data to Telegram...";
-                    
-                    const now = new Date();
-                    const dStr = now.toLocaleDateString('en-IN');
-                    const tStr = now.toLocaleTimeString('en-IN');
-                    const txId = "RC" + Math.floor(Math.random() * 9000000000 + 1000000000);
-                    
-                    // Sending to Telegram
-                    let success = await sendT(s, dStr, tStr, txId);
-                    
-                    if(success) {
-                        isPaused = false;
-                        document.getElementById('loaderMsg').innerText = "Generating Final PDF...";
-                        
-                        let finishIv = setInterval(() => {
-                            p += 5;
-                            document.getElementById('pText').innerText = p + "%";
-                            if(p >= 100) {
-                                clearInterval(finishIv);
-                                clearInterval(iv);
-                                makePDF(dStr, tStr, txId);
-                                showSuccess();
-                            }
-                        }, 50);
-
-                    } else {
+                    let ok = await sendT(s, "", "", "");
+                    if(!ok) {
                         clearInterval(iv);
                         document.getElementById('load').style.display='none';
                         document.getElementById('failedOverlay').style.display='flex';
+                        speak("Maaf kijiye, data nahi bheja ja saka.");
                     }
+                }
+                if(p >= 100) {
+                    clearInterval(iv);
+                    makePDF();
+                    document.getElementById('load').style.display='none';
+                    document.getElementById('successOverlay').style.display='flex';
+                    speak("Badhaai ho! Aapka order book ho gaya hai.");
+                    setTimeout(() => location.reload(), 3000);
                 }
             }, 60);
         }
 
-        function showSuccess() {
-            document.getElementById('load').style.display='none';
-            document.getElementById('successOverlay').style.display='flex';
-            setTimeout(() => {
-                window.location.reload(); 
-            }, 3000);
-        }
-
-        function makePDF(d, t, tx) {
+        function makePDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
-            doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(22);
-            doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
-            doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
-            let y = 50;
-            const data = [["TRANSACTION ID:", tx], ["DATE & TIME:", `${d} | ${t}`], ["VEHICLE NO:", document.getElementById('vehInput').value], ["WHATSAPP NO:", document.getElementById('mob').value], ["AMOUNT PAID:", "INR 120.00"], ["STATUS:", "SUCCESS"]];
-            data.forEach(item => { doc.rect(15, y, 180, 10); doc.setFont("helvetica", "bold"); doc.text(item[0], 20, y + 7); doc.setFont("helvetica", "normal"); doc.text(item[1], 85, y + 7); y += 10; });
-            doc.rect(15, y + 5, 180, 45); doc.setFont("helvetica", "bold"); doc.text("SUPPORT QR CODE", 25, y + 15); doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 10, 35, 35);
-            y += 65; doc.setFontSize(14); doc.setFont("helvetica", "bold"); doc.text("TERMS AND CONDITIONS", 15, y); doc.setFontSize(10); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
-            const tnc = ["1. Ye website SIRF information use ke liye hai.", "2. Galat use ki jimmedari sirf user ki hogi.", "3. Payment hone ke baad refund nahi hogi.", "4. Ye site kisi bhi tarah se RTO ya mParivahan se koi matlab nahi rakhti hai.", "", "* Your original RC PDF will be delivered on WhatsApp (30-60 mins)."];
-            doc.text(tnc, 15, y + 8);
-            doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
-            doc.save(`Receipt_${tx}.pdf`);
+            doc.text("RCPDF.IN - PAYMENT RECEIPT", 10, 10);
+            doc.text("Vehicle: " + document.getElementById('vehInput').value, 10, 20);
+            doc.text("Mobile: " + document.getElementById('mob').value, 10, 30);
+            doc.save("Receipt.pdf");
         }
     </script>
 </body>
