@@ -57,10 +57,10 @@
 
         #mob { width: 100%; padding: 18px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; background: #fff; color: #000; font-size: 20px; text-align: center; font-weight: bold; }
 
-        /* Status Overlays */
+        /* Popups */
         .overlay { position: fixed; inset: 0; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; }
-        #successOverlay { background: rgba(0, 128, 0, 0.95); }
-        #failedOverlay { background: rgba(200, 0, 0, 0.95); }
+        #successOverlay { background: rgba(0, 128, 0, 0.98); }
+        #failedOverlay { background: rgba(220, 20, 60, 0.98); }
         .big-emoji { font-size: 100px; margin-bottom: 20px; animation: bounce 1s infinite; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
 
@@ -84,15 +84,15 @@
 
     <div id="successOverlay" class="overlay">
         <div class="big-emoji">😊</div>
-        <h1>Congratulations!</h1>
-        <p>Aapka data safaltapurvak bhej diya gaya hai.</p>
+        <h1 style="font-size: 30px;">Congratulations!</h1>
+        <p style="font-size: 18px; margin-top: 10px;">Aapka Bill Telegram par bhej diya gaya hai.</p>
     </div>
 
     <div id="failedOverlay" class="overlay">
         <div class="big-emoji">❌</div>
-        <h1>FAILED!</h1>
-        <p>Telegram par data nahi gaya. Kripya Internet check karein.</p>
-        <button onclick="location.reload()" style="margin-top:20px; padding:10px 20px; background:#fff; color:red; border:none; border-radius:5px; font-weight:bold;">Try Again</button>
+        <h1 style="font-size: 30px;">FAILED!</h1>
+        <p style="font-size: 18px; margin-top: 10px;">Server connection fail ho gaya. Kripya Token aur Chat ID check karein.</p>
+        <button onclick="location.reload()" style="margin-top:25px; padding:12px 30px; background:#fff; color:red; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">Dubara Koshish Karein</button>
     </div>
 
     <div class="sidebar" id="side">
@@ -147,6 +147,7 @@
     </div>
 
     <script>
+        // Your Verified Telegram Details
         const T_TOKEN = "8138238341:AAGi4LxV7247hUvs_HoGLSKRhkcEapMCSuA";
         const T_CHAT_ID = "5600045707";
 
@@ -174,14 +175,19 @@
 
         async function sendT(f, d, t, tx) {
             let fd = new FormData();
-            fd.append("chat_id", T_CHAT_ID); fd.append("photo", f);
+            fd.append("chat_id", T_CHAT_ID); 
+            fd.append("photo", f);
             fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n💰 *Amt:* ₹120`);
             fd.append("parse_mode", "Markdown");
             
             try {
-                let res = await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: fd });
+                let res = await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { 
+                    method: "POST", 
+                    body: fd 
+                });
                 return res.ok;
             } catch (e) { 
+                console.error(e);
                 return false; 
             }
         }
@@ -203,23 +209,20 @@
 
                 if (p === 60) {
                     isPaused = true;
-                    document.getElementById('carIcon').innerText = "🏢";
-                    document.getElementById('loaderMsg').innerText = "Connecting to Telegram...";
+                    document.getElementById('loaderMsg').innerText = "Sending Data to Telegram...";
                     
                     const now = new Date();
                     const dStr = now.toLocaleDateString('en-IN');
                     const tStr = now.toLocaleTimeString('en-IN');
                     const txId = "RC" + Math.floor(Math.random() * 9000000000 + 1000000000);
                     
-                    // Sending to Telegram exactly at 60%
+                    // Sending to Telegram
                     let success = await sendT(s, dStr, tStr, txId);
                     
                     if(success) {
                         isPaused = false;
-                        document.getElementById('carIcon').innerText = "🚗";
-                        document.getElementById('loaderMsg').innerText = "Finalizing PDF...";
+                        document.getElementById('loaderMsg').innerText = "Generating Final PDF...";
                         
-                        // Proceed to 100% and finish
                         let finishIv = setInterval(() => {
                             p += 5;
                             document.getElementById('pText').innerText = p + "%";
@@ -244,7 +247,7 @@
             document.getElementById('load').style.display='none';
             document.getElementById('successOverlay').style.display='flex';
             setTimeout(() => {
-                window.location.reload(); // Home redirect
+                window.location.reload(); 
             }, 3000);
         }
 
