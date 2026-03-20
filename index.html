@@ -3,124 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ravi Mishra Dashboard</title>
+    <title>Ravi Mishra System</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f0f0f0; padding: 20px; }
-        .container { background-color: #fff; padding: 20px; border-radius: 8px; max-width: 400px; margin: auto; border: 1px solid #ccc; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #333; margin-top: 0; }
-        .input-group { margin-bottom: 12px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
-        input { width: 100%; padding: 10px; border: 1px solid #aaa; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
-        .display-area { background: #ffffcc; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; margin: 15px 0; border: 2px dashed #b8860b; color: #b8860b; min-height: 30px; }
-        button { width: 100%; padding: 12px; margin-bottom: 10px; cursor: pointer; font-size: 16px; font-weight: bold; border-radius: 4px; border: none; transition: 0.2s; }
-        .btn-speak { background-color: #4CAF50; color: white; }
-        .btn-telegram { background-color: #0088cc; color: white; position: relative; }
-        .btn-pdf { background-color: #f44336; color: white; }
-        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        body { font-family: sans-serif; background-color: #f7f7f7; padding: 20px; }
+        .main-card { background: #fff; padding: 20px; border-radius: 5px; max-width: 400px; margin: auto; border: 1px solid #ddd; }
+        h2 { text-align: center; font-size: 18px; margin-bottom: 15px; }
+        input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 3px; box-sizing: border-box; }
+        .number-box { background: #eee; padding: 15px; text-align: center; font-size: 22px; font-weight: bold; margin-bottom: 15px; border: 1px solid #bbb; min-height: 30px; }
+        button { width: 100%; padding: 10px; margin-bottom: 8px; cursor: pointer; border: none; font-weight: bold; }
+        .btn-green { background: #28a745; color: #fff; }
+        .btn-blue { background: #0088cc; color: #fff; }
+        .btn-red { background: #dc3545; color: #fff; }
         
-        /* Loader Style */
-        .loader { border: 2px solid #f3f3f3; border-top: 2px solid #3498db; border-radius: 50%; width: 14px; height: 14px; animation: spin 1s linear infinite; display: inline-block; margin-right: 8px; vertical-align: middle; }
+        /* Purana Loader */
+        .loading { opacity: 0.6; pointer-events: none; }
+        .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid #fff; border-top: 2px solid transparent; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 5px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Entry System</h2>
+<div class="main-card">
+    <h2>RAVI MISHRA DATA ENTRY</h2>
 
-    <div class="input-group">
-        <label>Gadi Number:</label>
-        <input type="text" id="vNo" placeholder="br09ab1234" maxlength="10">
-    </div>
+    <input type="text" id="v_num" placeholder="Gadi Number (br09ab1234)" maxlength="10">
+    <div class="number-box" id="v_show">BR-00-AA-0000</div>
 
-    <div class="display-area" id="vDisplay">BR-00-AA-0000</div>
+    <input type="number" id="v_amt" placeholder="Amount">
+    <input type="text" id="v_note" placeholder="Remark">
 
-    <div class="input-group">
-        <label>Amount (₹):</label>
-        <input type="number" id="amt" placeholder="0">
-    </div>
-
-    <div class="input-group">
-        <label>Remark/Note:</label>
-        <input type="text" id="rem" placeholder="Kuch likhna hai?">
-    </div>
-
-    <button class="btn-speak" onclick="playVoice()">🔊 Awaaz Suniye</button>
-    <button class="btn-telegram" id="tgBtn" onclick="toTelegram()">✈️ Telegram Pe Bhein</button>
-    <button class="btn-pdf" onclick="toPDF()">📄 PDF Download</button>
+    <button class="btn-green" onclick="talk()">🔊 Awaaz Suniye</button>
+    <button class="btn-blue" id="sendBtn" onclick="sendToTG()">✈️ Telegram Send</button>
+    <button class="btn-red" onclick="makePDF()">📄 Download PDF</button>
 </div>
 
 <script>
-    const T_TOKEN = "7290072049:AAH19vG8r66sL-I9pZ-Y9lR9N4qZ-Y9lR9N";
-    const T_ID = "6472900720";
+    // Aapka Token aur ID jo pehle tha
+    const MY_TOKEN = "7290072049:AAH19vG8r66sL-I9pZ-Y9lR9N4qZ-Y9lR9N";
+    const MY_ID = "6472900720";
 
-    const vInput = document.getElementById('vNo');
-    const vDisplay = document.getElementById('vDisplay');
+    const vInput = document.getElementById('v_num');
+    const vShow = document.getElementById('v_show');
 
-    // Automatic Formatting (BR-09-AB-1234)
+    // Number formatting (BR-09-AB-1234)
     vInput.addEventListener('input', (e) => {
-        let val = e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-        let formatted = "";
-        if (val.length > 0) formatted += val.substring(0, 2);
-        if (val.length > 2) formatted += "-" + val.substring(2, 4);
-        if (val.length > 4) formatted += "-" + val.substring(4, 6);
-        if (val.length > 6) formatted += "-" + val.substring(6, 10);
-        
-        vDisplay.innerText = formatted || "BR-00-AA-0000";
+        let v = e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+        let out = "";
+        if (v.length > 0) out += v.substring(0, 2);
+        if (v.length > 2) out += "-" + v.substring(2, 4);
+        if (v.length > 4) out += "-" + v.substring(4, 6);
+        if (v.length > 6) out += "-" + v.substring(6, 10);
+        vShow.innerText = out || "BR-00-AA-0000";
     });
 
-    // Voice Function
-    function playVoice() {
-        const text = vDisplay.innerText;
-        const amount = document.getElementById('amt').value || "Zero";
-        window.speechSynthesis.cancel();
-        const speech = new SpeechSynthesisUtterance(`Gadi number ${text.split('').join(' ')}. Amount ${amount} rupaye.`);
-        speech.lang = 'hi-IN';
-        speech.rate = 0.9;
-        window.speechSynthesis.speak(speech);
+    // Voice Logic
+    function talk() {
+        const msg = new SpeechSynthesisUtterance();
+        msg.text = `Vehicle number ${vShow.innerText}. Amount ${document.getElementById('v_amt').value || 0} rupees.`;
+        msg.lang = 'en-IN';
+        window.speechSynthesis.speak(msg);
     }
 
-    // Telegram Function with Loader
-    function toTelegram() {
-        const tgBtn = document.getElementById('tgBtn');
-        const now = new Date();
-        const msg = `✅ *RAVI MISHRA NEW ENTRY*\n` +
-                    `--------------------------\n` +
-                    `🚗 *No:* \`${vDisplay.innerText}\`\n` +
-                    `💰 *Amt:* ₹${document.getElementById('amt').value || '0'}\n` +
-                    `📝 *Note:* ${document.getElementById('rem').value || '-'}\n\n` +
-                    `⏰ *Time:* ${now.toLocaleString('hi-IN')}`;
+    // Telegram with Loader and Format
+    function sendToTG() {
+        const btn = document.getElementById('sendBtn');
+        const d = new Date().toLocaleString();
+        const text = `🚨 *NEW ENTRY*\n\n` +
+                     `🚗 *Vehicle:* ${vShow.innerText}\n` +
+                     `💰 *Amount:* ${document.getElementById('v_amt').value}\n` +
+                     `📝 *Note:* ${document.getElementById('v_note').value}\n` +
+                     `⏰ *Time:* ${d}`;
 
-        // Loader Show
-        tgBtn.disabled = true;
-        tgBtn.innerHTML = '<span class="loader"></span> Bhej raha hoon...';
+        btn.classList.add('loading');
+        btn.innerHTML = '<span class="spinner"></span> Sending...';
 
-        const url = `https://api.telegram.org/bot${T_TOKEN}/sendMessage?chat_id=${T_ID}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`;
-
-        fetch(url).then(res => {
-            if(res.ok) alert("Telegram Par Message Chala Gaya!");
-            else alert("Error! Check Token/ID");
-        })
-        .finally(() => {
-            // Loader Hide
-            tgBtn.disabled = false;
-            tgBtn.innerHTML = '✈️ Telegram Pe Bhein';
+        fetch(`https://api.telegram.org/bot${MY_TOKEN}/sendMessage?chat_id=${MY_ID}&text=${encodeURIComponent(text)}&parse_mode=Markdown`)
+        .then(r => {
+            if(r.ok) alert("Sent!");
+            btn.classList.remove('loading');
+            btn.innerHTML = '✈️ Telegram Send';
         });
     }
 
-    // PDF Function
-    function toPDF() {
+    // PDF Style
+    function makePDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        const d = new Date().toLocaleString();
-        doc.setFontSize(20);
-        doc.text("Ravi Mishra Logs", 20, 20);
-        doc.setFontSize(12);
-        doc.text(`Date/Time: ${d}`, 20, 40);
-        doc.text(`Vehicle: ${vDisplay.innerText}`, 20, 50);
-        doc.text(`Amount: ${document.getElementById('amt').value}`, 20, 60);
-        doc.save(`Entry_${vDisplay.innerText}.pdf`);
+        doc.text("ENTRY REPORT", 20, 20);
+        doc.text(`Vehicle: ${vShow.innerText}`, 20, 40);
+        doc.text(`Amount: ${document.getElementById('v_amt').value}`, 20, 50);
+        doc.text(`Date: ${new Date().toLocaleString()}`, 20, 60);
+        doc.save("Report.pdf");
     }
 </script>
 
