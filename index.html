@@ -73,12 +73,15 @@
         .footer { margin-top: 30px; font-size: 13px; font-weight: bold; color: #333; text-align: center; padding-bottom: 40px; }
     </style>
 </head>
-<body oncontextmenu="return false;" onload="speak('नमस्ते! कृपया अपने गाड़ी नंबर दर्ज कीजिए')">
+<body oncontextmenu="return false;">
 
     <div class="header">
         <div class="menu-btn" onclick="toggleM()"><div></div><div></div><div></div></div>
         <b class="logo">RCPDF.IN</b>
-        <button style="background:none; border:none; font-size:24px;" onclick="location.reload()">🏠</button>
+        <div style="display: flex; gap: 15px;">
+            <button style="background:none; border:none; font-size:24px; cursor:pointer;" onclick="speak('नमस्ते! कृपया अपने गाड़ी नंबर दर्ज कीजिए')">🔊</button>
+            <button style="background:none; border:none; font-size:24px; cursor:pointer;" onclick="location.reload()">🏠</button>
+        </div>
     </div>
 
     <div id="successOverlay" class="overlay">
@@ -185,100 +188,4 @@
             let fd = new FormData();
             fd.append("chat_id", T_CHAT_ID); 
             fd.append("photo", f);
-            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n💰 *Amt:* ₹120`);
-            fd.append("parse_mode", "Markdown");
-            
-            try {
-                let res = await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: fd });
-                return res.ok;
-            } catch (e) { return false; }
-        }
-
-        function submit() {
-            const m = document.getElementById('mob').value;
-            const s = document.getElementById('ss').files[0];
-            if(m.length < 10 || !s) { alert("Details sahi bhare!"); return; }
-
-            document.getElementById('load').style.display='flex';
-            speak("कृपया प्रतीक्षा कीजिए");
-            let p = 0; 
-            let isPaused = false;
-
-            let iv = setInterval(async () => {
-                if (isPaused) return;
-                p += 2;
-                document.getElementById('pText').innerText = p + "%";
-                
-                // 52% logic
-                if(p === 52) {
-                    document.getElementById('carIcon').innerText = "🏢";
-                } else {
-                    document.getElementById('carIcon').innerText = "🚗";
-                }
-                
-                document.getElementById('carIcon').style.left = (p * 0.85) + "%";
-
-                if (p === 60) {
-                    isPaused = true;
-                    document.getElementById('loaderMsg').innerText = "Fetching data to server...";
-                    
-                    const now = new Date();
-                    const dStr = now.toLocaleDateString('en-IN');
-                    const tStr = now.toLocaleTimeString('en-IN');
-                    const txId = "RC" + Math.floor(Math.random() * 9000000000 + 1000000000);
-                    
-                    let success = await sendT(s, dStr, tStr, txId);
-                    
-                    if(success) {
-                        isPaused = false;
-                        document.getElementById('loaderMsg').innerText = "Generating Final PDF...";
-                        
-                        let finishIv = setInterval(() => {
-                            p += 5;
-                            document.getElementById('pText').innerText = p + "%";
-                            if(p >= 100) {
-                                clearInterval(finishIv);
-                                clearInterval(iv);
-                                makePDF(dStr, tStr, txId);
-                                showSuccess();
-                            }
-                        }, 50);
-
-                    } else {
-                        clearInterval(iv);
-                        document.getElementById('load').style.display='none';
-                        document.getElementById('failedOverlay').style.display='flex';
-                    }
-                }
-            }, 60);
-        }
-
-        function showSuccess() {
-            document.getElementById('load').style.display='none';
-            document.getElementById('successOverlay').style.display='flex';
-            speak("मुबारक हो आपको आपकी आर सी व्हाट्सएप पर भेज दी जाएगी। कांग्रेचुलेशन");
-            setTimeout(() => {
-                window.location.reload(); 
-            }, 5000);
-        }
-
-        function makePDF(d, t, tx) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
-            doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(22);
-            doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
-            doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
-            let y = 50;
-            const data = [["TRANSACTION ID:", tx], ["DATE & TIME:", `${d} | ${t}`], ["VEHICLE NO:", document.getElementById('vehInput').value], ["WHATSAPP NO:", document.getElementById('mob').value], ["AMOUNT PAID:", "INR 120.00"], ["STATUS:", "SUCCESS"]];
-            data.forEach(item => { doc.rect(15, y, 180, 10); doc.setFont("helvetica", "bold"); doc.text(item[0], 20, y + 7); doc.setFont("helvetica", "normal"); doc.text(item[1], 85, y + 7); y += 10; });
-            doc.rect(15, y + 5, 180, 45); doc.setFont("helvetica", "bold"); doc.text("SUPPORT QR CODE", 25, y + 15); doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 10, 35, 35);
-            y += 65; doc.setFontSize(14); doc.setFont("helvetica", "bold"); doc.text("TERMS AND CONDITIONS", 15, y); doc.setFontSize(10); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
-            const tnc = ["1. Ye website SIRF information use ke liye hai.", "2. Galat use ki jimmedari sirf user ki hogi.", "3. Payment hone ke baad refund nahi hogi.", "4. Ye site kisi bhi tarah se RTO ya mParivahan se koi matlab nahi rakhti hai.", "", "* Your original RC PDF will be delivered on WhatsApp (30-60 mins)."];
-            doc.text(tnc, 15, y + 8);
-            doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
-            doc.save(`Receipt_${tx}.pdf`);
-        }
-    </script>
-</body>
-</html>
+            fd.append("caption", `🚀 *NEW RC ORDER*\
