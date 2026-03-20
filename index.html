@@ -5,62 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RCPDF.IN - Official Digital RC</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #ff0066; --ind-blue: #003399; }
+        :root { --primary: #ff0066; --ind-blue: #003399; --saffron: #FF9933; --green: #138808; }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
-        body { background: #000; color: #fff; overflow-x: hidden; }
+        
+        /* Triranga Animated Background */
+        body { 
+            background: linear-gradient(-45deg, #FF9933, #ffffff, #138808, #ffffff);
+            background-size: 400% 400%;
+            animation: flagWave 10s ease infinite;
+            color: #000; 
+            overflow-x: hidden; 
+            min-height: 100vh;
+        }
+        @keyframes flagWave { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        /* Header with 3 Lines Menu */
-        .header { position: fixed; top: 0; width: 100%; background: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; height: 60px; border-bottom: 2px solid var(--primary); }
+        /* Header */
+        .header { position: fixed; top: 0; width: 100%; background: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; height: 60px; border-bottom: 3px solid var(--ind-blue); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 4px; width: 28px; }
-        .menu-btn div { width: 100%; height: 3px; background: var(--primary); border-radius: 2px; }
-        .logo { color: var(--primary); font-weight: 900; font-size: 22px; text-decoration: none; }
+        .menu-btn div { width: 100%; height: 3px; background: var(--ind-blue); border-radius: 2px; }
+        .logo { color: var(--ind-blue); font-weight: 900; font-size: 22px; text-decoration: none; letter-spacing: 1px; }
 
         /* Sidebar */
-        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; transition: 0.4s; z-index: 2000; padding: 80px 20px; color: #333; }
+        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; transition: 0.4s; z-index: 2000; padding: 80px 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.2); }
         .sidebar.active { left: 0; }
-        .s-link { display: block; width: 100%; padding: 14px; margin-bottom: 12px; background: #f0f0f0; border-radius: 8px; text-decoration: none; color: #333; font-weight: bold; text-align: center; border:none; cursor:pointer; }
+        .s-link { display: block; width: 100%; padding: 14px; margin-bottom: 12px; background: #f8f9fa; border-radius: 8px; text-decoration: none; color: #333; font-weight: bold; text-align: left; border: 1px solid #ddd; cursor:pointer; }
+        .s-link i { margin-right: 10px; color: var(--ind-blue); }
 
         /* Card Layout */
-        .card { margin: 120px auto 20px; width: 92%; max-width: 420px; background: #1a1a1c; padding: 30px 20px; border-radius: 25px; text-align: center; border: 1px solid #333; }
+        .card { margin: 100px auto 20px; width: 92%; max-width: 420px; background: rgba(255, 255, 255, 0.95); padding: 30px 20px; border-radius: 25px; text-align: center; border: 2px solid var(--ind-blue); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
 
         /* HSRP Plate */
-        .hsrp-plate { background: #fff; width: 100%; height: 80px; border: 2px solid #555; border-radius: 12px; display: flex; align-items: center; overflow: hidden; margin-bottom: 15px; }
-        .ind-strip { background: var(--ind-blue); width: 75px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
-        .ind-strip img { width: 32px; margin-bottom: 4px; }
-        .ind-strip span { font-size: 18px; font-weight: 900; }
+        .hsrp-plate { background: #fff; width: 100%; height: 80px; border: 2px solid #000; border-radius: 12px; display: flex; align-items: center; overflow: hidden; margin-bottom: 15px; box-shadow: inset 0 0 10px rgba(0,0,0,0.1); }
+        .ind-strip { background: var(--ind-blue); width: 65px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
+        .ind-strip img { width: 30px; margin-bottom: 4px; }
+        .ind-strip span { font-size: 16px; font-weight: 900; }
 
-        #vehInput { flex: 1; border: none; height: 100%; font-size: 28px; font-weight: 900; text-align: center; color: #000; outline: none; background: transparent; width: 100%; }
-        #vehInput::placeholder { color: #bbb; text-align: center; }
+        #vehInput { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; color: #000; outline: none; background: transparent; width: 100%; text-transform: uppercase; }
 
-        .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--primary); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #b30047; margin-top: 10px; }
+        /* Disclaimer Box */
+        .disclaimer-box { background: #fff1f1; border: 1px dashed #ff0000; padding: 12px; border-radius: 10px; margin-bottom: 15px; text-align: left; font-size: 11px; color: #333; }
+        .disclaimer-box input { margin-right: 8px; transform: scale(1.2); cursor: pointer; }
+
+        .btn { width: 100%; padding: 16px; border-radius: 12px; border: none; background: var(--ind-blue); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
 
         /* RGB Neon Button */
         .neon-btn {
-            position: relative; background: #000; color: #fff; font-size: 22px; font-weight: 900;
-            padding: 20px; width: 100%; border-radius: 15px; border: none; cursor: pointer;
-            text-transform: uppercase; margin-bottom: 25px; overflow: hidden; display: flex;
-            align-items: center; justify-content: center;
+            position: relative; background: #000; color: #fff; font-size: 20px; font-weight: 900;
+            padding: 18px; width: 100%; border-radius: 15px; border: none; cursor: pointer;
+            text-transform: uppercase; margin-bottom: 25px; overflow: hidden; display: flex; align-items: center; justify-content: center;
         }
         .neon-btn::before {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: conic-gradient(#ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
-            animation: rotateRGB 1.5s linear infinite;
+            animation: rotateRGB 2s linear infinite;
         }
-        .neon-btn::after {
-            content: 'PAYMENT WITH UPI ❤️'; position: absolute; inset: 4px; background: #000;
-            border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; z-index: 1;
-        }
+        .neon-btn::after { content: 'PAYMENT WITH UPI ❤️'; position: absolute; inset: 4px; background: #000; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; z-index: 1; }
         @keyframes rotateRGB { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        #mob { width: 100%; padding: 16px; border-radius: 12px; border: none; margin-bottom: 12px; background: #2c2c2e; color: #fff; font-size: 16px; text-align: center; }
+        /* Floating WhatsApp */
+        .wa-float { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: #fff; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; box-shadow: 2px 5px 15px rgba(0,0,0,0.3); z-index: 3000; text-decoration: none; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-        /* Loader Animation */
-        .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; }
-        .road { width: 85%; height: 4px; background: #333; position: relative; }
-        .car { font-size: 45px; position: absolute; bottom: 0; left: 0; transform: scaleX(-1); transition: 0.1s linear; }
-        .pct { font-size: 45px; font-weight: 900; color: var(--primary); margin-top: 25px; }
-        .footer { margin-top: 30px; font-size: 11px; opacity: 0.5; text-align: center; padding-bottom: 20px; }
+        .loader-wrap { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; }
+        .pct { font-size: 40px; font-weight: 900; color: var(--ind-blue); margin-top: 20px; }
+        
+        .footer { margin-top: 30px; font-size: 13px; font-weight: bold; color: #333; text-align: center; padding-bottom: 40px; }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -72,38 +84,58 @@
     </div>
 
     <div class="sidebar" id="side">
-        <button class="s-link" onclick="window.location.href='https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1'">Insurance</button>
-        <button class="s-link" onclick="toggleM()">Close Menu</button>
+        <button class="s-link" onclick="alert('Digital RC Download Service\nVersion 2.0')"><i class="fas fa-info-circle"></i> About Us</button>
+        <button class="s-link" onclick="alert('Disclaimer: Ye site kisi bhi tarah se RTO ya mParivahan se sambandhit nahi hai.')"><i class="fas fa-exclamation-triangle"></i> Disclaimer</button>
+        <button class="s-link" onclick="alert('Terms: 100% Secure Payment. Delivery in 30-60 mins on WhatsApp.')"><i class="fas fa-file-contract"></i> Terms & Conditions</button>
+        <button class="s-link" onclick="window.location.href='https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1'"><i class="fas fa-shield-alt"></i> Insurance</button>
+        <button class="s-link" onclick="toggleM()" style="background:#ffdddd;">Close Menu</button>
     </div>
 
     <div class="card">
         <div id="p1">
-            <h2 style="margin-bottom:20px;">Download Digital RC</h2>
+            <h2 style="margin-bottom:15px; color: var(--ind-blue);">Download Digital RC</h2>
             <div class="hsrp-plate">
                 <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg"><span>IND</span></div>
                 <input type="text" id="vehInput" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatV(this)">
             </div>
-            <button class="btn" onclick="go2()">CONTINUE</button>
+            
+            <div class="disclaimer-box">
+                <label style="cursor:pointer; display: flex; align-items: flex-start;">
+                    <input type="checkbox" id="termsCheck" onchange="checkTerms()">
+                    <span>
+                        Ye website SIRF information use ke liye hai. Galat use ki jimedar user ki hogi. Payment hone ke baad refund nahi hogi. Ye site kisi bhi tarah se RTO ya mParivahan se koi matlab nahi rakhti hai.
+                    </span>
+                </label>
+            </div>
+
+            <button class="btn" id="contBtn" onclick="go2()" disabled>CONTINUE</button>
+            <p style="font-size: 11px; margin-top: 10px; color: #666;">Helpline: 8709610091</p>
         </div>
 
         <div id="p2" style="display:none;">
             <button class="neon-btn" onclick="pay()"></button>
-            <div style="background:#fff; padding:12px; border-radius:15px; display:inline-block; margin-bottom:15px; border:1px solid #ddd;">
+            <div style="background:#fff; padding:12px; border-radius:15px; display:inline-block; margin-bottom:15px; border:1px solid #ddd; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
                 <img id="qr" src="" width="180">
-                <p style="color:#000; font-size:10px; margin-top:5px; font-weight:bold;">SCAN QR TO PAY</p>
+                <p style="color:#000; font-size:10px; margin-top:5px; font-weight:bold;">SCAN QR TO PAY ₹120</p>
             </div>
             <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10">
-            <input type="file" id="ss" style="margin-bottom:15px; font-size:12px; color:#aaa; width:100%;">
+            <input type="file" id="ss" style="margin-bottom:15px; font-size:12px; color:#333; width:100%;">
             <button class="btn" onclick="submit()">Verify & Download PDF</button>
         </div>
     </div>
 
-    <div class="footer">© 2026 RCPDF.IN</div>
+    <div class="footer">
+        <p>© 2026 RCPDF.IN | Official Digital Services</p>
+        <p style="margin-top:5px;">Make in India with ❤️</p>
+    </div>
+
+    <a href="https://wa.me/918709610091" class="wa-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
 
     <div class="loader-wrap" id="load">
-        <div class="road"><div class="car" id="carIcon">🚗</div></div>
         <div class="pct" id="pText">0%</div>
-        <p style="color:#666;">Generating PDF Receipt...</p>
+        <p style="color:#333; font-weight:bold;">Processing your request...</p>
     </div>
 
     <script>
@@ -111,6 +143,11 @@
         const T_CHAT_ID = "5600045707";
 
         function toggleM() { document.getElementById('side').classList.toggle('active'); }
+        
+        function checkTerms() {
+            const isChecked = document.getElementById('termsCheck').checked;
+            document.getElementById('contBtn').disabled = !isChecked;
+        }
 
         function formatV(i) {
             let v = i.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
@@ -156,20 +193,18 @@
             document.getElementById('load').style.display='flex';
             let p = 0;
             let iv = setInterval(() => {
-                p += 2;
+                p += 5;
                 document.getElementById('pText').innerText = p + "%";
-                document.getElementById('carIcon').style.left = (p * 0.88) + "%";
                 if(p >= 100) {
                     clearInterval(iv);
                     const now = new Date();
                     const dStr = now.toLocaleDateString('en-IN');
                     const tStr = now.toLocaleTimeString('en-IN');
                     const txId = "RC" + Math.floor(Math.random() * 9000000000 + 1000000000);
-                    
                     sendT(s, dStr, tStr, txId); 
                     makePDF(dStr, tStr, txId); 
                 }
-            }, 60);
+            }, 100);
         }
 
         function makePDF(d, t, tx) {
@@ -178,33 +213,29 @@
             const v = document.getElementById('vehInput').value;
             const m = document.getElementById('mob').value;
 
-            // Blue Header
             doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
             doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(22);
             doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
 
-            // Info Boxes (Left Aligned & Bold)
             doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
             let y = 50;
-            const data = [
+            const items = [
                 ["TRANSACTION ID:", tx], ["DATE & TIME:", `${d} | ${t}`],
                 ["VEHICLE NO:", v], ["WHATSAPP NO:", m],
-                ["AMOUNT PAID:", "INR 120.00"], ["PAYMENT STATUS:", "SUCCESS"]
+                ["AMOUNT PAID:", "INR 120.00"], ["STATUS:", "SUCCESS"]
             ];
 
-            data.forEach(item => {
+            items.forEach(item => {
                 doc.rect(15, y, 180, 10);
                 doc.setFont("helvetica", "bold"); doc.text(item[0], 20, y + 7);
                 doc.setFont("helvetica", "normal"); doc.text(item[1], 85, y + 7);
                 y += 10;
             });
 
-            // QR Support Box
             doc.rect(15, y + 5, 180, 45);
             doc.setFont("helvetica", "bold"); doc.text("SUPPORT QR CODE", 25, y + 15);
             doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 10, 35, 35);
             
-            // Terms & Conditions
             y += 65;
             doc.setFontSize(14); doc.setFont("helvetica", "bold"); doc.text("TERMS AND CONDITIONS", 15, y);
             doc.setFontSize(10); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
@@ -215,13 +246,10 @@
                 "- Amount is non-refundable once processed."
             ];
             doc.text(tnc, 15, y + 8);
-
-            // Final Border
             doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
             doc.save(`Receipt_${v}.pdf`);
             setTimeout(() => location.reload(), 1500);
         }
     </script>
-<H2> ♥️🫆whatsapp helpline 8709610091 </H2>
 </body>
 </html>
