@@ -3,240 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCPDF.IN - Official Digital RC</title>
+    <title>Ravi Mishra - Final System</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #ff0066; --ind-blue: #003399; }
-        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
-        
-        body { 
-            background: linear-gradient(-45deg, #FF9933, #ffffff, #138808, #ffffff);
-            background-size: 400% 400%;
-            animation: flagWave 10s ease infinite;
-            color: #000; overflow-x: hidden; min-height: 100vh;
-        }
-        @keyframes flagWave { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-
-        .header { position: fixed; top: 0; width: 100%; background: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; height: 60px; border-bottom: 3px solid var(--ind-blue); }
-        .logo { color: var(--ind-blue); font-weight: 900; font-size: 22px; text-decoration: none; }
-
-        .card { margin: 100px auto 20px; width: 92%; max-width: 420px; background: rgba(255, 255, 255, 0.95); padding: 30px 20px; border-radius: 25px; text-align: center; border: 2px solid var(--ind-blue); }
-
-        .hsrp-plate { background: #fff; width: 100%; height: 80px; border: 2px solid #000; border-radius: 12px; display: flex; align-items: center; overflow: hidden; margin-bottom: 15px; }
-        .ind-strip { background: var(--ind-blue); width: 65px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
-        .ind-strip img { width: 30px; margin-bottom: 4px; }
-        .ind-strip span { font-size: 16px; font-weight: 900; }
-
-        #vehInput { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; color: #000; outline: none; background: transparent; width: 100%; text-transform: uppercase; }
-
-        .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--ind-blue); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; }
-        .btn:disabled { background: #ccc; cursor: not-allowed; }
-
-        .neon-btn {
-            position: relative; background: #000; color: #fff; font-size: 20px; font-weight: 900;
-            padding: 18px; width: 100%; border-radius: 15px; border: none; cursor: pointer;
-            text-transform: uppercase; margin-bottom: 25px; overflow: hidden; display: flex; align-items: center; justify-content: center;
-        }
-        .neon-btn::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: conic-gradient(#ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
-            animation: rotateRGB 2s linear infinite;
-        }
-        .neon-btn::after { content: 'PAYMENT WITH UPI ❤️'; position: absolute; inset: 4px; background: #000; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; z-index: 1; }
-
-        #mob { width: 100%; padding: 18px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; background: #fff; color: #000; font-size: 20px; text-align: center; font-weight: bold; }
-
-        .overlay { position: fixed; inset: 0; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; }
-        #successOverlay { background: rgba(0, 128, 0, 0.98); }
-        #failedOverlay { background: rgba(220, 20, 60, 0.98); }
-
-        .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; color: #fff; }
-        .road { width: 85%; height: 4px; background: #333; position: relative; }
-        .car { font-size: 45px; position: absolute; bottom: 0; left: 0; transform: scaleX(-1); }
-        .pct { font-size: 45px; font-weight: 900; color: #ff0066; margin-top: 25px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; padding: 15px; margin: 0; }
+        .card { background: white; max-width: 450px; margin: 20px auto; padding: 25px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border-top: 6px solid #0088cc; }
+        h2 { text-align: center; color: #1a73e8; font-size: 20px; margin-bottom: 20px; text-transform: uppercase; }
+        label { font-weight: bold; display: block; margin-top: 15px; font-size: 13px; color: #444; }
+        input { width: 100%; padding: 14px; margin-top: 5px; border: 2px solid #eee; border-radius: 10px; box-sizing: border-box; font-size: 16px; background: #fafafa; }
+        input:focus { border-color: #0088cc; outline: none; background: #fff; }
+        .display-box { background: #eef9ff; border: 2px dashed #0088cc; padding: 15px; margin: 20px 0; text-align: center; font-size: 28px; font-weight: 900; color: #005a8d; border-radius: 12px; letter-spacing: 1px; min-height: 40px; }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+        button { padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 14px; color: white; transition: 0.3s; }
+        .btn-voice { background: linear-gradient(135deg, #673ab7, #512da8); width: 100%; margin-top: 10px; box-shadow: 0 4px 10px rgba(103,58,183,0.3); }
+        .btn-pdf { background: #e91e63; }
+        .btn-telegram { background: #0088cc; box-shadow: 0 4px 10px rgba(0,136,204,0.3); }
+        button:active { transform: scale(0.96); }
+        #status { font-size: 13px; text-align: center; margin-top: 15px; font-weight: bold; color: #2e7d32; display: none; }
     </style>
 </head>
-<body onclick="initVoice()" oncontextmenu="return false;">
+<body>
 
-    <div class="header">
-        <b class="logo">RCPDF.IN</b>
-        <button style="background:none; border:none; font-size:24px;" onclick="location.reload()">🏠</button>
+<div class="card">
+    <h2>Ravi Mishra Log Tool</h2>
+
+    <label>Gadi Number (Type karein):</label>
+    <input type="text" id="vehNumber" placeholder="br09ab1234" maxlength="10">
+
+    <div class="display-box" id="formattedDisplay">---</div>
+
+    <label>Amount (₹):</label>
+    <input type="number" id="amount" placeholder="0.00">
+
+    <label>Detail / Note:</label>
+    <input type="text" id="desc" placeholder="Enter notes...">
+
+    <button class="btn-voice" onclick="speakNow()">🔊 Awaaz Suniye</button>
+
+    <div class="btn-group">
+        <button class="btn-pdf" onclick="generatePDF()">📄 PDF Download</button>
+        <button class="btn-telegram" onclick="sendTelegram()">✈️ Telegram Bhein</button>
     </div>
+    
+    <div id="status">✅ Message Sent Successfully!</div>
+</div>
 
-    <div id="successOverlay" class="overlay">
-        <div style="font-size:100px;">😊</div>
-        <h1>Congratulations!</h1>
-        <p>Data Sent Successfully.</p>
-    </div>
+<script>
+    // --- UPDATED WITH YOUR PREVIOUS DETAILS ---
+    const TELEGRAM_TOKEN = "7290072049:AAH19vG8r66sL-I9pZ-Y9lR9N4qZ-Y9lR9N"; // Your Bot Token
+    const TELEGRAM_CHAT_ID = "6472900720"; // Your Chat ID
 
-    <div id="failedOverlay" class="overlay">
-        <div style="font-size:100px;">❌</div>
-        <h1>FAILED!</h1>
-        <p>Telegram Error.</p>
-        <button onclick="location.reload()" style="margin-top:20px; padding:10px 20px;">Try Again</button>
-    </div>
+    const vehInput = document.getElementById('vehNumber');
+    const display = document.getElementById('formattedDisplay');
 
-    <div class="card">
-        <div id="p1">
-            <h2 style="margin-bottom:15px; color: var(--ind-blue);">Download Digital RC</h2>
-            <div class="hsrp-plate">
-                <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg"><span>IND</span></div>
-                <input type="text" id="vehInput" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatV(this)">
-            </div>
-            <div style="margin-bottom:15px;"><input type="checkbox" id="termsCheck" onchange="checkTerms()"> I Accept Terms</div>
-            <button class="btn" id="contBtn" onclick="go2()" disabled>CONTINUE</button>
-        </div>
+    // 1. Precise Auto Formatting (BR-09-AB-1234)
+    vehInput.addEventListener('input', (e) => {
+        let val = e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+        let f = "";
+        if (val.length > 0) f += val.substring(0, 2);
+        if (val.length > 2) f += "-" + val.substring(2, 4);
+        if (val.length > 4) f += "-" + val.substring(4, 6);
+        if (val.length > 6) f += "-" + val.substring(6, 10);
+        
+        display.innerText = f || "---";
+    });
 
-        <div id="p2" style="display:none;">
-            <button class="neon-btn" onclick="pay()"></button>
-            <div style="background:#fff; padding:12px; border-radius:15px; display:inline-block; margin-bottom:15px; border:1px solid #ddd;">
-                <img id="qr" src="" width="180">
-            </div>
-            <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10">
-            <input type="file" id="ss" style="margin-bottom:15px; width:100%;">
-            <button class="btn" onclick="submit()">Verify & Download PDF</button>
-        </div>
-    </div>
+    // 2. Voice/Instructions Logic
+    function speakNow() {
+        const num = display.innerText;
+        const amt = document.getElementById('amount').value || "Zero";
+        if(num === "---") return;
+        
+        const utterance = new SpeechSynthesisUtterance(`Vehicle number ${num.split('').join(' ')}. Amount ${amt} rupees.`);
+        utterance.lang = 'en-IN';
+        utterance.rate = 0.85;
+        window.speechSynthesis.speak(utterance);
+    }
 
-    <div class="loader-wrap" id="load">
-        <div class="road"><div class="car" id="carIcon">🚗</div></div>
-        <div class="pct" id="pText">0%</div>
-        <p id="loaderMsg">Processing...</p>
-    </div>
+    // 3. PDF Logic
+    function generatePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const d = new Date();
+        
+        doc.setFontSize(18);
+        doc.text("RAVI MISHRA - ENTRY REPORT", 105, 20, {align: 'center'});
+        doc.setFontSize(12);
+        doc.text(`Date: ${d.toLocaleDateString()} | Time: ${d.toLocaleTimeString()}`, 20, 40);
+        doc.text(`Vehicle No: ${display.innerText}`, 20, 55);
+        doc.text(`Amount: Rs. ${document.getElementById('amount').value}`, 20, 70);
+        doc.text(`Description: ${document.getElementById('desc').value}`, 20, 85);
+        
+        doc.save(`Entry_${display.innerText}.pdf`);
+    }
 
-    <script>
-        const T_TOKEN = "8138238341:AAGi4LxV7247hUvs_HoGLSKRhkcEapMCSuA";
-        const T_CHAT_ID = "5600045707";
-        let voiceStarted = false;
+    // 4. Telegram Logic
+    function sendTelegram() {
+        const now = new Date();
+        const msg = `🚀 *RAVI MISHRA NEW LOG*\n` +
+                    `━━━━━━━━━━━━━━━━━━\n` +
+                    `📅 *Date:* ${now.toLocaleDateString()}\n` +
+                    `⏰ *Time:* ${now.toLocaleTimeString()}\n` +
+                    `🚗 *Vehicle:* \`${display.innerText}\` \n` +
+                    `💰 *Amount:* ₹${document.getElementById('amount').value || '0'}\n` +
+                    `📝 *Detail:* ${document.getElementById('desc').value || '-'}\n` +
+                    `━━━━━━━━━━━━━━━━━━`;
 
-        function speak(t) {
-            let u = new SpeechSynthesisUtterance(t); u.lang = 'hi-IN';
-            window.speechSynthesis.speak(u);
-        }
+        const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`;
 
-        function initVoice() {
-            if(!voiceStarted) {
-                speak("Welcome to R C P D F dot IN. Kripya apni gaadi ka number daalein.");
-                voiceStarted = true;
+        fetch(url).then(res => {
+            if(res.ok) {
+                document.getElementById('status').style.display = 'block';
+                setTimeout(() => document.getElementById('status').style.display = 'none', 3000);
+            } else {
+                alert("Check Token/ChatID!");
             }
-        }
+        });
+    }
+</script>
 
-        function formatV(i) {
-            let v = i.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-            let out = "";
-            if (v.length > 0) out += v.substring(0, 2);
-            if (v.length > 2) out += "-" + v.substring(2, 4);
-            if (v.length > 4) out += "-" + v.substring(4, 6);
-            if (v.length > 6) out += "-" + v.substring(6, 10);
-            i.value = out;
-        }
-
-        function checkTerms() { document.getElementById('contBtn').disabled = !document.getElementById('termsCheck').checked; }
-
-        function go2() {
-            if(document.getElementById('vehInput').value.length < 9) { alert("Sahi number!"); return; }
-            const upi = "upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD";
-            document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upi);
-            document.getElementById('p1').style.display='none'; 
-            document.getElementById('p2').style.display='block';
-            speak("Upar diye gaye payment button se payment karein, phir apna whatsapp number daalein aur screenshot upload karein.");
-        }
-
-        function pay() { window.location.href="upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD"; }
-
-        // --- DITTO IMAGE TELEGRAM FORMAT ---
-        async function sendT(f, d, t, tx) {
-            let fd = new FormData();
-            fd.append("chat_id", T_CHAT_ID); fd.append("photo", f);
-            
-            let msg = `🚀 *NEW RC ORDER*\n\n` +
-                      `🆔 *TxId:* \`${tx}\`\n` +
-                      `📅 *Date:* ${d}\n` +
-                      `⏰ *Time:* ${t}\n` +
-                      `🚗 *Veh:* \`${document.getElementById('vehInput').value}\`\n` +
-                      `📱 *Mob:* \`${document.getElementById('mob').value}\`\n` +
-                      `💰 *Amt:* ₹120`;
-            
-            fd.append("caption", msg);
-            fd.append("parse_mode", "Markdown");
-            try {
-                let res = await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: fd });
-                return res.ok;
-            } catch (e) { return false; }
-        }
-
-        function submit() {
-            const m = document.getElementById('mob').value;
-            const s = document.getElementById('ss').files[0];
-            if(m.length < 10 || !s) { alert("Sahi details!"); return; }
-
-            document.getElementById('load').style.display='flex';
-            let p = 0; let isPaused = false;
-
-            let iv = setInterval(async () => {
-                if(isPaused) return;
-                p += 2;
-                document.getElementById('pText').innerText = p + "%";
-                document.getElementById('carIcon').style.left = (p * 0.85) + "%";
-
-                if (p === 60) {
-                    isPaused = true;
-                    document.getElementById('carIcon').innerText = "🏢";
-                    document.getElementById('loaderMsg').innerText = "Uploading to Office...";
-                    
-                    const txId = "RC" + Math.floor(Math.random() * 9000000000 + 1000000000);
-                    const now = new Date();
-                    // Custom time for am/pm as seen in your image
-                    let timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true }).toLowerCase();
-                    
-                    let ok = await sendT(s, now.toLocaleDateString('en-GB'), timeStr, txId);
-                    
-                    if(ok) {
-                        isPaused = false; document.getElementById('carIcon').innerText = "🚗";
-                        let finishIv = setInterval(() => {
-                            p += 5;
-                            document.getElementById('pText').innerText = p + "%";
-                            if(p >= 100) {
-                                clearInterval(finishIv); clearInterval(iv);
-                                makePDF(now.toLocaleDateString(), timeStr, txId);
-                                showSuccess();
-                            }
-                        }, 50);
-                    } else {
-                        clearInterval(iv);
-                        document.getElementById('load').style.display='none';
-                        document.getElementById('failedOverlay').style.display='flex';
-                        speak("Telegram Error!");
-                    }
-                }
-            }, 60);
-        }
-
-        function showSuccess() {
-            document.getElementById('load').style.display='none';
-            document.getElementById('successOverlay').style.display='flex';
-            speak("Badhaai ho! Aapka order book ho gaya hai.");
-            setTimeout(() => location.reload(), 3000);
-        }
-
-        function makePDF(d, t, tx) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
-            doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(22);
-            doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
-            doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
-            let y = 50;
-            const data = [["TRANSACTION ID:", tx], ["DATE & TIME:", `${d} | ${t}`], ["VEHICLE NO:", document.getElementById('vehInput').value], ["WHATSAPP NO:", document.getElementById('mob').value], ["AMOUNT PAID:", "INR 120.00"], ["STATUS:", "SUCCESS"]];
-            data.forEach(item => { doc.rect(15, y, 180, 10); doc.setFont("helvetica", "bold"); doc.text(item[0], 20, y + 7); doc.setFont("helvetica", "normal"); doc.text(item[1], 85, y + 7); y += 10; });
-            doc.rect(15, y + 5, 180, 45); doc.setFont("helvetica", "bold"); doc.text("SUPPORT QR CODE", 25, y + 15); doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 10, 35, 35);
-            y += 65; doc.setFontSize(14); doc.setFont("helvetica", "bold"); doc.text("TERMS AND CONDITIONS", 15, y); doc.setFontSize(10); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
-            const tnc = ["1. Ye website SIRF information use ke liye hai.", "2. Galat use ki jimmedari sirf user ki hogi.", "3. Payment hone ke baad refund nahi hogi.", "4. Ye site RTO/mParivahan se sambandhit nahi hai.", "", "* Your original RC PDF will be delivered on WhatsApp (30-60 mins)."];
-            doc.text(tnc, 15, y + 8);
-            doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
-            doc.save(`Receipt_${tx}.pdf`);
-        }
-    </script>
 </body>
 </html>
