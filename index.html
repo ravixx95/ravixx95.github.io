@@ -100,13 +100,13 @@
     <div id="successOverlay" class="overlay">
         <div class="big-emoji">😊</div>
         <h1 style="font-size: 30px;">Congratulations!</h1>
-        <p style="font-size: 18px; margin-top: 10px;">Aapka Bill Telegram par bhej diya gaya hai.</p>
+        <p style="font-size: 18px; margin-top: 10px;">Aapka REQUEST bhej diya gaya hai.</p>
     </div>
 
     <div id="failedOverlay" class="overlay">
         <div class="big-emoji">❌</div>
         <h1 style="font-size: 30px;">FAILED!</h1>
-        <p style="font-size: 18px; margin-top: 10px;">Server connection fail ho gaya. Kripya Token aur Chat ID check karein.</p>
+        <p style="font-size: 18px; margin-top: 10px;">Server connection fail ho gaya. Kripya sahi payment screenshot atteched kijiye(JPG).</p>
         <button onclick="location.reload()" style="margin-top:25px; padding:12px 30px; background:#fff; color:red; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">Dubara Koshish Karein</button>
     </div>
 
@@ -145,6 +145,7 @@
             <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10">
             <input type="file" id="ss" style="margin-bottom:15px; font-size:12px; color:#333; width:100%;">
             <button class="btn" onclick="submit()">Verify & Download PDF</button>
+<H2>payment ka screenshot lagaiye</H2>
         </div>
     </div>
 
@@ -169,7 +170,7 @@
         function handleVoiceSwitch() {
             let chk = document.getElementById('voiceToggle').checked;
             if (chk) {
-                let msg = isP2 ? "ऊपर पे विथ यू पी आई बटन से पेमेंट कीजिए या क्यू आर कोड स्कैन कर के पेमेंट का स्क्रीनशॉट जरूर ले जब पेमेंट करके वापस पेज पर आये तब ही, या फिर क्यू आर पर पेमेंट होने के बाद अपना व्हाट्सएप नंबर डालें और अपने पेमेंट का स्क्रीनशॉट जरूर लगाएं पेमेंट पुष्टि के लिए जरूरी है" : "नमस्ते! कृपया अपने गाड़ी नंबर दर्ज कीजिए";
+                let msg = isP2 ? "ऊपर पे विथ यू पी आई बटन से पेमेंट कीजिए या क्यू आर कोड स्कैन कर के पेमेंट का स्क्रीनशॉट जरूर ले जब पेमेंट करके वापस पेज पर आये तब ही, या फिर क्यू आर पर पेमेंट होने के बाद अपना व्हाट्सएप नंबर डालें और.............. अपने पेमेंट का स्क्रीनशॉट जरूर लगाएं पेमेंट पुष्टि के लिए जरूरी है" : "नमस्ते! कृपया अपने गाड़ी नंबर दर्ज कीजिए";
                 speak(msg);
             } else {
                 window.speechSynthesis.cancel();
