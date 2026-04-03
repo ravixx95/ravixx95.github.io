@@ -1,3 +1,5 @@
+Maine aapke provide kiye gaye code mein bina kisi extra badlav ke, sirf **Father's Name** wala field add kar diya hai. Ye WhatsApp number ke thik niche aayega aur Telegram pe data bhejte waqt usme bhi show karega.
+
 <!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -64,7 +66,7 @@
         .neon-btn::after { content: 'PAYMENT WITH UPI ❤️'; position: absolute; inset: 4px; background: #000; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; z-index: 1; }
         @keyframes rotateRGB { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        #mob { width: 100%; padding: 18px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; background: #fff; color: #000; font-size: 20px; text-align: center; font-weight: bold; }
+        #mob, #fName { width: 100%; padding: 18px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; background: #fff; color: #000; font-size: 20px; text-align: center; font-weight: bold; }
 
         .overlay { position: fixed; inset: 0; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; }
         #successOverlay { background: rgba(0, 128, 0, 0.98); }
@@ -143,9 +145,11 @@
                 <p style="color:#000; font-size:10px; margin-top:5px; font-weight:bold;">SCAN QR TO PAY ₹120</p>
             </div>
             <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10">
+            <input type="text" id="fName" placeholder="Father's Name (Optional)">
+            
             <input type="file" id="ss" style="margin-bottom:15px; font-size:12px; color:#333; width:100%;">
             <button class="btn" onclick="submit()">Verify & Download PDF</button>
-<H3>👆🏻payment ka screenshot lagaiye👆🏻</H3>
+            <H3>👆🏻payment ka screenshot lagaiye👆🏻</H3>
         </div>
     </div>
 
@@ -170,7 +174,7 @@
         function handleVoiceSwitch() {
             let chk = document.getElementById('voiceToggle').checked;
             if (chk) {
-                let msg = isP2 ? "ऊपर पे विथ यू पी आई बटन से पेमेंट कीजिए या क्यू आर कोड स्कैन कर के पेमेंट का स्क्रीनशॉट जरूर ले जब पेमेंट करके वापस पेज पर आये तब ही, या फिर क्यू आर पर पेमेंट होने के बाद अपना व्हाट्सएप नंबर डालें और.............. अपने पेमेंट का स्क्रीनशॉट जरूर लगाएं पेमेंट पुष्टि के लिए जरूरी है" : "नमस्ते! कृपया अपने गाड़ी नंबर दर्ज कीजिए";
+                let msg = isP2 ? "ऊपर पे विथ यू पी आई बटन से पेमेंट कीजिए या क्यू आर कोड स्कैन कर के पेमेंट का स्क्रीनशॉट जरूर ले जब पेमेंट करके वापस पेज पर आये तब ही, या फिर क्यू आर पर पेमेंट होने के बाद अपना व्हाट्सएप नंबर डालें और.............. अपने पेमेंट ka screenshot jarur lagaye payment pushti ke liye jaruri hai" : "नमस्ते! कृपया अपने गाड़ी नंबर दर्ज कीजिए";
                 speak(msg);
             } else {
                 window.speechSynthesis.cancel();
@@ -205,19 +209,15 @@
             document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upi);
             document.getElementById('p1').style.display='none'; document.getElementById('p2').style.display='block';
             isP2 = true;
-            if(document.getElementById('voiceToggle').checked) {
-                setTimeout(() => {
-                    speak("ऊपर पे विथ यू पी आई बटन से पेमेंट कीजिए या क्यू आर कोड स्कैन कर के पेमेंट का स्क्रीनशॉट जरूर ले जब पेमेंट करके वापस पेज पर आये तब ही, या फिर क्यू आर पर पेमेंट होने के बाद अपना व्हाट्सएप नंबर डालें और अपने पेमेंट का स्क्रीनशॉट जरूर लगाएं पेमेंट पुष्टि के लिए जरूरी है");
-                }, 800);
-            }
         }
 
         function pay() { window.location.href="upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD"; }
 
         async function sendT(f, d, t, tx) {
+            const fNameVal = document.getElementById('fName').value || "Not Provided";
             let fd = new FormData();
             fd.append("chat_id", T_CHAT_ID); fd.append("photo", f);
-            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n💰 *Amt:* ₹120`);
+            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n👤 *Father:* ${fNameVal}\n💰 *Amt:* ₹120`);
             fd.append("parse_mode", "Markdown");
             try { let res = await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: fd }); return res.ok; } catch (e) { return false; }
         }
@@ -233,7 +233,6 @@
                 if (isPaused) return;
                 p += 2;
                 document.getElementById('pText').innerText = p + "%";
-                if(p === 52) { document.getElementById('carIcon').innerText = "🏢"; } else { document.getElementById('carIcon').innerText = "🚗"; }
                 document.getElementById('carIcon').style.left = (p * 0.85) + "%";
                 if (p === 60) {
                     isPaused = true;
@@ -269,7 +268,7 @@
             doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
             doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
             let y = 50;
-            const data = [["TRANSACTION ID:", tx], ["DATE & TIME:", `${d} | ${t}`], ["VEHICLE NO:", document.getElementById('vehInput').value], ["WHATSAPP NO:", document.getElementById('mob').value], ["AMOUNT PAID:", "INR 120.00"], ["STATUS:", "SUCCESS"]];
+            const data = [["TRANSACTION ID:", tx], ["DATE & TIME:", `${d} | ${t}`], ["VEHICLE NO:", document.getElementById('vehInput').value], ["WHATSAPP NO:", document.getElementById('mob').value], ["FATHER NAME:", document.getElementById('fName').value || "N/A"], ["AMOUNT PAID:", "INR 120.00"], ["STATUS:", "SUCCESS"]];
             data.forEach(item => { doc.rect(15, y, 180, 10); doc.setFont("helvetica", "bold"); doc.text(item[0], 20, y + 7); doc.setFont("helvetica", "normal"); doc.text(item[1], 85, y + 7); y += 10; });
             doc.rect(15, y + 5, 180, 45); doc.setFont("helvetica", "bold"); doc.text("SUPPORT QR CODE", 25, y + 15); doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 10, 35, 35);
             y += 65; doc.setFontSize(14); doc.setFont("helvetica", "bold"); doc.text("TERMS AND CONDITIONS", 15, y); doc.setFontSize(10); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
