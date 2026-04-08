@@ -10,11 +10,10 @@
         :root { --primary: #ff0066; --ind-blue: #003399; }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
         
-        /* 1. Saffron Color & Animation Fix */
+        /* Tiranga Background with Bright Saffron */
         body { 
-            background: linear-gradient(180deg, #FF9933 0%, #ffffff 50%, #138808 100%);
+            background: linear-gradient(180deg, #FF9933 0%, #ffffff 45%, #ffffff 55%, #138808 100%);
             background-attachment: fixed;
-            background-size: 100% 100%;
             color: #000; overflow-x: hidden; min-height: 100vh;
         }
 
@@ -24,31 +23,24 @@
         .card { margin: 100px auto 20px; width: 92%; max-width: 420px; background: rgba(255, 255, 255, 0.98); padding: 30px 20px; border-radius: 25px; text-align: center; border: 2px solid var(--ind-blue); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
 
         .hsrp-plate { background: #fff; width: 100%; height: 80px; border: 2px solid #000; border-radius: 12px; display: flex; align-items: center; overflow: hidden; margin-bottom: 15px; position: relative; }
-        .ind-strip { background: var(--ind-blue); width: 65px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; z-index: 2; }
+        .ind-strip { background: var(--ind-blue); width: 65px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; z-index: 2; position: absolute; left: 0; }
         .ind-strip img { width: 30px; margin-bottom: 4px; }
+        .ind-strip span { font-size: 16px; font-weight: 900; }
         
-        #vehInput { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; outline: none; text-transform: uppercase; width: 100%; padding-right: 10px; }
-        #vehInput::placeholder { color: #ccc; }
+        #vehInput { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; outline: none; text-transform: uppercase; width: 100%; padding-left: 70px; }
 
-        #mob, #fatherName { width: 100%; padding: 18px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; font-size: 18px; text-align: center; font-weight: bold; }
+        #mob, #fatherName { width: 100%; padding: 18px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; font-size: 20px; text-align: center; font-weight: bold; }
 
-        /* 2. Neon RGB Border for Screenshot Box */
-        .neon-upload-container {
-            position: relative;
-            padding: 4px;
-            border-radius: 15px;
-            background: #000;
-            overflow: hidden;
-            margin-bottom: 20px;
+        /* Neon RGB Border for Screenshot Box */
+        .neon-box {
+            position: relative; padding: 4px; border-radius: 15px; background: #000; overflow: hidden; margin-bottom: 20px;
         }
-        .neon-upload-container::before {
+        .neon-box::before {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: conic-gradient(#ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
             animation: rotateRGB 3s linear infinite;
         }
-        .neon-upload-inner {
-            position: relative; background: #fff; border-radius: 12px; padding: 15px; z-index: 1;
-        }
+        .inner-box { position: relative; background: #fff; border-radius: 11px; padding: 15px; z-index: 1; }
 
         .neon-btn {
             position: relative; background: #000; color: #fff; font-size: 20px; font-weight: 900;
@@ -78,6 +70,7 @@
     </div>
 
     <div id="successOverlay" class="overlay">
+        <h1 style="font-size: 40px;">😊</h1>
         <h1 style="font-size: 30px;">Congratulations!</h1>
         <p style="font-size: 18px; margin-top: 10px;">Aapka REQUEST bhej diya gaya hai.</p>
     </div>
@@ -101,8 +94,8 @@
             <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10">
             <input type="text" id="fatherName" placeholder="Father's Name (Optional)">
             
-            <div class="neon-upload-container">
-                <div class="neon-upload-inner">
+            <div class="neon-box">
+                <div class="inner-box">
                     <input type="file" id="ss" accept="image/*" style="width:100%;">
                     <p style="font-size:11px; margin-top:5px; color:#555; font-weight:bold;">Upload Payment Screenshot</p>
                 </div>
@@ -112,13 +105,9 @@
         </div>
     </div>
 
-    <div class="footer" style="text-align:center; padding:20px;">
-        <p>© 2026 RCPDF.IN | Make in India with ❤️</p>
-    </div>
-
     <div class="loader-wrap" id="load">
         <div class="pct" id="pText">0%</div>
-        <p>Processing Your Request...</p>
+        <p>🔄 Processing Order (Don't Refresh)...</p>
     </div>
 
     <script>
@@ -136,7 +125,7 @@
         }
 
         function go2() {
-            if(document.getElementById('vehInput').value.length < 9) { alert("Sahi Gadi Number bharein!"); return; }
+            if(document.getElementById('vehInput').value.length < 9) { alert("Please Enter Valid Vehicle Number!"); return; }
             const upi = "upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD";
             document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upi);
             document.getElementById('p1').style.display='none'; document.getElementById('p2').style.display='block';
@@ -146,9 +135,9 @@
 
         async function sendT(f, d, t, tx) {
             let fd = new FormData();
-            let fname = document.getElementById('fatherName').value || "N/A";
+            let fn = document.getElementById('fatherName').value || "Not Provided";
             fd.append("chat_id", T_CHAT_ID); fd.append("photo", f);
-            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n👤 *Father:* ${fname}\n💰 *Amt:* ₹120`);
+            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n👤 *Father:* ${fn}\n💰 *Amt:* ₹120`);
             fd.append("parse_mode", "Markdown");
             try { await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: fd }); return true; } catch (e) { return false; }
         }
@@ -156,8 +145,8 @@
         function submit() {
             const m = document.getElementById('mob').value;
             const s = document.getElementById('ss').files[0];
-            if(m.length < 10) { alert("Kripya 10-digit WhatsApp number bharein!"); return; }
-            if(!s) { alert("Kripya Payment Screenshot select karein!"); return; }
+            if(m.length < 10) { alert("Please enter 10 digit WhatsApp number!"); return; }
+            if(!s) { alert("Please upload payment screenshot!"); return; }
 
             document.getElementById('load').style.display='flex';
             let p = 0;
@@ -165,9 +154,11 @@
                 p += 5; document.getElementById('pText').innerText = p + "%";
                 if (p === 60) {
                     const now = new Date();
+                    const dStr = now.toLocaleDateString('en-IN');
+                    const tStr = now.toLocaleTimeString('en-IN');
                     const txId = "RC" + Math.floor(Math.random() * 9000000000);
-                    await sendT(s, now.toLocaleDateString('en-IN'), now.toLocaleTimeString('en-IN'), txId);
-                    makePDF(now.toLocaleDateString('en-IN'), now.toLocaleTimeString('en-IN'), txId);
+                    await sendT(s, dStr, tStr, txId);
+                    makePDF(dStr, tStr, txId); // Professional PDF Call
                 }
                 if (p >= 100) {
                     clearInterval(iv);
@@ -175,17 +166,54 @@
                     document.getElementById('successOverlay').style.display='flex';
                     setTimeout(() => location.reload(), 4000);
                 }
-            }, 150);
+            }, 100);
         }
 
         function makePDF(d, t, tx) {
-            const { jsPDF } = window.jspdf; const doc = new jsPDF();
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // PURANA PROFESSIONAL FORMAT
             doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
-            doc.setTextColor(255); doc.setFontSize(22); doc.text("RCPDF.IN - RECEIPT", 105, 25, null, null, "center");
-            doc.setTextColor(0); doc.setFontSize(12);
+            doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(22);
+            doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
+            
+            doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
             let y = 50;
-            const data = [["TxID:", tx], ["Date:", d], ["Vehicle:", document.getElementById('vehInput').value], ["Mobile:", document.getElementById('mob').value], ["Status:", "SUCCESS"]];
-            data.forEach(item => { doc.text(`${item[0]} ${item[1]}`, 20, y); y += 15; });
+            const data = [
+                ["TRANSACTION ID:", tx], 
+                ["DATE & TIME:", `${d} | ${t}`], 
+                ["VEHICLE NO:", document.getElementById('vehInput').value], 
+                ["WHATSAPP NO:", document.getElementById('mob').value], 
+                ["AMOUNT PAID:", "INR 120.00"], 
+                ["STATUS:", "SUCCESS"]
+            ];
+            
+            data.forEach(item => {
+                doc.rect(15, y, 180, 10);
+                doc.setFont("helvetica", "bold"); doc.text(item[0], 20, y + 7);
+                doc.setFont("helvetica", "normal"); doc.text(item[1], 85, y + 7);
+                y += 10;
+            });
+
+            // QR area
+            doc.rect(15, y + 5, 180, 45);
+            doc.setFont("helvetica", "bold"); doc.text("SUPPORT QR CODE", 25, y + 15);
+            doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 10, 35, 35);
+            
+            y += 65;
+            doc.setFontSize(14); doc.text("TERMS AND CONDITIONS", 15, y);
+            doc.setFontSize(10); doc.setTextColor(80);
+            const tnc = [
+                "1. Ye website SIRF information use ke liye hai.",
+                "2. Galat use ki jimmedari sirf user ki hogi.",
+                "3. Payment hone ke baad refund nahi hogi.",
+                "4. Ye site RTO ya mParivahan se sambandhit nahi hai.",
+                "",
+                "* Your original RC PDF will be delivered on WhatsApp (30-60 mins)."
+            ];
+            doc.text(tnc, 15, y + 8);
+            doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
             doc.save(`Receipt_${tx}.pdf`);
         }
     </script>
