@@ -39,12 +39,12 @@
         .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--ind-blue); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; }
         .btn-challan { background: #f1c40f; color: #000; margin-top: 15px; border: 2px solid #d4ac0d; }
 
+        /* Modified Loader */
         .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; color: #fff; }
-        .road { width: 85%; height: 4px; background: #333; position: relative; margin-top: 20px; }
-        .car { font-size: 45px; position: absolute; bottom: 0; left: 0; transform: scaleX(-1); }
+        .road { width: 85%; height: 4px; background: #333; position: relative; margin-top: 40px; }
+        .car { font-size: 40px; position: absolute; bottom: 0; left: 0; transform: scaleX(-1); z-index: 5; transition: 0.1s linear; }
+        .rto-office { position: absolute; right: 20%; bottom: 5px; font-size: 35px; }
         .pct { font-size: 45px; font-weight: 900; color: #ff0066; }
-        
-        .footer { background: #fff; padding: 30px 20px; border-top: 3px solid var(--ind-blue); text-align: center; margin-top: 40px; }
     </style>
 </head>
 <body>
@@ -71,7 +71,7 @@
                 <p style="font-size:12px; font-weight:bold; margin-top:5px;">SCAN QR TO PAY ₹120</p>
             </div>
             <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10">
-            <input type="text" id="fatherName" placeholder="Father's Name">
+            <input type="text" id="fatherName" placeholder="Enter Father's Name">
             <div class="neon-box">
                 <div class="inner-box">
                     <input type="file" id="ss" accept="image/*" style="width:100%;">
@@ -83,9 +83,12 @@
     </div>
 
     <div class="loader-wrap" id="load">
-        <div class="road"><div class="car" id="carIcon">🚗</div></div>
         <div class="pct" id="pText">0%</div>
-        <p style="color:#fff; margin-top:10px;">🔄 Processing (Do not Refresh)...</p>
+        <div class="road">
+            <div class="car" id="carIcon">🚗</div>
+            <div class="rto-office" id="rto">🏢 <small style="font-size:10px; display:block; color:yellow;">RTO OFFICE</small></div>
+        </div>
+        <p style="color:#fff; margin-top:20px;" id="statusMsg">Connecting to RTO Server...</p>
     </div>
 
     <script>
@@ -104,13 +107,12 @@
 
         function go2() {
             if(document.getElementById('vehInput').value.length < 9) { alert("Invalid Number!"); return; }
-            // Changed 'tn' to generic RCPDF SERVICES
             const upi = "upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RCPDF%20SERVICES";
             document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upi);
             document.getElementById('p1').style.display='none'; document.getElementById('p2').style.display='block';
         }
 
-        async function sendT(f, d, t, tx) {
+        async function sendT(f, tx) {
             let fd = new FormData();
             let fn = document.getElementById('fatherName').value || "N/A";
             fd.append("chat_id", T_CHAT_ID); fd.append("photo", f);
@@ -123,58 +125,86 @@
             const m = document.getElementById('mob').value;
             const f = document.getElementById('fatherName').value;
             const s = document.getElementById('ss').files[0];
-            if(m.length < 10 || !s || !f) { alert("Please enter WhatsApp Number, Father's Name and Upload Screenshot!"); return; }
+            
+            if(m.length < 10 || !s || f === "") { 
+                alert("Please fill all details and upload screenshot first!"); 
+                return; 
+            }
 
+            // Loader starts ONLY AFTER upload button click and validation
             document.getElementById('load').style.display='flex';
             let p = 0;
             let iv = setInterval(async () => {
-                p += 2;
+                p += 1;
                 document.getElementById('pText').innerText = p + "%";
-                document.getElementById('carIcon').style.left = (p * 0.85) + "%";
-                if (p === 60) {
+                
+                // Car movement
+                let carPos = p * 0.85;
+                document.getElementById('carIcon').style.left = carPos + "%";
+
+                // Pause at 73% (RTO Office)
+                if (p === 73) {
+                    clearInterval(iv);
+                    document.getElementById('statusMsg').innerText = "Reached RTO Office. Verifying Data...";
+                    document.getElementById('rto').style.color = "#00ff00";
+                    
                     const txId = "RC" + Math.floor(Math.random() * 9000000000);
-                    await sendT(s, "", "", txId);
-                    makePDF(new Date().toLocaleDateString('en-IN'), new Date().toLocaleTimeString('en-IN'), txId);
+                    await sendT(s, txId);
+                    makePDF(txId);
+
+                    // Continue after 2 seconds
+                    setTimeout(() => {
+                        iv = setInterval(() => {
+                            p += 1;
+                            document.getElementById('pText').innerText = p + "%";
+                            document.getElementById('carIcon').style.left = (p * 0.85) + "%";
+                            document.getElementById('statusMsg').innerText = "Generating Final Receipt...";
+                            if (p >= 100) { clearInterval(iv); location.reload(); }
+                        }, 50);
+                    }, 2000);
                 }
-                if (p >= 100) { clearInterval(iv); location.reload(); }
-            }, 80);
+            }, 60);
         }
 
-        function makePDF(d, t, tx) {
+        function makePDF(tx) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
+            const vNo = document.getElementById('vehInput').value;
+            const fName = document.getElementById('fatherName').value;
+            const mob = document.getElementById('mob').value;
+
             doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
-            doc.setTextColor(255); doc.setFontSize(22);
-            doc.text("RCPDF.IN - OFFICIAL RECEIPT", 105, 25, null, null, "center");
+            doc.setTextColor(255); doc.setFontSize(22); doc.text("RCPDF.IN - OFFICIAL RECEIPT", 105, 25, null, null, "center");
             
             doc.setTextColor(0); doc.setFontSize(12);
             let y = 50;
             const data = [
-                ["TRANSACTION ID:", tx], 
-                ["DATE & TIME:", `${d} | ${t}`], 
-                ["VEHICLE NO:", document.getElementById('vehInput').value], 
-                ["FATHER'S NAME:", document.getElementById('fatherName').value],
-                ["WHATSAPP NO:", document.getElementById('mob').value], 
-                ["AMOUNT PAID:", "INR 120.00"], 
-                ["STATUS:", "SUCCESSFUL"]
+                ["TRANSACTION ID:", tx], ["DATE & TIME:", `${new Date().toLocaleDateString('en-IN')} | ${new Date().toLocaleTimeString('en-IN')}`], 
+                ["VEHICLE NO:", vNo], ["FATHER'S NAME:", fName], 
+                ["WHATSAPP NO:", mob], ["AMOUNT PAID:", "INR 120.00"], ["STATUS:", "SUCCESSFUL"]
             ];
             data.forEach(item => { doc.rect(15, y, 180, 10); doc.text(item[0], 20, y + 7); doc.text(item[1], 85, y + 7); y += 10; });
 
-            y += 10;
-            doc.setFontSize(14); doc.setFont("helvetica", "bold");
-            doc.text("TERMS AND CONDITIONS", 15, y);
+            const webQR = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://rcpdf.in";
+            doc.rect(15, y + 10, 180, 45);
+            doc.setFontSize(10); doc.text("SCAN FOR SUPPORT (RCPDF.IN)", 25, y + 20);
+            doc.addImage(webQR, 'PNG', 150, y + 15, 35, 35);
+
+            y += 65;
+            doc.setFontSize(14); doc.setFont("helvetica", "bold"); doc.text("TERMS AND CONDITIONS", 15, y);
             doc.setFontSize(9); doc.setFont("helvetica", "normal");
             const terms = [
-                "1. This is a digital processing receipt. The final RC PDF will be sent to your WhatsApp.",
-                "2. This website is private and NOT affiliated with mParivahan or any RTO department.",
-                "3. Paid amount is strictly non-refundable once the request is initiated.",
-                "4. Responsibility for correct Vehicle/Chassis details lies solely with the user.",
-                "5. In case of delay, please contact support with your Transaction ID.",
-                "6. This document is for information purposes and not a legal substitute for an original RC."
+                "1. This is a digital processing receipt. Final PDF will be sent to WhatsApp.",
+                "2. RCPDF.IN is a private portal and NOT affiliated with RTO or Parivahan.",
+                "3. Paid amount is 100% non-refundable once the request is processed.",
+                "4. User is responsible for providing the correct Vehicle and Father's name.",
+                "5. This website is for informational use and not a legal government document.",
+                "6. If you don't receive the PDF in 60 mins, contact support with Txn ID.",
+                "7. Any misuse of this receipt for legal disputes is not the website's responsibility."
             ];
             doc.text(terms, 15, y + 8);
 
-            doc.setFont("times", "italic"); doc.setFontSize(50); doc.setTextColor(0, 51, 153);
+            doc.setFont("times", "italic"); doc.setFontSize(55); doc.setTextColor(0, 51, 153);
             doc.text("Thank You", 105, 275, null, null, "center");
             doc.setDrawColor(0, 51, 153); doc.setLineWidth(1); doc.rect(5, 5, 200, 287);
             doc.save(`Receipt_${tx}.pdf`);
