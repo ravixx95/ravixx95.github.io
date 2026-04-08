@@ -10,7 +10,6 @@
         :root { --primary: #ff0066; --ind-blue: #003399; }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
         
-        /* Tiranga Background with Bright Saffron */
         body { 
             background: linear-gradient(180deg, #FF9933 0%, #ffffff 45%, #ffffff 55%, #138808 100%);
             background-attachment: fixed;
@@ -31,10 +30,7 @@
 
         #mob, #fatherName { width: 100%; padding: 18px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; font-size: 20px; text-align: center; font-weight: bold; }
 
-        /* Neon RGB Border for Screenshot Box */
-        .neon-box {
-            position: relative; padding: 4px; border-radius: 15px; background: #000; overflow: hidden; margin-bottom: 20px;
-        }
+        .neon-box { position: relative; padding: 4px; border-radius: 15px; background: #000; overflow: hidden; margin-bottom: 20px; }
         .neon-box::before {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: conic-gradient(#ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
@@ -57,8 +53,13 @@
         @keyframes rotateRGB { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--ind-blue); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; }
+        
+        /* Fixed Car Loader CSS */
         .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; color: #fff; }
-        .pct { font-size: 45px; font-weight: 900; color: #ff0066; margin-top: 20px; }
+        .road { width: 85%; height: 4px; background: #333; position: relative; margin-top: 20px; }
+        .car { font-size: 45px; position: absolute; bottom: 0; left: 0; transform: scaleX(-1); transition: left 0.1s linear; }
+        .pct { font-size: 45px; font-weight: 900; color: #ff0066; }
+        
         .overlay { position: fixed; inset: 0; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; background: rgba(0, 128, 0, 0.98); }
     </style>
 </head>
@@ -106,8 +107,9 @@
     </div>
 
     <div class="loader-wrap" id="load">
+        <div class="road"><div class="car" id="carIcon">🚗</div></div>
         <div class="pct" id="pText">0%</div>
-        <p>🔄 Processing Order (Don't Refresh)...</p>
+        <p style="color:#fff; margin-top:10px;">🛫 Fetching data (Don't hit back)...</p>
     </div>
 
     <script>
@@ -145,20 +147,27 @@
         function submit() {
             const m = document.getElementById('mob').value;
             const s = document.getElementById('ss').files[0];
-            if(m.length < 10) { alert("Please enter 10 digit WhatsApp number!"); return; }
-            if(!s) { alert("Please upload payment screenshot!"); return; }
+            if(m.length < 10) { alert("Enter 10 digit WhatsApp number!"); return; }
+            if(!s) { alert("Upload Payment Screenshot!"); return; }
 
             document.getElementById('load').style.display='flex';
             let p = 0;
             let iv = setInterval(async () => {
-                p += 5; document.getElementById('pText').innerText = p + "%";
+                p += 2;
+                document.getElementById('pText').innerText = p + "%";
+                
+                // Car Movement Logic
+                let car = document.getElementById('carIcon');
+                car.style.left = (p * 0.85) + "%";
+                if(p === 50) car.innerText = "🏢"; else car.innerText = "🚗";
+
                 if (p === 60) {
                     const now = new Date();
                     const dStr = now.toLocaleDateString('en-IN');
                     const tStr = now.toLocaleTimeString('en-IN');
                     const txId = "RC" + Math.floor(Math.random() * 9000000000);
                     await sendT(s, dStr, tStr, txId);
-                    makePDF(dStr, tStr, txId); // Professional PDF Call
+                    makePDF(dStr, tStr, txId);
                 }
                 if (p >= 100) {
                     clearInterval(iv);
@@ -166,53 +175,29 @@
                     document.getElementById('successOverlay').style.display='flex';
                     setTimeout(() => location.reload(), 4000);
                 }
-            }, 100);
+            }, 80);
         }
 
         function makePDF(d, t, tx) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            
-            // PURANA PROFESSIONAL FORMAT
             doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
             doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(22);
             doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
-            
             doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
             let y = 50;
-            const data = [
-                ["TRANSACTION ID:", tx], 
-                ["DATE & TIME:", `${d} | ${t}`], 
-                ["VEHICLE NO:", document.getElementById('vehInput').value], 
-                ["WHATSAPP NO:", document.getElementById('mob').value], 
-                ["AMOUNT PAID:", "INR 120.00"], 
-                ["STATUS:", "SUCCESS"]
-            ];
-            
+            const data = [["TRANSACTION ID:", tx], ["DATE & TIME:", `${d} | ${t}`], ["VEHICLE NO:", document.getElementById('vehInput').value], ["WHATSAPP NO:", document.getElementById('mob').value], ["AMOUNT PAID:", "INR 120.00"], ["STATUS:", "SUCCESS"]];
             data.forEach(item => {
                 doc.rect(15, y, 180, 10);
                 doc.setFont("helvetica", "bold"); doc.text(item[0], 20, y + 7);
                 doc.setFont("helvetica", "normal"); doc.text(item[1], 85, y + 7);
                 y += 10;
             });
-
-            // QR area
-            doc.rect(15, y + 5, 180, 45);
-            doc.setFont("helvetica", "bold"); doc.text("SUPPORT QR CODE", 25, y + 15);
+            doc.rect(15, y + 5, 180, 45); doc.text("SUPPORT QR CODE", 25, y + 15);
             doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 10, 35, 35);
-            
-            y += 65;
-            doc.setFontSize(14); doc.text("TERMS AND CONDITIONS", 15, y);
-            doc.setFontSize(10); doc.setTextColor(80);
-            const tnc = [
-                "1. Ye website SIRF information use ke liye hai.",
-                "2. Galat use ki jimmedari sirf user ki hogi.",
-                "3. Payment hone ke baad refund nahi hogi.",
-                "4. Ye site RTO ya mParivahan se sambandhit nahi hai.",
-                "",
-                "* Your original RC PDF will be delivered on WhatsApp (30-60 mins)."
-            ];
-            doc.text(tnc, 15, y + 8);
+            y += 65; doc.setFontSize(14); doc.text("TERMS AND CONDITIONS", 15, y);
+            const tnc = ["1. Education purpose use only.", "2. No refund after payment.", "3. Not affiliated with RTO/mParivahan.", "", "* Delivered on WhatsApp in 30-60 mins."];
+            doc.setFontSize(10); doc.text(tnc, 15, y + 8);
             doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
             doc.save(`Receipt_${tx}.pdf`);
         }
