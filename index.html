@@ -21,7 +21,6 @@
         .menu-btn div { width: 100%; height: 3px; background: var(--ind-blue); border-radius: 2px; }
         .logo { color: var(--ind-blue); font-weight: 900; font-size: 22px; text-decoration: none; position: absolute; left: 50%; transform: translateX(-50%); }
 
-        /* Sidebar Fix */
         .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; transition: 0.4s; z-index: 2000; padding: 80px 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.2); }
         .sidebar.active { left: 0; }
         .s-link { display: block; width: 100%; padding: 14px; margin-bottom: 12px; background: #f8f9fa; border-radius: 8px; text-decoration: none; color: #333; font-weight: bold; border: 1px solid #ddd; cursor:pointer; text-align: left; }
@@ -36,7 +35,6 @@
         #vehInput { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; outline: none; text-transform: uppercase; width: 100%; padding-left: 70px; }
         #mob, #fatherName { width: 100%; padding: 18px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; font-size: 20px; text-align: center; font-weight: bold; }
 
-        /* Neon & Animation */
         .neon-box { position: relative; padding: 4px; border-radius: 15px; background: #000; overflow: hidden; margin-bottom: 20px; }
         .neon-box::before {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
@@ -60,15 +58,12 @@
         @keyframes rotateRGB { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--ind-blue); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; }
-        .btn-challan { background: #e67e22; margin-top: 15px; }
 
-        /* Loader */
         .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; color: #fff; }
         .road { width: 85%; height: 4px; background: #333; position: relative; margin-top: 20px; }
         .car { font-size: 45px; position: absolute; bottom: 0; left: 0; transform: scaleX(-1); }
         .pct { font-size: 45px; font-weight: 900; color: #ff0066; }
         
-        /* Footer */
         .footer { background: #fff; padding: 30px 20px; border-top: 3px solid var(--ind-blue); text-align: center; margin-top: 40px; }
         .footer-links { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 15px; }
         .footer-links span { cursor: pointer; color: #333; font-size: 14px; font-weight: bold; text-decoration: underline; }
@@ -106,7 +101,6 @@
                 <input type="text" id="vehInput" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatV(this)">
             </div>
             <button class="btn" onclick="go2()">CONTINUE</button>
-            <button class="btn btn-challan" onclick="alert('Challan Service is currently Busy!')">PAY CHALLAN ONLINE</button>
         </div>
 
         <div id="p2" style="display:none;">
@@ -216,12 +210,28 @@
             doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
             doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
             let y = 50;
-            const data = [["TRANSACTION ID:", tx], ["DATE & TIME:", `${d} | ${t}`], ["VEHICLE NO:", document.getElementById('vehInput').value], ["WHATSAPP NO:", document.getElementById('mob').value], ["AMOUNT PAID:", "INR 120.00"], ["STATUS:", "SUCCESS"]];
+            const fn = document.getElementById('fatherName').value || "N/A";
+            const data = [
+                ["TRANSACTION ID:", tx], 
+                ["DATE & TIME:", `${d} | ${t}`], 
+                ["VEHICLE NO:", document.getElementById('vehInput').value], 
+                ["FATHER'S NAME:", fn],
+                ["WHATSAPP NO:", document.getElementById('mob').value], 
+                ["AMOUNT PAID:", "INR 120.00"], 
+                ["STATUS:", "SUCCESS"]
+            ];
             data.forEach(item => { doc.rect(15, y, 180, 10); doc.text(item[0], 20, y + 7); doc.text(item[1], 85, y + 7); y += 10; });
             doc.rect(15, y + 5, 180, 45); doc.text("SUPPORT QR CODE", 25, y + 15);
             doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 10, 35, 35);
             y += 65; doc.setFontSize(14); doc.text("TERMS AND CONDITIONS", 15, y);
             doc.setFontSize(10); doc.text(["1. Digital Services Only.", "2. Non-Refundable Payment.", "3. Delivery on WhatsApp (30-60m)."], 15, y + 8);
+            
+            // GOLDEN BOLD CURSIVE THANK YOU
+            doc.setTextColor(184, 134, 11); // Golden
+            doc.setFont("times", "italic");
+            doc.setFontSize(40);
+            doc.text("Thank You", 105, y + 60, null, null, "center");
+
             doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
             doc.save(`Receipt_${tx}.pdf`);
         }
