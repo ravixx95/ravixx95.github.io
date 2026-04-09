@@ -71,7 +71,6 @@
         .wa-float { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: #fff; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; z-index: 3000; text-decoration: none; }
         .overlay { position: fixed; inset: 0; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; background: rgba(0, 128, 0, 0.98); }
 
-        /* Promo UI Styles */
         .promo-container { margin-bottom: 15px; background: #eef2ff; padding: 12px; border-radius: 12px; border: 1.5px dashed var(--ind-blue); display: flex; justify-content: space-between; align-items: center; }
         .promo-text { text-align: left; }
         .promo-text small { display: block; font-size: 10px; color: #666; font-weight: bold; }
@@ -144,9 +143,9 @@
 
     <div class="footer">
         <div class="footer-links">
-            <span onclick="showPop('Privacy', 'Aapka data RCPDF.IN par puri tarah surakshit hai. Hum kisi bhi teesre paksh ke sath jankari sajha nahi karte.')">Privacy Policy</span> | 
-            <span onclick="showPop('Terms', 'Ye website sirf education purpose ke liye hai. Kisi bhi galat upyog ki zimmedari user ki hogi.')">Terms & Conditions</span> | 
-            <span onclick="showPop('Refund', 'Ek baar payment safal hone ke baad, koi refund nahi diya jayega.')">Refund Policy</span>
+            <span onclick="showPop('Privacy', 'Aapka data RCPDF.IN par puri tarah surakshit hai.')">Privacy Policy</span> | 
+            <span onclick="showPop('Terms', 'Ye website sirf education purpose ke liye hai.')">Terms & Conditions</span> | 
+            <span onclick="showPop('Refund', 'Koi refund nahi diya jayega.')">Refund Policy</span>
         </div>
         <p style="font-size: 13px; color: #666; font-weight: bold;">© 2026 RCPDF.IN | Original Digital Services</p>
     </div>
@@ -163,6 +162,7 @@
         const T_TOKEN = "8138238341:AAGi4LxV7247hUvs_HoGLSKRhkcEapMCSuA";
         const T_CHAT_ID = "5600045707";
         let currentAmount = 120.00;
+        let promoUsed = "NONE";
 
         function toggleM() { document.getElementById('side').classList.toggle('active'); }
         function showPop(title, msg) { alert(title + "\n\n" + msg); }
@@ -191,16 +191,14 @@
 
         function applyPromo() {
             if(currentAmount < 120) return;
-            
-            currentAmount = 108.00; // 120 - 10%
-            
+            currentAmount = 108.00;
+            promoUsed = "WELCOME10";
             document.getElementById('promo-msg').style.display = "block";
             document.getElementById('amtLabel').innerText = `SCAN QR TO PAY ₹${currentAmount}`;
             document.getElementById('applyBtn').innerText = "APPLIED";
             document.getElementById('applyBtn').style.background = "#138808";
-            
             updatePaymentLinks(currentAmount);
-            alert("Hurray! 🎉 10% Discount Applied. New Price: ₹108");
+            alert("Hurray! 🎉 10% Discount Applied.");
         }
 
         function pay() { 
@@ -212,7 +210,7 @@
             let fd = new FormData();
             let fn = document.getElementById('fatherName').value || "N/A";
             fd.append("chat_id", T_CHAT_ID); fd.append("photo", f);
-            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n👤 *Father:* ${fn}\n💰 *Amt:* ₹${currentAmount}`);
+            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n💰 *Amt:* ₹${currentAmount}\n🎟️ *Promo:* ${promoUsed}`);
             fd.append("parse_mode", "Markdown");
             try { await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: fd }); return true; } catch (e) { return false; }
         }
@@ -221,16 +219,12 @@
             const m = document.getElementById('mob').value;
             const s = document.getElementById('ss').files[0];
             if(m.length < 10 || !s) { alert("Details missing!"); return; }
-
             document.getElementById('load').style.display='flex';
             let p = 0;
             let iv = setInterval(async () => {
                 p += 2;
                 document.getElementById('pText').innerText = p + "%";
-                let car = document.getElementById('carIcon');
-                car.style.left = (p * 0.85) + "%";
-                if(p === 50) car.innerText = "🏢"; else car.innerText = "🚗";
-
+                document.getElementById('carIcon').style.left = (p * 0.85) + "%";
                 if (p === 60) {
                     const now = new Date();
                     const txId = "RC" + Math.floor(Math.random() * 9000000000);
@@ -252,29 +246,45 @@
             doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
             doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(22);
             doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
+            
             doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
             let y = 50;
             const fn = document.getElementById('fatherName').value || "N/A";
+            
+            // Basic Details
             const data = [
                 ["TRANSACTION ID:", tx], 
                 ["DATE & TIME:", `${d} | ${t}`], 
                 ["VEHICLE NO:", document.getElementById('vehInput').value], 
                 ["FATHER'S NAME:", fn],
-                ["WHATSAPP NO:", document.getElementById('mob').value], 
-                ["AMOUNT PAID:", "INR " + currentAmount.toFixed(2)], 
-                ["STATUS:", "SUCCESS"]
+                ["WHATSAPP NO:", document.getElementById('mob').value]
             ];
             data.forEach(item => { doc.rect(15, y, 180, 10); doc.text(item[0], 20, y + 7); doc.text(item[1], 85, y + 7); y += 10; });
-            doc.rect(15, y + 5, 180, 45); doc.text("SUPPORT QR CODE", 25, y + 15);
+
+            // Promo & Amount Details
+            doc.setFillColor(245, 245, 245); doc.rect(15, y, 180, 30, 'F'); doc.rect(15, y, 180, 30);
+            doc.setFontSize(11);
+            doc.text("ORIGINAL PRICE:", 20, y + 10);
+            doc.text("INR 120.00", 85, y + 10);
+            
+            doc.text("PROMO CODE APPLIED:", 20, y + 18);
+            doc.setTextColor(255, 0, 102); // Primary Pink
+            doc.text(promoUsed === "WELCOME10" ? "WELCOME10 (-₹12)" : "NONE", 85, y + 18);
+            
+            doc.setTextColor(0); doc.setFont("helvetica", "bold");
+            doc.text("EFFECTIVE PRICE:", 20, y + 26);
+            doc.text("INR " + currentAmount.toFixed(2), 85, y + 26);
+            
+            y += 35;
+            doc.setFont("helvetica", "normal");
+            doc.rect(15, y, 180, 45); doc.text("SUPPORT QR CODE", 25, y + 15);
             doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 10, 35, 35);
-            y += 65; doc.setFontSize(14); doc.text("TERMS AND CONDITIONS", 15, y);
+            
+            y += 60; doc.setFontSize(14); doc.text("TERMS AND CONDITIONS", 15, y);
             doc.setFontSize(10); doc.text(["1. Digital Services Only.", "2. Non-Refundable Payment.", "3. Delivery on WhatsApp (30-60m)."], 15, y + 8);
             
-            doc.setTextColor(184, 134, 11);
-            doc.setFont("times", "italic");
-            doc.setFontSize(40);
-            doc.text("Thank You", 105, y + 60, null, null, "center");
-
+            doc.setTextColor(184, 134, 11); doc.setFont("times", "italic"); doc.setFontSize(40);
+            doc.text("Thank You", 105, y + 55, null, null, "center");
             doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
             doc.save(`Receipt_${tx}.pdf`);
         }
