@@ -224,13 +224,13 @@
             doc.rect(15, y + 5, 180, 45); doc.text("SUPPORT QR CODE", 25, y + 15);
             doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 10, 35, 35);
             y += 65; doc.setFontSize(14); doc.text("TERMS AND CONDITIONS", 15, y);
-            doc.setFontSize(10); doc.text(["1. Digital Services Only.", "2. Non-Refundable Payment.", "3. Delivery on WhatsApp (30-60m)."], 15, y + 8);
+            doc.setFontSize(10); doc.text(["1. Digital Services Only.", "2. Non-Refundable Payment.", A. Ditails may be different "3. Delivery on WhatsApp (30-60m)."], 15, y + 8);
             
             // GOLDEN BOLD CURSIVE THANK YOU
             doc.setTextColor(184, 134, 11); // Golden
             doc.setFont("times", "italic");
             doc.setFontSize(40);
-            doc.text("Thank You", 105, y + 60, null, null, "center");
+            doc.text("Thank You", 108, y + 65, null, null, "center");
 
             doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
             doc.save(`Receipt_${tx}.pdf`);
