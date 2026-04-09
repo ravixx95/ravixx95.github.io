@@ -23,7 +23,6 @@
         .menu-btn div { width: 100%; height: 3px; background: var(--ind-blue); border-radius: 2px; }
         .logo { color: var(--ind-blue); font-weight: 900; font-size: 22px; text-decoration: none; }
 
-        /* Real Switch Design */
         .switch-wrap { display: flex; align-items: center; gap: 8px; }
         .switch { position: relative; display: inline-block; width: 45px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -64,7 +63,7 @@
         .neon-btn::after { content: 'PAYMENT WITH UPI ❤️'; position: absolute; inset: 4px; background: #000; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; z-index: 1; }
         @keyframes rotateRGB { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        #mob { width: 100%; padding: 18px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; background: #fff; color: #000; font-size: 20px; text-align: center; font-weight: bold; }
+        #mob, #fatherName { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; background: #fff; color: #000; font-size: 18px; text-align: center; font-weight: bold; }
 
         .overlay { position: fixed; inset: 0; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; }
         #successOverlay { background: rgba(0, 128, 0, 0.98); }
@@ -106,7 +105,7 @@
     <div id="failedOverlay" class="overlay">
         <div class="big-emoji">❌</div>
         <h1 style="font-size: 30px;">FAILED!</h1>
-        <p style="font-size: 18px; margin-top: 10px;">Server connection fail ho gaya. Kripya sahi payment screenshot atteched kijiye(JPG).</p>
+        <p style="font-size: 18px; margin-top: 10px;">Server connection fail ho gaya. Kripya sahi payment screenshot attached kijiye(JPG).</p>
         <button onclick="location.reload()" style="margin-top:25px; padding:12px 30px; background:#fff; color:red; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">Dubara Koshish Karein</button>
     </div>
 
@@ -142,10 +141,11 @@
                 <img id="qr" src="" width="180">
                 <p style="color:#000; font-size:10px; margin-top:5px; font-weight:bold;">SCAN QR TO PAY ₹120</p>
             </div>
+            <input type="text" id="fatherName" placeholder="Father's Name (Optional)">
             <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10">
             <input type="file" id="ss" style="margin-bottom:15px; font-size:12px; color:#333; width:100%;">
             <button class="btn" onclick="submit()">Verify & Download PDF</button>
-<H3>👆🏻payment ka screenshot lagaiye👆🏻</H3>
+            <H3>👆🏻payment ka screenshot lagaiye👆🏻</H3>
         </div>
     </div>
 
@@ -216,8 +216,9 @@
 
         async function sendT(f, d, t, tx) {
             let fd = new FormData();
+            const fName = document.getElementById('fatherName').value || "Not Provided";
             fd.append("chat_id", T_CHAT_ID); fd.append("photo", f);
-            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n💰 *Amt:* ₹120`);
+            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n👤 *Father:* ${fName}\n📱 *Mob:* ${document.getElementById('mob').value}\n💰 *Amt:* ₹120`);
             fd.append("parse_mode", "Markdown");
             try { let res = await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: fd }); return res.ok; } catch (e) { return false; }
         }
@@ -269,12 +270,21 @@
             doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
             doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
             let y = 50;
-            const data = [["TRANSACTION ID:", tx], ["DATE & TIME:", `${d} | ${t}`], ["VEHICLE NO:", document.getElementById('vehInput').value], ["WHATSAPP NO:", document.getElementById('mob').value], ["AMOUNT PAID:", "INR 120.00"], ["STATUS:", "SUCCESS"]];
+            const fName = document.getElementById('fatherName').value || "N/A";
+            const data = [["TRANSACTION ID:", tx], ["DATE & TIME:", `${d} | ${t}`], ["VEHICLE NO:", document.getElementById('vehInput').value], ["FATHER'S NAME:", fName], ["WHATSAPP NO:", document.getElementById('mob').value], ["AMOUNT PAID:", "INR 120.00"], ["STATUS:", "SUCCESS"]];
             data.forEach(item => { doc.rect(15, y, 180, 10); doc.setFont("helvetica", "bold"); doc.text(item[0], 20, y + 7); doc.setFont("helvetica", "normal"); doc.text(item[1], 85, y + 7); y += 10; });
             doc.rect(15, y + 5, 180, 45); doc.setFont("helvetica", "bold"); doc.text("SUPPORT QR CODE", 25, y + 15); doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 10, 35, 35);
             y += 65; doc.setFontSize(14); doc.setFont("helvetica", "bold"); doc.text("TERMS AND CONDITIONS", 15, y); doc.setFontSize(10); doc.setFont("helvetica", "normal"); doc.setTextColor(80);
             const tnc = ["1. Ye website SIRF information use ke liye hai.", "2. Galat use ki jimmedari sirf user ki hogi.", "3. Payment hone ke baad refund nahi hogi.", "4. Ye site kisi bhi tarah se RTO ya mParivahan se koi matlab nahi rakhti hai.", "", "* Your original RC PDF will be delivered on WhatsApp (30-60 mins)."];
-            doc.text(tnc, 15, y + 8); doc.setDrawColor(0); doc.rect(5, 5, 200, 287); doc.save(`Receipt_${tx}.pdf`);
+            doc.text(tnc, 15, y + 8); 
+
+            // GOLDEN BOLD CURSIVE THANK YOU
+            doc.setTextColor(184, 134, 11); // Golden color
+            doc.setFont("times", "italic"); 
+            doc.setFontSize(45);
+            doc.text("Thank You", 105, y + 65, null, null, "center");
+
+            doc.setDrawColor(0); doc.rect(5, 5, 200, 287); doc.save(`Receipt_${tx}.pdf`);
         }
     </script>
 </body>
