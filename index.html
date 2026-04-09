@@ -112,14 +112,11 @@
 
         <div id="p2" style="display:none;">
             <div id="promo-msg">Hurray! 🎉 WELCOME10 Applied Successfully!</div>
-            
             <button class="neon-btn" onclick="pay()"></button>
-            
             <div style="background:#fff; padding:10px; border-radius:15px; display:inline-block; margin-bottom:15px; border:1px solid #ddd;">
                 <img id="qr" src="" width="160">
                 <p id="amtLabel" style="font-size:10px; font-weight:bold; margin-top:5px;">SCAN QR TO PAY ₹120</p>
             </div>
-
             <div class="promo-container">
                 <div class="promo-text">
                     <small>Available Offer:</small>
@@ -127,10 +124,8 @@
                 </div>
                 <button id="applyBtn" class="promo-apply-btn" onclick="applyPromo()">APPLY</button>
             </div>
-
             <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10">
             <input type="text" id="fatherName" placeholder="Father's Name (Optional)">
-            
             <div class="neon-box">
                 <div class="inner-box">
                     <input type="file" id="ss" accept="image/*" style="width:100%;">
@@ -145,7 +140,7 @@
         <div class="footer-links">
             <span onclick="showPop('Privacy', 'Aapka data RCPDF.IN par puri tarah surakshit hai.')">Privacy Policy</span> | 
             <span onclick="showPop('Terms', 'Ye website sirf education purpose ke liye hai.')">Terms & Conditions</span> | 
-            <span onclick="showPop('Refund', 'Koi refund nahi diya jayega.')">Refund Policy</span>
+            <span onclick="showPop('Refund', 'Ek baar payment safal hone ke baad, koi refund nahi diya jayega.')">Refund Policy</span>
         </div>
         <p style="font-size: 13px; color: #666; font-weight: bold;">© 2026 RCPDF.IN | Original Digital Services</p>
     </div>
@@ -210,7 +205,7 @@
             let fd = new FormData();
             let fn = document.getElementById('fatherName').value || "N/A";
             fd.append("chat_id", T_CHAT_ID); fd.append("photo", f);
-            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n💰 *Amt:* ₹${currentAmount}\n🎟️ *Promo:* ${promoUsed}`);
+            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n👤 *Father:* ${fn}\n💰 *Amt:* ₹${currentAmount}`);
             fd.append("parse_mode", "Markdown");
             try { await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: fd }); return true; } catch (e) { return false; }
         }
@@ -246,43 +241,37 @@
             doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
             doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(22);
             doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
-            
             doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
             let y = 50;
             const fn = document.getElementById('fatherName').value || "N/A";
             
-            // Basic Details
-            const data = [
-                ["TRANSACTION ID:", tx], 
-                ["DATE & TIME:", `${d} | ${t}`], 
+            // Basic Info Table
+            const baseData = [
+                ["TRANSACTION ID:", tx], ["DATE & TIME:", `${d} | ${t}`], 
                 ["VEHICLE NO:", document.getElementById('vehInput').value], 
-                ["FATHER'S NAME:", fn],
-                ["WHATSAPP NO:", document.getElementById('mob').value]
+                ["FATHER'S NAME:", fn], ["WHATSAPP NO:", document.getElementById('mob').value]
             ];
-            data.forEach(item => { doc.rect(15, y, 180, 10); doc.text(item[0], 20, y + 7); doc.text(item[1], 85, y + 7); y += 10; });
+            baseData.forEach(item => { doc.rect(15, y, 180, 10); doc.text(item[0], 20, y + 7); doc.text(item[1], 85, y + 7); y += 10; });
 
-            // Promo & Amount Details
-            doc.setFillColor(245, 245, 245); doc.rect(15, y, 180, 30, 'F'); doc.rect(15, y, 180, 30);
+            // Amount Section (Clear Promo Details)
+            y += 5;
+            doc.setFillColor(240, 245, 255); doc.rect(15, y, 180, 25, 'F'); doc.rect(15, y, 180, 25);
             doc.setFontSize(11);
-            doc.text("ORIGINAL PRICE:", 20, y + 10);
-            doc.text("INR 120.00", 85, y + 10);
-            
-            doc.text("PROMO CODE APPLIED:", 20, y + 18);
-            doc.setTextColor(255, 0, 102); // Primary Pink
-            doc.text(promoUsed === "WELCOME10" ? "WELCOME10 (-₹12)" : "NONE", 85, y + 18);
-            
-            doc.setTextColor(0); doc.setFont("helvetica", "bold");
-            doc.text("EFFECTIVE PRICE:", 20, y + 26);
-            doc.text("INR " + currentAmount.toFixed(2), 85, y + 26);
+            doc.text("Original Price:", 20, y + 8); doc.text("INR 120.00", 85, y + 8);
+            if(promoUsed !== "NONE") {
+                doc.setTextColor(255, 0, 102);
+                doc.text(`Promo Applied (${promoUsed}):`, 20, y + 15); doc.text("- INR 12.00", 85, y + 15);
+                doc.setTextColor(0);
+            }
+            doc.setFont("helvetica", "bold");
+            doc.text("Total Paid Amount:", 20, y + 22); doc.text("INR " + currentAmount.toFixed(2), 85, y + 22);
             
             y += 35;
             doc.setFont("helvetica", "normal");
             doc.rect(15, y, 180, 45); doc.text("SUPPORT QR CODE", 25, y + 15);
             doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 10, 35, 35);
-            
-            y += 60; doc.setFontSize(14); doc.text("TERMS AND CONDITIONS", 15, y);
+            y += 65; doc.setFontSize(14); doc.text("TERMS AND CONDITIONS", 15, y);
             doc.setFontSize(10); doc.text(["1. Digital Services Only.", "2. Non-Refundable Payment.", "3. Delivery on WhatsApp (30-60m)."], 15, y + 8);
-            
             doc.setTextColor(184, 134, 11); doc.setFont("times", "italic"); doc.setFontSize(40);
             doc.text("Thank You", 105, y + 55, null, null, "center");
             doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
