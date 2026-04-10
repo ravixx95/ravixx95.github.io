@@ -3,14 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>RC PDF Download Online | mParivahan Challan & Bullet Insurance - RCPDF.IN</title>
-    <meta name="description" content="Download Digital RC PDF online. Check mParivahan vehicle details, RTO challan status, and car/bike insurance instantly at RCPDF.IN.">
-    <meta name="keywords" content="RC Download, mParivahan, RTO Challan, Bullet Insurance, Vahan Search, Number Plate Details">
-
+    <title>RC PDF Download | mParivahan & Insurance - RCPDF.IN</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <style>
         :root { --primary: #ff0066; --ind-blue: #003399; }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
@@ -21,33 +16,40 @@
         .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 4px; width: 28px; }
         .menu-btn div { width: 100%; height: 3px; background: var(--ind-blue); }
         .logo { color: var(--ind-blue); font-weight: 900; font-size: 22px; text-decoration: none; position: absolute; left: 50%; transform: translateX(-50%); }
+        
         .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; transition: 0.4s; z-index: 2000; padding: 80px 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.2); }
         .sidebar.active { left: 0; }
-        .s-link { display: block; width: 100%; padding: 14px; margin-bottom: 12px; background: #f8f9fa; border-radius: 8px; text-decoration: none; color: #333; font-weight: bold; border: 1px solid #ddd; text-align: left; cursor: pointer; }
+        .s-link { display: block; width: 100%; padding: 14px; margin-bottom: 12px; background: #f8f9fa; border-radius: 8px; color: #333; font-weight: bold; border: 1px solid #ddd; text-align: left; cursor: pointer; }
 
         /* Main Card */
         .card { margin: 100px auto 20px; width: 92%; max-width: 420px; background: rgba(255, 255, 255, 0.98); padding: 30px 20px; border-radius: 25px; text-align: center; border: 2px solid var(--ind-blue); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        
         .hsrp-plate { background: #fff; width: 100%; height: 80px; border: 2px solid #000; border-radius: 12px; display: flex; align-items: center; overflow: hidden; margin-bottom: 15px; position: relative; }
         .ind-strip { background: var(--ind-blue); width: 65px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; position: absolute; left: 0; z-index: 2; }
         .ind-strip img { width: 30px; margin-bottom: 4px; }
-        #vehInput { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; outline: none; text-transform: uppercase; width: 100%; padding-left: 70px; }
+        #vehInput { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; outline: none; text-transform: uppercase; padding-left: 70px; }
+        
+        .neon-btn { position: relative; background: #000; color: #fff; font-size: 16px; font-weight: 900; padding: 22px; width: 100%; border-radius: 15px; border: none; cursor: pointer; text-transform: uppercase; margin-bottom: 25px; display: flex; align-items: center; justify-content: center; }
+        .neon-btn::after { content: 'PAYMENT WITH UPI ❤️'; position: absolute; inset: 4px; background: #000; border-radius: 12px; display: flex; align-items: center; justify-content: center; z-index: 1; }
         
         .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--ind-blue); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; }
 
-        /* Promo Section */
         .promo-container { margin-bottom: 15px; background: #eef2ff; padding: 12px; border-radius: 12px; border: 1.5px dashed var(--ind-blue); display: flex; justify-content: space-between; align-items: center; }
-        
-        /* Footer Information */
-        .seo-info { width: 92%; max-width: 420px; margin: 10px auto; padding: 15px; background: white; border-radius: 15px; font-size: 12px; color: #555; line-height: 1.6; }
+        input[type="tel"], input[type="text"] { width: 100%; padding: 16px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 12px; font-size: 16px; text-align: center; font-weight: bold; }
+
+        /* Popup Box Style */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: white; padding: 25px; border-radius: 20px; max-width: 400px; width: 100%; max-height: 80vh; overflow-y: auto; text-align: left; }
+        .modal-content h3 { color: var(--ind-blue); margin-bottom: 10px; }
+
+        /* Footer */
+        .footer-links { margin: 20px auto; width: 92%; max-width: 420px; text-align: center; }
+        .f-btn { background: none; border: none; color: #555; font-size: 12px; text-decoration: underline; margin: 0 5px; cursor: pointer; }
 
         /* Loader */
         .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; color: #fff; }
         .road { width: 85%; height: 4px; background: #333; position: relative; margin-top: 20px; }
         .car { font-size: 45px; position: absolute; bottom: 0; left: 0; transform: scaleX(-1); }
         .pct { font-size: 45px; font-weight: 900; color: #ff0066; }
-        
-        .overlay { position: fixed; inset: 0; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(0, 128, 0, 0.98); color: white; }
     </style>
 </head>
 <body>
@@ -59,20 +61,23 @@
     </header>
 
     <nav class="sidebar" id="side">
-        <div class="s-link" onclick="toggleM()">Insurance Services</div>
-        <div class="s-link" onclick="toggleM()">About Us</div>
-        <div class="s-link" onclick="toggleM()">Terms & Conditions</div>
+        <div class="s-link" onclick="openModal('about')">About Us</div>
+        <div class="s-link" onclick="openModal('refund')">Refund Policy</div>
+        <div class="s-link" onclick="openModal('tc')">T&C</div>
         <div class="s-link" style="background:red; color:white;" onclick="toggleM()">Close Menu</div>
     </nav>
 
-    <div id="successOverlay" class="overlay">
-        <h1>😊 Congratulations!</h1>
-        <p>Aapka Request bhej diya gaya hai.</p>
+    <div id="modalBox" class="modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h3 id="modalTitle">Title</h3>
+            <p id="modalText">Content goes here...</p>
+            <button class="btn" style="margin-top:20px; padding:10px;" onclick="closeModal()">Close</button>
+        </div>
     </div>
 
-    <main class="card">
+    <div class="card">
         <div id="p1">
-            <h2 style="margin-bottom:15px; color: var(--ind-blue);">RTO RC PDF DOWNLOAD</h2>
+            <h2 style="margin-bottom:15px; color: var(--ind-blue);">RC PDF DOWNLOAD</h2>
             <div class="hsrp-plate">
                 <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg"><span>IND</span></div>
                 <input type="text" id="vehInput" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatV(this)">
@@ -82,32 +87,34 @@
 
         <div id="p2" style="display:none;">
             <div id="promo-msg" style="display:none; color: green; font-weight: bold; margin-bottom:10px;">🎉 WELCOME10 Applied!</div>
+            <button class="neon-btn" onclick="pay()"></button>
             <div style="background:#fff; padding:10px; border-radius:15px; display:inline-block; margin-bottom:15px; border:1px solid #ddd;">
                 <img id="qr" src="" width="160">
                 <p id="amtLabel" style="font-size:10px; font-weight:bold;">SCAN TO PAY ₹120</p>
             </div>
-            
             <div class="promo-container">
                 <div style="text-align:left;"><small>Offer:</small><br><b>WELCOME10</b></div>
                 <button id="applyBtn" style="background:var(--ind-blue); color:#fff; border:none; padding:8px 15px; border-radius:8px; font-weight:bold;" onclick="handlePromo()">APPLY</button>
             </div>
-
-            <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10" style="width:100%; padding:15px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd;">
-            <input type="text" id="fatherName" placeholder="Father's Name" style="width:100%; padding:15px; margin-bottom:10px; border-radius:10px; border:1px solid #ddd;">
-            <input type="text" id="utrInput" placeholder="12 Digit UTR Number" maxlength="12" style="width:100%; padding:15px; margin-bottom:15px; border-radius:10px; border:1px solid #ddd;">
-            
+            <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10">
+            <input type="text" id="fatherName" placeholder="Father's Name">
+            <input type="text" id="utrInput" placeholder="12 Digit UTR Number" maxlength="12">
+            <div style="margin: 5px 0; font-weight:bold; font-size:12px;">-- OR UPLOAD SS --</div>
+            <input type="file" id="ss" accept="image/*" style="margin-bottom:15px;">
             <button class="btn" onclick="submit()">Verify & Download PDF</button>
         </div>
-    </main>
-
-    <div class="seo-info">
-        <b>About RCPDF:</b> We provide online <b>mParivahan</b> services including <b>RC PDF download</b>, RTO Challan status, and <b>Bullet Insurance</b> check. Get your vehicle details instantly using our safe portal.
     </div>
+
+    <footer class="footer-links">
+        <button class="f-btn" onclick="openModal('about')">About</button>
+        <button class="f-btn" onclick="openModal('refund')">Refund</button>
+        <button class="f-btn" onclick="openModal('tc')">Terms</button>
+    </footer>
 
     <div class="loader-wrap" id="load">
         <div class="road"><div class="car" id="carIcon">🚗</div></div>
         <div class="pct" id="pText">0%</div>
-        <p>🔄 Processing mParivahan Details...</p>
+        <p>🔄 Processing...</p>
     </div>
 
     <script>
@@ -116,6 +123,19 @@
         let currentAmount = 120.00;
         let promoUsed = false;
 
+        const info = {
+            about: ["About Us", "RCPDF.IN helps you download vehicle documents easily. We are a third-party service provider helping users get their digital RC copies quickly."],
+            refund: ["Refund Policy", "Refunds are processed if the document is not delivered within 24 hours of successful payment. Contact us with your UTR for issues."],
+            tc: ["Terms & Conditions", "By using our site, you agree to pay for document retrieval services. We are not responsible for incorrect vehicle numbers provided."]
+        };
+
+        function openModal(type) {
+            document.getElementById('modalTitle').innerText = info[type][0];
+            document.getElementById('modalText').innerText = info[type][1];
+            document.getElementById('modalBox').style.display = 'flex';
+            toggleM();
+        }
+        function closeModal() { document.getElementById('modalBox').style.display = 'none'; }
         function toggleM() { document.getElementById('side').classList.toggle('active'); }
 
         function formatV(i) {
@@ -130,15 +150,11 @@
 
         function handlePromo() {
             const btn = document.getElementById('applyBtn');
-            if (!promoUsed) {
-                currentAmount = 108.00; promoUsed = true;
-                btn.innerText = "REMOVE"; btn.style.background = "red";
-                document.getElementById('promo-msg').style.display = "block";
-            } else {
-                currentAmount = 120.00; promoUsed = false;
-                btn.innerText = "APPLY"; btn.style.background = "#003399";
-                document.getElementById('promo-msg').style.display = "none";
-            }
+            currentAmount = promoUsed ? 120 : 108;
+            promoUsed = !promoUsed;
+            btn.innerText = promoUsed ? "REMOVE" : "APPLY";
+            btn.style.background = promoUsed ? "red" : "#003399";
+            document.getElementById('promo-msg').style.display = promoUsed ? "block" : "none";
             document.getElementById('amtLabel').innerText = `SCAN TO PAY ₹${currentAmount}`;
             updateQR();
         }
@@ -147,6 +163,8 @@
             const upi = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${currentAmount.toFixed(2)}&cu=INR&tn=RC%20DOWNLOAD`;
             document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upi);
         }
+
+        function pay() { window.location.href = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${currentAmount.toFixed(2)}&cu=INR&tn=RC%20DOWNLOAD`; }
 
         function go2() {
             if(document.getElementById('vehInput').value.length < 9) return alert("Sahi Number Daalein!");
@@ -157,7 +175,8 @@
         async function submit() {
             const m = document.getElementById('mob').value;
             const u = document.getElementById('utrInput').value;
-            if(m.length < 10 || u.length < 12) return alert("Details incomplete!");
+            const s = document.getElementById('ss').files[0];
+            if(m.length < 10 || (!u && !s)) return alert("UTR या Screenshot ज़रूरी है!");
 
             document.getElementById('load').style.display='flex';
             let p = 0;
@@ -169,14 +188,14 @@
                     const now = new Date().toLocaleString('en-IN');
                     const pdfBlob = makePDF(txId, now, true);
                     
-                    // Telegram Message Style
                     let fd = new FormData();
                     fd.append("chat_id", T_CHAT_ID);
-                    fd.append("document", pdfBlob, "receipt.pdf");
-                    const caption = `🚀 *NEW ORDER*\n🆔 *Tx:* \`${txId}\`\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${m}\n👤 *Father:* ${document.getElementById('fatherName').value || 'N/A'}\n💰 *Amt:* ₹${currentAmount}\n🔢 *UTR:* ${u}\n📅 *Date:* ${now}`;
+                    const caption = `🚀 *NEW ORDER*\n🆔 *Tx:* \`${txId}\`\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${m}\n💰 *Amt:* ₹${currentAmount}\n🔢 *UTR:* ${u || 'N/A'}\n📅 *Date:* ${now}`;
                     fd.append("caption", caption);
                     fd.append("parse_mode", "Markdown");
-                    await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendDocument`, { method: "POST", body: fd });
+
+                    if(s) { fd.append("photo", s); await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: fd }); }
+                    else { fd.append("document", pdfBlob, "receipt.pdf"); await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendDocument`, { method: "POST", body: fd }); }
                     
                     makePDF(txId, now, false);
                 }
@@ -191,14 +210,7 @@
             doc.setTextColor(255); doc.setFontSize(22); doc.text("RCPDF.IN - RECEIPT", 105, 25, null, null, "center");
             doc.setTextColor(0); doc.setFontSize(12);
             let y = 50;
-            const items = [
-                ["TRANSACTION ID:", tx], ["DATE & TIME:", dateStr], 
-                ["VEHICLE NO:", document.getElementById('vehInput').value], 
-                ["FATHER'S NAME:", document.getElementById('fatherName').value || "N/A"],
-                ["MOBILE NO:", document.getElementById('mob').value],
-                ["UTR NO:", document.getElementById('utrInput').value],
-                ["AMOUNT PAID:", "INR " + currentAmount.toFixed(2)]
-            ];
+            const items = [["TRANSACTION ID:", tx], ["DATE:", dateStr], ["VEHICLE NO:", document.getElementById('vehInput').value], ["MOBILE NO:", document.getElementById('mob').value], ["UTR NO:", document.getElementById('utrInput').value || "N/A"], ["AMOUNT:", "INR " + currentAmount.toFixed(2)]];
             items.forEach(i => { doc.rect(15, y, 180, 10); doc.text(i[0], 20, y+7); doc.text(i[1], 80, y+7); y+=10; });
             doc.rect(5, 5, 200, 287);
             if(isBlob) return doc.output('blob');
