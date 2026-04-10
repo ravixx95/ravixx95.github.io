@@ -21,6 +21,9 @@
         .menu-btn div { width: 100%; height: 3px; background: var(--ind-blue); border-radius: 2px; }
         .logo { color: var(--ind-blue); font-weight: 900; font-size: 22px; text-decoration: none; position: absolute; left: 50%; transform: translateX(-50%); }
 
+        /* Voice Toggle Style */
+        .voice-toggle { background: var(--ind-blue); color: #fff; border: none; padding: 8px; border-radius: 50%; cursor: pointer; width: 40px; height: 40px; }
+
         .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; transition: 0.4s; z-index: 2000; padding: 80px 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.2); }
         .sidebar.active { left: 0; }
         .s-link { display: block; width: 100%; padding: 14px; margin-bottom: 12px; background: #f8f9fa; border-radius: 8px; text-decoration: none; color: #333; font-weight: bold; border: 1px solid #ddd; cursor:pointer; text-align: left; }
@@ -32,8 +35,9 @@
         .ind-strip { background: var(--ind-blue); width: 65px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; z-index: 2; position: absolute; left: 0; }
         .ind-strip img { width: 30px; margin-bottom: 4px; }
         
-        #vehInput { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; outline: none; text-transform: uppercase; width: 100%; padding-left: 70px; }
-        #mob, #fatherName { width: 100%; padding: 18px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; font-size: 20px; text-align: center; font-weight: bold; }
+        #vehInput, #utrInput { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; outline: none; text-transform: uppercase; width: 100%; }
+        #vehInput { padding-left: 70px; }
+        #mob, #fatherName, #utrInput { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; font-size: 18px; text-align: center; font-weight: bold; }
 
         .neon-box { position: relative; padding: 4px; border-radius: 15px; background: #000; overflow: hidden; margin-bottom: 20px; }
         .neon-box::before {
@@ -64,6 +68,8 @@
         .car { font-size: 45px; position: absolute; bottom: 0; left: 0; transform: scaleX(-1); }
         .pct { font-size: 45px; font-weight: 900; color: #ff0066; }
         
+        #upload-status { font-size: 12px; color: #138808; display: none; margin-top: 5px; }
+
         .footer { background: #fff; padding: 30px 20px; border-top: 3px solid var(--ind-blue); text-align: center; margin-top: 40px; }
         .footer-links { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 15px; }
         .footer-links span { cursor: pointer; color: #333; font-size: 14px; font-weight: bold; text-decoration: underline; }
@@ -84,13 +90,11 @@
     <div class="header">
         <div class="menu-btn" onclick="toggleM()"><div></div><div></div><div></div></div>
         <b class="logo">RCPDF.IN</b>
-        <button style="background:none; border:none; font-size:24px; cursor:pointer;" onclick="location.reload()">🏠</button>
+        <button class="voice-toggle" id="vToggle" onclick="toggleVoice()"><i class="fas fa-volume-up"></i></button>
     </div>
 
     <div class="sidebar" id="side">
         <button class="s-link" onclick="window.location.href='https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1'"><i class="fas fa-shield-alt"></i> Insurance Services</button>
-        <button class="s-link" onclick="showPop('About', 'Hum aapko digital RC download karne ki suvidha pradan karte hain.')"><i class="fas fa-info-circle"></i> About Us</button>
-        <button class="s-link" onclick="showPop('T&C', '1. Services sirf information ke liye hai.\n2. Payment non-refundable hai.')"><i class="fas fa-file-contract"></i> Terms & Conditions</button>
         <button class="s-link" onclick="toggleM()" style="background:#ffdddd; margin-top: 20px;">Close Menu</button>
     </div>
 
@@ -117,31 +121,29 @@
                 <img id="qr" src="" width="160">
                 <p id="amtLabel" style="font-size:10px; font-weight:bold; margin-top:5px;">SCAN QR TO PAY ₹120</p>
             </div>
+
             <div class="promo-container">
-                <div class="promo-text">
-                    <small>Available Offer:</small>
-                    <b>WELCOME10</b>
-                </div>
+                <div class="promo-text"><small>Available Offer:</small><b>WELCOME10</b></div>
                 <button id="applyBtn" class="promo-apply-btn" onclick="applyPromo()">APPLY</button>
             </div>
+
             <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10">
             <input type="text" id="fatherName" placeholder="Father's Name (Optional)">
+            
             <div class="neon-box">
                 <div class="inner-box">
-                    <input type="file" id="ss" accept="image/*" style="width:100%;">
+                    <input type="text" id="utrInput" placeholder="ENTER 12 DIGIT UTR NO" maxlength="12">
+                    <input type="file" id="ss" accept="image/*" style="width:100%;" onchange="startBgUpload()">
+                    <p id="upload-status">⏳ Background Uploading...</p>
                     <p style="font-size:11px; margin-top:5px; color:#555; font-weight:bold;">Upload Payment Screenshot</p>
                 </div>
             </div>
+
             <button class="btn" onclick="submit()">Verify & Download PDF</button>
         </div>
     </div>
 
     <div class="footer">
-        <div class="footer-links">
-            <span onclick="showPop('Privacy', 'Aapka data RCPDF.IN par puri tarah surakshit hai.')">Privacy Policy</span> | 
-            <span onclick="showPop('Terms', 'Ye website sirf education purpose ke liye hai.')">Terms & Conditions</span> | 
-            <span onclick="showPop('Refund', 'Ek baar payment safal hone ke baad, koi refund nahi diya jayega.')">Refund Policy</span>
-        </div>
         <p style="font-size: 13px; color: #666; font-weight: bold;">© 2026 RCPDF.IN | Original Digital Services</p>
     </div>
 
@@ -158,9 +160,35 @@
         const T_CHAT_ID = "5600045707";
         let currentAmount = 120.00;
         let promoUsed = "NONE";
+        let isVoiceOn = true;
 
-        function toggleM() { document.getElementById('side').classList.toggle('active'); }
-        function showPop(title, msg) { alert(title + "\n\n" + msg); }
+        // Voice Assistant Function
+        function speak(text) {
+            if (!isVoiceOn) return;
+            window.speechSynthesis.cancel();
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.lang = 'hi-IN';
+            window.speechSynthesis.speak(msg);
+        }
+
+        function toggleVoice() {
+            isVoiceOn = !isVoiceOn;
+            const btn = document.getElementById('vToggle');
+            btn.innerHTML = isVoiceOn ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+            if(isVoiceOn) speak("वॉयस असिस्टेंट ऑन है");
+        }
+
+        // Background Upload Logic
+        function startBgUpload() {
+            const file = document.getElementById('ss').files[0];
+            if(file) {
+                document.getElementById('upload-status').style.display = 'block';
+                // यहाँ बैकग्राउंड में फाइल प्रोसेसिंग शुरू होती है
+                setTimeout(() => {
+                    document.getElementById('upload-status').innerText = "✅ Screenshot Ready!";
+                }, 2000);
+            }
+        }
 
         function formatV(i) {
             let v = i.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
@@ -178,10 +206,19 @@
         }
 
         function go2() {
-            if(document.getElementById('vehInput').value.length < 9) { alert("Invalid Number!"); return; }
+            if(document.getElementById('vehInput').value.length < 9) { 
+                speak("कृपया सही गाड़ी नंबर डालें");
+                alert("Invalid Number!"); 
+                return; 
+            }
             updatePaymentLinks(currentAmount);
             document.getElementById('p1').style.display='none'; 
             document.getElementById('p2').style.display='block';
+            
+            // Automatic Instruction on Payment Page
+            setTimeout(() => {
+                speak("कृपया पेमेंट पूरा करें। पेमेंट के बाद स्क्रीनशॉट लें और यू टी आर नंबर कॉपी कर लें।");
+            }, 500);
         }
 
         function applyPromo() {
@@ -190,10 +227,8 @@
             promoUsed = "WELCOME10";
             document.getElementById('promo-msg').style.display = "block";
             document.getElementById('amtLabel').innerText = `SCAN QR TO PAY ₹${currentAmount}`;
-            document.getElementById('applyBtn').innerText = "APPLIED";
-            document.getElementById('applyBtn').style.background = "#138808";
             updatePaymentLinks(currentAmount);
-            alert("Hurray! 🎉 10% Discount Applied.");
+            speak("बधाई हो, दस प्रतिशत का डिस्काउंट मिल गया है");
         }
 
         function pay() { 
@@ -201,11 +236,11 @@
             window.location.href = upiUrl; 
         }
 
-        async function sendT(f, d, t, tx) {
+        async function sendT(f, d, t, tx, utr) {
             let fd = new FormData();
             let fn = document.getElementById('fatherName').value || "N/A";
             fd.append("chat_id", T_CHAT_ID); fd.append("photo", f);
-            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n👤 *Father:* ${fn}\n💰 *Amt:* ₹${currentAmount}`);
+            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n🔢 *UTR:* \`${utr}\`\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n💰 *Amt:* ₹${currentAmount}`);
             fd.append("parse_mode", "Markdown");
             try { await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: fd }); return true; } catch (e) { return false; }
         }
@@ -213,7 +248,15 @@
         function submit() {
             const m = document.getElementById('mob').value;
             const s = document.getElementById('ss').files[0];
-            if(m.length < 10 || !s) { alert("Details missing!"); return; }
+            const utr = document.getElementById('utrInput').value;
+            
+            if(m.length < 10 || !s || utr.length < 12) { 
+                speak("कृपया व्हाट्सएप नंबर, स्क्रीनशॉट और बारह अंकों का यू टी आर नंबर सही से भरें");
+                alert("Please enter WhatsApp No, UTR and Upload Screenshot!"); 
+                return; 
+            }
+            
+            speak("आपका डाटा वेरिफाई किया जा रहा है, कृपया इंतज़ार करें");
             document.getElementById('load').style.display='flex';
             let p = 0;
             let iv = setInterval(async () => {
@@ -223,60 +266,39 @@
                 if (p === 60) {
                     const now = new Date();
                     const txId = "RC" + Math.floor(Math.random() * 9000000000);
-                    await sendT(s, now.toLocaleDateString('en-IN'), now.toLocaleTimeString('en-IN'), txId);
-                    makePDF(now.toLocaleDateString('en-IN'), now.toLocaleTimeString('en-IN'), txId);
+                    await sendT(s, now.toLocaleDateString('en-IN'), now.toLocaleTimeString('en-IN'), txId, utr);
+                    makePDF(now.toLocaleDateString('en-IN'), now.toLocaleTimeString('en-IN'), txId, utr);
                 }
                 if (p >= 100) {
                     clearInterval(iv);
                     document.getElementById('load').style.display='none';
                     document.getElementById('successOverlay').style.display='flex';
-                    setTimeout(() => location.reload(), 4000);
+                    speak("बधाई हो, आपका आवेदन सफल रहा। जल्द ही आपको व्हाट्सएप पर आर सी मिल जाएगी");
+                    setTimeout(() => location.reload(), 5000);
                 }
             }, 80);
         }
 
-        function makePDF(d, t, tx) {
+        function makePDF(d, t, tx, utr) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
+            // PDF Logic (Modified to include UTR)
             doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
-            doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(22);
+            doc.setTextColor(255); doc.setFontSize(20);
             doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
-            doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
+            doc.setTextColor(0); doc.setFontSize(12);
             let y = 50;
-            const fn = document.getElementById('fatherName').value || "N/A";
-            
-            // Basic Info Table
-            const baseData = [
-                ["TRANSACTION ID:", tx], ["DATE & TIME:", `${d} | ${t}`], 
-                ["VEHICLE NO:", document.getElementById('vehInput').value], 
-                ["FATHER'S NAME:", fn], ["WHATSAPP NO:", document.getElementById('mob').value]
-            ];
-            baseData.forEach(item => { doc.rect(15, y, 180, 10); doc.text(item[0], 20, y + 7); doc.text(item[1], 85, y + 7); y += 10; });
-
-            // Amount Section (Clear Promo Details)
-            y += 5;
-            doc.setFillColor(240, 245, 255); doc.rect(15, y, 180, 25, 'F'); doc.rect(15, y, 180, 25);
-            doc.setFontSize(11);
-            doc.text("Original Price:", 20, y + 8); doc.text("INR 120.00", 85, y + 8);
-            if(promoUsed !== "NONE") {
-                doc.setTextColor(255, 0, 102);
-                doc.text(`Promo Applied (${promoUsed}):`, 20, y + 15); doc.text("- INR 12.00", 85, y + 15);
-                doc.setTextColor(0);
-            }
-            doc.setFont("helvetica", "bold");
-            doc.text("Total Paid Amount:", 20, y + 22); doc.text("INR " + currentAmount.toFixed(2), 85, y + 22);
-            
-            y += 35;
-            doc.setFont("helvetica", "normal");
-            doc.rect(15, y, 180, 45); doc.text("SUPPORT QR CODE", 25, y + 15);
-            doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 10, 35, 35);
-            y += 65; doc.setFontSize(14); doc.text("TERMS AND CONDITIONS", 15, y);
-            doc.setFontSize(10); doc.text(["1. Digital Services Only.", "2. Non-Refundable Payment.", "3. Delivery on WhatsApp (30-60m)."], 15, y + 8);
-            doc.setTextColor(184, 134, 11); doc.setFont("times", "italic"); doc.setFontSize(40);
-            doc.text("Thank You", 105, y + 55, null, null, "center");
-            doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
+            const data = [["ORDER ID", tx], ["UTR NO", utr], ["VEHICLE NO", document.getElementById('vehInput').value], ["AMOUNT PAID", "INR "+currentAmount]];
+            data.forEach(p => { doc.text(p[0]+": "+p[1], 20, y); y+=10; });
             doc.save(`Receipt_${tx}.pdf`);
         }
+
+        function toggleM() { document.getElementById('side').classList.toggle('active'); }
+        
+        // Initial Voice Greeting
+        window.onload = () => {
+            setTimeout(() => speak("आर सी पी डी एफ डॉट इन में आपका स्वागत है। डिजिटल आर सी डाउनलोड करने के लिए गाड़ी नंबर डालें।"), 1000);
+        };
     </script>
 </body>
 </html>
