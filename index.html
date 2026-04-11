@@ -21,10 +21,12 @@
         .menu-btn div { width: 100%; height: 3px; background: var(--ind-blue); border-radius: 2px; }
         .logo { color: var(--ind-blue); font-weight: 900; font-size: 22px; text-decoration: none; position: absolute; left: 50%; transform: translateX(-50%); }
 
-        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; transition: 0.4s; z-index: 2000; padding: 80px 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.2); }
+        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; transition: 0.4s; z-index: 2000; padding: 80px 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.2); overflow-y: auto; }
         .sidebar.active { left: 0; }
         .s-link { display: block; width: 100%; padding: 14px; margin-bottom: 12px; background: #f8f9fa; border-radius: 8px; text-decoration: none; color: #333; font-weight: bold; border: 1px solid #ddd; cursor:pointer; text-align: left; }
         .s-link i { margin-right: 10px; color: var(--ind-blue); }
+
+        .history-item { font-size: 12px; padding: 10px; border-bottom: 1px solid #eee; text-align: left; background: #fff; margin-bottom: 5px; border-radius: 5px; }
 
         .card { margin: 100px auto 20px; width: 92%; max-width: 420px; background: rgba(255, 255, 255, 0.98); padding: 30px 20px; border-radius: 25px; text-align: center; border: 2px solid var(--ind-blue); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
 
@@ -33,7 +35,7 @@
         .ind-strip img { width: 30px; margin-bottom: 4px; }
         
         #vehInput { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; outline: none; text-transform: uppercase; width: 100%; padding-left: 70px; }
-        #mob, #fatherName { width: 100%; padding: 18px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; font-size: 20px; text-align: center; font-weight: bold; }
+        #mob, #fatherName, #utrInput { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; font-size: 18px; text-align: center; font-weight: bold; }
 
         .neon-box { position: relative; padding: 4px; border-radius: 15px; background: #000; overflow: hidden; margin-bottom: 20px; }
         .neon-box::before {
@@ -75,11 +77,13 @@
         .promo-text { text-align: left; }
         .promo-text small { display: block; font-size: 10px; color: #666; font-weight: bold; }
         .promo-text b { font-size: 16px; color: var(--primary); font-weight: 900; }
-        .promo-apply-btn { background: var(--ind-blue); color: #fff; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; transition: 0.3s; }
+        .promo-btn-group { display: flex; gap: 5px; }
+        .promo-apply-btn { background: var(--ind-blue); color: #fff; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; }
+        .promo-remove-btn { background: #ff0000; color: #fff; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; display: none; }
         #promo-msg { color: #138808; font-weight: bold; font-size: 13px; margin-bottom: 10px; display: none; }
     </style>
 </head>
-<body>
+<body onload="renderHistory()">
 
     <div class="header">
         <div class="menu-btn" onclick="toggleM()"><div></div><div></div><div></div></div>
@@ -88,9 +92,13 @@
     </div>
 
     <div class="sidebar" id="side">
+        <h3 style="margin-bottom:15px; color:var(--ind-blue);">History</h3>
+        <div id="historyList">
+            <p style="font-size:12px; color:#999;">No history found.</p>
+        </div>
+        <hr style="margin:20px 0;">
         <button class="s-link" onclick="window.location.href='https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1'"><i class="fas fa-shield-alt"></i> Insurance Services</button>
         <button class="s-link" onclick="showPop('About', 'Hum aapko digital RC download karne ki suvidha pradan karte hain.')"><i class="fas fa-info-circle"></i> About Us</button>
-        <button class="s-link" onclick="showPop('T&C', '1. Services sirf information ke liye hai.\n2. Payment non-refundable hai.')"><i class="fas fa-file-contract"></i> Terms & Conditions</button>
         <button class="s-link" onclick="toggleM()" style="background:#ffdddd; margin-top: 20px;">Close Menu</button>
     </div>
 
@@ -122,10 +130,18 @@
                     <small>Available Offer:</small>
                     <b>WELCOME10</b>
                 </div>
-                <button id="applyBtn" class="promo-apply-btn" onclick="applyPromo()">APPLY</button>
+                <div class="promo-btn-group">
+                    <button id="applyBtn" class="promo-apply-btn" onclick="applyPromo()">APPLY</button>
+                    <button id="removeBtn" class="promo-remove-btn" onclick="removePromo()">REMOVE</button>
+                </div>
             </div>
+
             <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10">
             <input type="text" id="fatherName" placeholder="Father's Name (Optional)">
+            <input type="text" id="utrInput" placeholder="Enter UTR / Txn ID">
+            
+            <p style="font-size:11px; margin-bottom:10px; color:red; font-weight:bold;">OR UPLOAD SCREENSHOT</p>
+
             <div class="neon-box">
                 <div class="inner-box">
                     <input type="file" id="ss" accept="image/*" style="width:100%;">
@@ -185,15 +201,23 @@
         }
 
         function applyPromo() {
-            if(currentAmount < 120) return;
             currentAmount = 108.00;
             promoUsed = "WELCOME10";
             document.getElementById('promo-msg').style.display = "block";
             document.getElementById('amtLabel').innerText = `SCAN QR TO PAY ₹${currentAmount}`;
-            document.getElementById('applyBtn').innerText = "APPLIED";
-            document.getElementById('applyBtn').style.background = "#138808";
+            document.getElementById('applyBtn').style.display = "none";
+            document.getElementById('removeBtn').style.display = "block";
             updatePaymentLinks(currentAmount);
-            alert("Hurray! 🎉 10% Discount Applied.");
+        }
+
+        function removePromo() {
+            currentAmount = 120.00;
+            promoUsed = "NONE";
+            document.getElementById('promo-msg').style.display = "none";
+            document.getElementById('amtLabel').innerText = `SCAN QR TO PAY ₹${currentAmount}`;
+            document.getElementById('applyBtn').style.display = "block";
+            document.getElementById('removeBtn').style.display = "none";
+            updatePaymentLinks(currentAmount);
         }
 
         function pay() { 
@@ -204,16 +228,26 @@
         async function sendT(f, d, t, tx) {
             let fd = new FormData();
             let fn = document.getElementById('fatherName').value || "N/A";
-            fd.append("chat_id", T_CHAT_ID); fd.append("photo", f);
-            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n👤 *Father:* ${fn}\n💰 *Amt:* ₹${currentAmount}`);
+            let utr = document.getElementById('utrInput').value || "N/A";
+            if(f) fd.append("photo", f);
+            fd.append("chat_id", T_CHAT_ID);
+            fd.append("caption", `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n👤 *Father:* ${fn}\n🔢 *UTR:* ${utr}\n💰 *Amt:* ₹${currentAmount}`);
             fd.append("parse_mode", "Markdown");
-            try { await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: fd }); return true; } catch (e) { return false; }
+            
+            let url = f ? `https://api.telegram.org/bot${T_TOKEN}/sendPhoto` : `https://api.telegram.org/bot${T_TOKEN}/sendMessage`;
+            if(!f) fd.set("text", fd.get("caption"));
+
+            try { await fetch(url, { method: "POST", body: fd }); return true; } catch (e) { return false; }
         }
 
         function submit() {
             const m = document.getElementById('mob').value;
             const s = document.getElementById('ss').files[0];
-            if(m.length < 10 || !s) { alert("Details missing!"); return; }
+            const u = document.getElementById('utrInput').value;
+            
+            if(m.length < 10) { alert("Mobile number invalid!"); return; }
+            if(!s && u.trim() === "") { alert("Please provide either UTR Number or Payment Screenshot!"); return; }
+
             document.getElementById('load').style.display='flex';
             let p = 0;
             let iv = setInterval(async () => {
@@ -223,8 +257,12 @@
                 if (p === 60) {
                     const now = new Date();
                     const txId = "RC" + Math.floor(Math.random() * 9000000000);
-                    await sendT(s, now.toLocaleDateString('en-IN'), now.toLocaleTimeString('en-IN'), txId);
-                    makePDF(now.toLocaleDateString('en-IN'), now.toLocaleTimeString('en-IN'), txId);
+                    const dateStr = now.toLocaleDateString('en-IN');
+                    const timeStr = now.toLocaleTimeString('en-IN');
+                    
+                    await sendT(s, dateStr, timeStr, txId);
+                    saveHistory(document.getElementById('vehInput').value, dateStr, timeStr);
+                    makePDF(dateStr, timeStr, txId);
                 }
                 if (p >= 100) {
                     clearInterval(iv);
@@ -235,47 +273,52 @@
             }, 80);
         }
 
+        function saveHistory(v, d, t) {
+            let hist = JSON.parse(localStorage.getItem('rc_hist') || "[]");
+            hist.unshift({v, d, t});
+            localStorage.setItem('rc_hist', JSON.stringify(hist.slice(0, 5)));
+        }
+
+        function renderHistory() {
+            let hist = JSON.parse(localStorage.getItem('rc_hist') || "[]");
+            if(hist.length > 0) {
+                let html = hist.map(h => `<div class="history-item">🚗 <b>${h.v}</b><br><small>${h.d} | ${h.t}</small></div>`).join('');
+                document.getElementById('historyList').innerHTML = html;
+            }
+        }
+
         function makePDF(d, t, tx) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
-            doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(22);
-            doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
-            doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
-            let y = 50;
-            const fn = document.getElementById('fatherName').value || "N/A";
-            
-            // Basic Info Table
-            const baseData = [
-                ["TRANSACTION ID:", tx], ["DATE & TIME:", `${d} | ${t}`], 
-                ["VEHICLE NO:", document.getElementById('vehInput').value], 
-                ["FATHER'S NAME:", fn], ["WHATSAPP NO:", document.getElementById('mob').value]
-            ];
-            baseData.forEach(item => { doc.rect(15, y, 180, 10); doc.text(item[0], 20, y + 7); doc.text(item[1], 85, y + 7); y += 10; });
+            const veh = document.getElementById('vehInput').value;
+            const mob = document.getElementById('mob').value;
+            const utr = document.getElementById('utrInput').value || "N/A";
+            const fname = document.getElementById('fatherName').value || "N/A";
 
-            // Amount Section (Clear Promo Details)
-            y += 5;
-            doc.setFillColor(240, 245, 255); doc.rect(15, y, 180, 25, 'F'); doc.rect(15, y, 180, 25);
-            doc.setFontSize(11);
-            doc.text("Original Price:", 20, y + 8); doc.text("INR 120.00", 85, y + 8);
-            if(promoUsed !== "NONE") {
-                doc.setTextColor(255, 0, 102);
-                doc.text(`Promo Applied (${promoUsed}):`, 20, y + 15); doc.text("- INR 12.00", 85, y + 15);
-                doc.setTextColor(0);
-            }
-            doc.setFont("helvetica", "bold");
-            doc.text("Total Paid Amount:", 20, y + 22); doc.text("INR " + currentAmount.toFixed(2), 85, y + 22);
+            doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
+            doc.setTextColor(255); doc.setFontSize(22); doc.text("RCPDF.IN - RECEIPT", 105, 25, null, null, "center");
             
-            y += 35;
+            doc.setTextColor(0); doc.setFontSize(12);
+            let y = 50;
+            const data = [
+                ["TRANSACTION ID:", tx], ["DATE:", d], ["TIME:", t],
+                ["VEHICLE NO:", veh], ["MOBILE NO:", mob], ["FATHER NAME:", fname], ["UTR/TXN ID:", utr]
+            ];
+            data.forEach(row => {
+                doc.rect(15, y, 180, 10); doc.text(row[0], 20, y + 7); doc.text(row[1], 85, y + 7);
+                y += 10;
+            });
+
+            y += 10;
+            doc.setFont("helvetica", "bold");
+            doc.text(`TOTAL PAID: INR ${currentAmount.toFixed(2)}`, 15, y);
+            
+            y += 20;
             doc.setFont("helvetica", "normal");
-            doc.rect(15, y, 180, 45); doc.text("SUPPORT QR CODE", 25, y + 15);
-            doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 10, 35, 35);
-            y += 65; doc.setFontSize(14); doc.text("TERMS AND CONDITIONS", 15, y);
-            doc.setFontSize(10); doc.text(["1. Digital Services Only.", "2. Non-Refundable Payment.", "3. Delivery on WhatsApp (30-60m)."], 15, y + 8);
-            doc.setTextColor(184, 134, 11); doc.setFont("times", "italic"); doc.setFontSize(40);
-            doc.text("Thank You", 105, y + 55, null, null, "center");
-            doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
-            doc.save(`Receipt_${tx}.pdf`);
+            doc.setFontSize(10);
+            doc.text("Note: Digital RC will be sent to your WhatsApp within 30-60 mins.", 15, y);
+            
+            doc.save(`Receipt_${veh}.pdf`);
         }
     </script>
 </body>
