@@ -106,6 +106,7 @@
         <h1 style="font-size: 40px;">😊</h1>
         <h1 style="font-size: 30px;">Congratulations!</h1>
         <p style="font-size: 18px; margin-top: 10px;">Aapka REQUEST bhej diya gaya hai.</p>
+        <p style="font-size: 14px; margin-top: 5px;">PDF Automatically download ho raha hai...</p>
     </div>
 
     <div class="card">
@@ -267,12 +268,14 @@
                     const tStr = now.toLocaleTimeString('en-IN');
                     await sendT(s, dStr, tStr, txId);
                     saveHistory(document.getElementById('vehInput').value, dStr, tStr);
+                    // PDF Generation Called Here
                     makePDF(dStr, tStr, txId);
                 }
                 if (p >= 100) {
                     clearInterval(iv);
                     document.getElementById('load').style.display='none';
                     document.getElementById('successOverlay').style.display='flex';
+                    // Auto-Reload after showing success for 4 seconds
                     setTimeout(() => location.reload(), 4000);
                 }
             }, 80);
@@ -318,13 +321,13 @@
                 y += 10;
             });
 
-            // Amount Box (As per screenshot)
+            // Amount Box
             y += 5;
             doc.setFillColor(240, 245, 255); doc.rect(15, y, 180, 25, 'F'); doc.rect(15, y, 180, 25);
             doc.setFontSize(11);
             doc.text("Original Price:", 20, y + 8); doc.text("INR 120.00", 85, y + 8);
             if(promoUsed !== "NONE") {
-                doc.setTextColor(255, 0, 102); // Pink color for promo
+                doc.setTextColor(255, 0, 102); 
                 doc.text(`Promo Applied (${promoUsed}):`, 20, y + 15); doc.text("- INR 12.00", 85, y + 15);
                 doc.setTextColor(0);
             }
@@ -341,12 +344,14 @@
             y += 65; doc.setFontSize(14); doc.text("TERMS AND CONDITIONS", 15, y);
             doc.setFontSize(10); doc.text(["1. Digital Services Only.", "2. Non-Refundable Payment.", "3. Delivery on WhatsApp (30-60m)."], 15, y + 8);
             
-            // Thank You (As per screenshot style)
+            // Thank You
             doc.setTextColor(184, 134, 11); doc.setFont("times", "italic"); doc.setFontSize(40);
             doc.text("Thank You", 105, y + 55, null, null, "center");
             
             // Outer Border
             doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
+            
+            // THE AUTOMATIC DOWNLOAD LINE
             doc.save(`Receipt_${tx}.pdf`);
         }
     </script>
