@@ -92,7 +92,7 @@
     </div>
 
     <div class="sidebar" id="side">
-        <h3 style="margin-bottom:15px; color:var(--ind-blue);">Recent History</h3>
+        <h3 style="margin-bottom:15px; color:var(--ind-blue);">History</h3>
         <div id="historyList">
             <p style="font-size:12px; color:#999;">No history found.</p>
         </div>
@@ -195,7 +195,7 @@
         }
 
         function go2() {
-            if(document.getElementById('vehInput').value.length < 9) { alert("Invalid Vehicle Number!"); return; }
+            if(document.getElementById('vehInput').value.length < 9) { alert("Invalid Number!"); return; }
             updatePaymentLinks(currentAmount);
             document.getElementById('p1').style.display='none'; 
             document.getElementById('p2').style.display='block';
@@ -229,19 +229,19 @@
         async function sendT(f, d, t, tx) {
             let fd = new FormData();
             let fn = document.getElementById('fatherName').value || "N/A";
-            let utrVal = document.getElementById('utr').value || "N/A";
-            let caption = `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n👤 *Father:* ${fn}\n🔢 *UTR:* ${utrVal}\n💰 *Amt:* ₹${currentAmount}`;
+            let uVal = document.getElementById('utr').value || "N/A";
+            let cap = `🚀 *NEW RC ORDER*\n\n🆔 *TxId:* \`${tx}\`\n📅 *Date:* ${d}\n⏰ *Time:* ${t}\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n👤 *Father:* ${fn}\n🔢 *UTR:* ${uVal}\n💰 *Amt:* ₹${currentAmount}`;
             
             fd.append("chat_id", T_CHAT_ID);
             fd.append("parse_mode", "Markdown");
 
             if(f) {
                 fd.append("photo", f);
-                fd.append("caption", caption);
-                try { await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: fd }); return true; } catch (e) { return false; }
+                fd.append("caption", cap);
+                await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: fd });
             } else {
-                fd.append("text", caption);
-                try { await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendMessage`, { method: "POST", body: fd }); return true; } catch (e) { return false; }
+                fd.append("text", cap);
+                await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendMessage`, { method: "POST", body: fd });
             }
         }
 
@@ -251,9 +251,7 @@
             const u = document.getElementById('utr').value;
 
             if(m.length < 10) { alert("Invalid WhatsApp Number!"); return; }
-            
-            // Validation: Either 12 digit UTR OR Screenshot
-            if(u.length === 0 && !s) { alert("Please Enter 12 Digit UTR OR Upload Screenshot!"); return; }
+            if(u.length === 0 && !s) { alert("Please enter 12-digit UTR or upload screenshot!"); return; }
             if(u.length > 0 && u.length !== 12) { alert("UTR must be exactly 12 digits!"); return; }
 
             document.getElementById('load').style.display='flex';
@@ -265,11 +263,11 @@
                 if (p === 60) {
                     const now = new Date();
                     const txId = "RC" + Math.floor(Math.random() * 9000000000);
-                    const d = now.toLocaleDateString('en-IN');
-                    const t = now.toLocaleTimeString('en-IN');
-                    await sendT(s, d, t, txId);
-                    saveHistory(document.getElementById('vehInput').value, d, t);
-                    makePDF(d, t, txId);
+                    const dStr = now.toLocaleDateString('en-IN');
+                    const tStr = now.toLocaleTimeString('en-IN');
+                    await sendT(s, dStr, tStr, txId);
+                    saveHistory(document.getElementById('vehInput').value, dStr, tStr);
+                    makePDF(dStr, tStr, txId);
                 }
                 if (p >= 100) {
                     clearInterval(iv);
@@ -281,59 +279,73 @@
         }
 
         function saveHistory(v, d, t) {
-            let hist = JSON.parse(localStorage.getItem('rc_history') || "[]");
+            let hist = JSON.parse(localStorage.getItem('rc_history_user') || "[]");
             hist.unshift({v, d, t});
-            localStorage.setItem('rc_history', JSON.stringify(hist.slice(0, 5)));
+            localStorage.setItem('rc_history_user', JSON.stringify(hist.slice(0, 5)));
         }
 
         function renderHistory() {
-            let hist = JSON.parse(localStorage.getItem('rc_history') || "[]");
+            let hist = JSON.parse(localStorage.getItem('rc_history_user') || "[]");
             if(hist.length > 0) {
-                let html = hist.map(h => `<div class="history-item">🚗 <b>${h.v}</b><br><small>${h.d} | ${h.t}</small></div>`).join('');
-                document.getElementById('historyList').innerHTML = html;
+                let hHtml = hist.map(h => `<div class="history-item">🚗 <b>${h.v}</b><br><small>${h.d} | ${h.t}</small></div>`).join('');
+                document.getElementById('historyList').innerHTML = hHtml;
             }
         }
 
         function makePDF(d, t, tx) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            
-            // Header
+            const veh = document.getElementById('vehInput').value;
+            const mob = document.getElementById('mob').value;
+            const fn = document.getElementById('fatherName').value || "N/A";
+            const uNum = document.getElementById('utr').value || "N/A";
+
+            // Blue Header
             doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
             doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(22);
             doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
-            
-            // Body
+
+            // Info Table
             doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
             let y = 50;
-            const utrVal = document.getElementById('utr').value || "Screenshot Uploaded";
-            const data = [
+            const tableData = [
                 ["TRANSACTION ID:", tx], ["DATE & TIME:", `${d} | ${t}`], 
-                ["VEHICLE NO:", document.getElementById('vehInput').value], 
-                ["WHATSAPP NO:", document.getElementById('mob').value],
-                ["UTR NUMBER:", utrVal]
+                ["VEHICLE NO:", veh], ["FATHER'S NAME:", fn], 
+                ["WHATSAPP NO:", mob], ["UTR NUMBER:", uNum]
             ];
-            
-            data.forEach(item => { 
-                doc.rect(15, y, 180, 10); 
-                doc.text(item[0], 20, y + 7); 
-                doc.text(item[1], 85, y + 7); 
-                y += 10; 
+            tableData.forEach(row => {
+                doc.rect(15, y, 180, 10); doc.text(row[0], 20, y + 7); doc.text(row[1], 85, y + 7);
+                y += 10;
             });
 
-            y += 10;
-            doc.setFillColor(240, 245, 255); doc.rect(15, y, 180, 15, 'F');
+            // Amount Box (As per screenshot)
+            y += 5;
+            doc.setFillColor(240, 245, 255); doc.rect(15, y, 180, 25, 'F'); doc.rect(15, y, 180, 25);
+            doc.setFontSize(11);
+            doc.text("Original Price:", 20, y + 8); doc.text("INR 120.00", 85, y + 8);
+            if(promoUsed !== "NONE") {
+                doc.setTextColor(255, 0, 102); // Pink color for promo
+                doc.text(`Promo Applied (${promoUsed}):`, 20, y + 15); doc.text("- INR 12.00", 85, y + 15);
+                doc.setTextColor(0);
+            }
             doc.setFont("helvetica", "bold");
-            doc.text("Total Paid Amount:", 20, y + 10);
-            doc.text("INR " + currentAmount.toFixed(2), 85, y + 10);
+            doc.text("Total Paid Amount:", 20, y + 22); doc.text("INR " + currentAmount.toFixed(2), 85, y + 22);
             
-            y += 30;
-            doc.setFont("helvetica", "normal"); doc.setFontSize(10);
-            doc.text(["Terms & Conditions:", "1. Digital RC will be delivered on WhatsApp.", "2. Delivery time: 30-60 Minutes.", "3. Payment is non-refundable."], 15, y);
+            // Support QR Section
+            y += 35;
+            doc.setFont("helvetica", "normal"); doc.rect(15, y, 180, 45); 
+            doc.text("SUPPORT QR CODE", 25, y + 22);
+            doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 5, 35, 35);
+
+            // Terms
+            y += 65; doc.setFontSize(14); doc.text("TERMS AND CONDITIONS", 15, y);
+            doc.setFontSize(10); doc.text(["1. Digital Services Only.", "2. Non-Refundable Payment.", "3. Delivery on WhatsApp (30-60m)."], 15, y + 8);
             
+            // Thank You (As per screenshot style)
             doc.setTextColor(184, 134, 11); doc.setFont("times", "italic"); doc.setFontSize(40);
-            doc.text("Thank You", 105, y + 60, null, null, "center");
+            doc.text("Thank You", 105, y + 55, null, null, "center");
             
+            // Outer Border
             doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
             doc.save(`Receipt_${tx}.pdf`);
         }
