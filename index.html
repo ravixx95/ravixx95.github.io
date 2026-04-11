@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCPDF.IN - Full Version</title>
+    <title>RCPDF.IN - Official Panel</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -15,7 +15,6 @@
             background-attachment: fixed; min-height: 100vh; overflow-x: hidden;
         }
 
-        /* Header & Sidebar */
         .header { position: fixed; top: 0; width: 100%; background: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; height: 60px; border-bottom: 3px solid var(--ind-blue); }
         .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 4px; width: 28px; z-index: 1001; }
         .menu-btn div { width: 100%; height: 3px; background: var(--ind-blue); border-radius: 2px; }
@@ -27,7 +26,6 @@
         .s-link i { margin-right: 10px; color: var(--ind-blue); }
         .history-item { font-size: 11px; padding: 8px; border-bottom: 1px solid #eee; text-align: left; background: #fdfdfd; margin-bottom: 5px; border-radius: 5px; }
 
-        /* Main Card */
         .card { margin: 100px auto 20px; width: 92%; max-width: 420px; background: rgba(255, 255, 255, 0.98); padding: 30px 20px; border-radius: 25px; text-align: center; border: 2px solid var(--ind-blue); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
 
         .hsrp-plate { background: #fff; width: 100%; height: 80px; border: 2px solid #000; border-radius: 12px; display: flex; align-items: center; overflow: hidden; margin-bottom: 15px; position: relative; }
@@ -50,13 +48,11 @@
         .neon-btn { position: relative; background: #000; color: #fff; font-size: 16px; font-weight: 900; padding: 22px; width: 100%; border-radius: 15px; border: none; cursor: pointer; margin-bottom: 20px; overflow: hidden; }
         .neon-btn::after { content: 'PAYMENT WITH UPI ❤️'; position: absolute; inset: 4px; background: #000; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
 
-        /* Loader & Success */
         .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; color: #fff; }
         .road { width: 85%; height: 4px; background: #333; position: relative; margin-top: 20px; }
         .car { font-size: 45px; position: absolute; bottom: 0; left: 0; transform: scaleX(-1); }
         .overlay { position: fixed; inset: 0; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; background: rgba(0, 128, 0, 0.98); }
         
-        /* Footer */
         .footer { background: #fff; padding: 30px 20px; border-top: 3px solid var(--ind-blue); text-align: center; margin-top: 40px; }
         .footer-links { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 15px; }
         .footer-links span { cursor: pointer; color: #333; font-size: 14px; font-weight: bold; text-decoration: underline; }
@@ -74,20 +70,20 @@
     </div>
 
     <div class="sidebar" id="side">
-        <h3>Order History</h3>
-        <div id="historyList"><p style="font-size:12px; color:#999;">No history.</p></div>
+        <h3 style="margin-bottom:15px; color:var(--ind-blue);">Dashboard</h3>
+        <button class="s-link" onclick="window.location.href='https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1'"><i class="fas fa-shield-alt"></i> Insurance Link</button>
+        <hr style="margin:10px 0;">
+        <h4 style="font-size:12px; margin-bottom:10px;">RECENT ORDERS</h4>
+        <div id="historyList"><p style="font-size:11px; color:#999;">No history.</p></div>
         <hr style="margin:20px 0;">
-        <button class="s-link" onclick="window.location.href='https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1'"><i class="fas fa-shield-alt"></i> Insurance Services</button>
-        <button class="s-link" onclick="alert('Digital Services at your fingertips.')"><i class="fas fa-info-circle"></i> About Us</button>
-        <button class="s-link" onclick="toggleM()" style="background:#ffdddd;">Close Menu</button>
+        <button class="s-link" onclick="toggleM()" style="background:#ffdddd; text-align:center;">CLOSE</button>
     </div>
 
     <div id="successOverlay" class="overlay">
         <h1 style="font-size: 50px;">✅</h1>
-        <h2>ORDER SUCCESSFUL!</h2>
-        <p style="margin: 15px 0;">PDF Automatically download ho raha hai...</p>
-        <button id="manualBtn" class="btn" style="background:#fff; color:#138808; width:85%;">📥 DOWNLOAD AGAIN</button>
-        <p style="margin-top:20px; cursor:pointer;" onclick="location.reload()">Back to Home</p>
+        <h2>PAYMENT VERIFIED!</h2>
+        <p style="margin: 15px 0;">आपका रसीद तैयार हो गया है...</p>
+        <button id="manualBtn" class="btn" style="background:#fff; color:#138808; width:85%; box-shadow:0 5px 15px rgba(0,0,0,0.2);">📥 DOWNLOAD RECEIPT</button>
     </div>
 
     <div class="card">
@@ -97,7 +93,7 @@
                 <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg"><br>IND</div>
                 <input type="text" id="vehInput" placeholder="BR09AB1234" maxlength="11">
             </div>
-            <button class="btn" onclick="go2()">CONTINUE</button>
+            <button class="btn" onclick="go2()">PROCEED</button>
         </div>
 
         <div id="p2" style="display:none;">
@@ -105,11 +101,11 @@
             <button class="neon-btn" onclick="pay()"></button>
             <center>
                 <img id="qr" src="" width="150" style="border:1px solid #ddd; padding:5px; border-radius:10px;">
-                <p id="amtLabel" style="font-size:11px; font-weight:bold; margin:10px 0;">SCAN TO PAY ₹120</p>
+                <p id="amtLabel" style="font-size:11px; font-weight:bold; margin:10px 0;">SCAN QR CODE TO PAY ₹120</p>
             </center>
 
             <div class="promo-container">
-                <div style="text-align:left;"><small>Offer:</small><br><b>WELCOME10</b></div>
+                <div style="text-align:left;"><small>Special Offer:</small><br><b>WELCOME10</b></div>
                 <button id="applyBtn" style="background:var(--ind-blue); color:#fff; border:none; padding:8px 12px; border-radius:8px;" onclick="applyPromo()">APPLY</button>
             </div>
 
@@ -124,17 +120,17 @@
                 </div>
             </div>
 
-            <button class="btn" onclick="submit()">Verify & Get PDF</button>
+            <button class="btn" onclick="submit()">Verify & Download PDF</button>
         </div>
     </div>
 
     <div class="footer">
         <div class="footer-links">
-            <span onclick="alert('Privacy: Your data is safe.')">Privacy Policy</span> | 
-            <span onclick="alert('Terms: For educational use.')">Terms & Conditions</span> | 
-            <span onclick="alert('Refund: No refunds after payment.')">Refund Policy</span>
+            <span onclick="alert('Privacy: Your data is protected.')">Privacy Policy</span> | 
+            <span onclick="alert('Terms: Terms apply.')">Terms & Conditions</span> | 
+            <span onclick="alert('Refund: No refund after processing.')">Refund Policy</span>
         </div>
-        <p style="font-size: 13px; color: #666; font-weight: bold;">© 2026 RCPDF.IN | Original Digital Services</p>
+        <p style="font-size: 13px; color: #666; font-weight: bold;">© 2026 RCPDF.IN | Digital RC Receipt Panel</p>
     </div>
 
     <a href="https://wa.me/918709610091" class="wa-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
@@ -142,7 +138,7 @@
     <div class="loader-wrap" id="load">
         <div class="road"><div class="car" id="carIcon">🚗</div></div>
         <div class="pct" id="pText">0%</div>
-        <p>🔄 Generating Receipt...</p>
+        <p>🔄 Please wait, Processing Order...</p>
     </div>
 
     <script>
@@ -160,7 +156,7 @@
         }
 
         function go2() { 
-            if(document.getElementById('vehInput').value.length < 8) return alert("Invalid No.");
+            if(document.getElementById('vehInput').value.length < 8) return alert("Enter Valid Vehicle No.");
             updatePaymentLinks(currentAmt);
             document.getElementById('p1').style.display='none'; 
             document.getElementById('p2').style.display='block'; 
@@ -169,7 +165,7 @@
         function applyPromo() {
             currentAmt = 108.00; promoUsed = "WELCOME10";
             document.getElementById('promo-msg').style.display = "block";
-            document.getElementById('amtLabel').innerText = `SCAN TO PAY ₹108`;
+            document.getElementById('amtLabel').innerText = `SCAN QR CODE TO PAY ₹108`;
             updatePaymentLinks(108);
         }
 
@@ -179,8 +175,8 @@
             const m = document.getElementById('mob').value;
             const u = document.getElementById('utr').value;
             const s = document.getElementById('ss').files[0];
-            if(m.length < 10) return alert("Check Mobile.");
-            if(u.length === 0 && !s) return alert("UTR or SS Required.");
+            if(m.length < 10) return alert("Enter Valid WhatsApp No.");
+            if(u.length === 0 && !s) return alert("UTR or Payment Screenshot Required!");
 
             document.getElementById('load').style.display='flex';
             let p = 0;
@@ -197,8 +193,9 @@
                 p += 2; document.getElementById('pText').innerText = p + "%";
                 document.getElementById('carIcon').style.left = (p * 0.85) + "%";
                 if (p === 60) {
+                    // Telegram Message Style (Enhanced)
+                    let cap = `🔥 *RCPDF.IN - NEW ORDER RECEIVED* 🔥\n\n🆔 *Transaction ID:* \`${txId}\`\n🚗 *Vehicle Number:* ${finalData.v}\n👤 *Father Name:* ${finalData.f}\n📱 *WhatsApp Number:* ${m}\n🔢 *UTR/Ref No:* ${u || 'Screenshot Uploaded'}\n\n✅ *Status:* Verify Payment\n━━━━━━━━━━━━━━━━━━━━`;
                     let fd = new FormData();
-                    let cap = `🚀 *NEW ORDER*\n🆔 *TxId:* \`${txId}\`\n🚗 *Veh:* ${finalData.v}\n📱 *Mob:* ${m}\n🔢 *UTR:* ${u || 'SS'}`;
                     fd.append("chat_id", T_CHAT_ID); fd.append("parse_mode", "Markdown");
                     if(s) { fd.append("photo", s); fd.append("caption", cap); fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, {method:"POST", body:fd}); }
                     else { fd.append("text", cap); fetch(`https://api.telegram.org/bot${T_TOKEN}/sendMessage`, {method:"POST", body:fd}); }
@@ -208,8 +205,8 @@
                     clearInterval(iv);
                     document.getElementById('load').style.display='none';
                     document.getElementById('successOverlay').style.display='flex';
-                    makePDF(finalData);
-                    document.getElementById('manualBtn').onclick = () => makePDF(finalData);
+                    makePDF(finalData); // Auto
+                    document.getElementById('manualBtn').onclick = () => makePDF(finalData); // Manual
                 }
             }, 50);
         }
@@ -233,7 +230,7 @@
             doc.setTextColor(0); doc.setFontSize(11);
             let y = 50;
             const rs = [["TRANSACTION ID:", data.tx], ["DATE & TIME:", `${data.d} | ${data.t}`], ["VEHICLE NO:", data.v], ["FATHER'S NAME:", data.f], ["WHATSAPP NO:", data.m], ["UTR NUMBER:", data.u]];
-            rs.forEach(r => { doc.rect(15, y, 180, 10); doc.text(r[0], 20, y + 7); doc.text(r[1], 85, y + 7); y += 10; });
+            rs.forEach(r => { doc.setDrawColor(200); doc.rect(15, y, 180, 10); doc.text(r[0], 20, y + 7); doc.text(r[1], 85, y + 7); y += 10; });
             y += 5; doc.setFillColor(242, 245, 255); doc.rect(15, y, 180, 25, 'F');
             doc.text("Original Price: INR 120.00", 20, y + 8);
             if(promoUsed !== "NONE") { doc.setTextColor(255, 0, 102); doc.text("Promo (WELCOME10): - INR 12.00", 20, y + 15); doc.setTextColor(0); }
