@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCPDF.IN - All Services</title>
+    <title>RCPDF.IN - Digital Document Information</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -77,36 +77,36 @@
     </div>
 
     <div class="sidebar" id="side">
-        <h3 style="margin-bottom:15px; color:var(--ind-blue);">History</h3>
-        <div id="historyList"><p style="font-size:12px; color:#999;">No history found.</p></div>
+        <h3 style="margin-bottom:15px; color:var(--ind-blue);">Activity Log</h3>
+        <div id="historyList"><p style="font-size:12px; color:#999;">No records found.</p></div>
         <hr style="margin:20px 0;">
-        <button class="s-link" onclick="window.location.href='https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1'"><i class="fas fa-shield-alt"></i> Insurance Services</button>
-        <button class="s-link" onclick="toggleM()" style="background:#ffdddd; margin-top: 20px;">Close Menu</button>
+        <button class="s-link" onclick="window.location.href='https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1'"><i class="fas fa-shield-alt"></i> Insurance Info</button>
+        <button class="s-link" onclick="toggleM()" style="background:#ffdddd; margin-top: 20px;">Close</button>
     </div>
 
     <div id="successOverlay" class="overlay">
         <h1 style="font-size: 40px;">😊</h1>
-        <h1 style="font-size: 30px;">Congratulations!</h1>
-        <p style="font-size: 18px; margin-top: 10px;">Verification Successfully Completed.</p>
-        <button class="btn" id="dlBtn" style="background:#fff; color:green; width:260px; margin-top:25px; border: 2px solid green;">Download PDF Now</button>
+        <h1 style="font-size: 30px;">Verification Complete!</h1>
+        <p style="font-size: 18px; margin-top: 10px;">Service Record has been updated.</p>
+        <button class="btn" id="dlBtn" style="background:#fff; color:green; width:260px; margin-top:25px; border: 2px solid green;">Download Receipt Now</button>
     </div>
 
     <div class="card">
         <div id="p1">
-            <h2 style="margin-bottom:15px; color: var(--ind-blue);">Download Digital RC</h2>
+            <h2 style="margin-bottom:15px; color: var(--ind-blue);">Digital RC Verification</h2>
             <div class="hsrp-plate">
                 <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg"><span>IND</span></div>
                 <input type="text" id="vehInput" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatV(this)">
             </div>
-            <button class="btn" onclick="go2()">CONTINUE</button>
+            <button class="btn" onclick="go2()">CHECK STATUS</button>
         </div>
 
         <div id="p2" style="display:none;">
-            <div id="promo-msg" style="color: #138808; font-weight: bold; margin-bottom: 10px; display: none;">Offer Applied Successfully! 🎁</div>
+            <div id="promo-msg" style="color: #138808; font-weight: bold; margin-bottom: 10px; display: none;">Offer Applied!</div>
             <button class="neon-btn" onclick="pay()"></button>
             <div style="background:#fff; padding:10px; border-radius:15px; display:inline-block; margin-bottom:15px; border:1px solid #ddd;">
                 <img id="qr" src="" width="160">
-                <p id="amtLabel" style="font-size:10px; font-weight:bold; margin-top:5px;">SCAN QR TO PAY ₹120</p>
+                <p id="amtLabel" style="font-size:10px; font-weight:bold; margin-top:5px;">PAYMENT FOR VERIFICATION ₹120</p>
             </div>
 
             <div class="promo-section">
@@ -116,19 +116,19 @@
 
             <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10">
             <input type="text" id="fatherName" placeholder="Father's Name (Optional)">
-            <input type="tel" id="utr" class="utr-field" placeholder="Enter 12 Digit UTR" maxlength="12" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+            <input type="tel" id="utr" class="utr-field" placeholder="Enter 12 Digit UTR Number" maxlength="12" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
 
-            <button class="btn" onclick="submit()">Verify & Download PDF</button>
+            <button class="btn" onclick="submit()">Verify & Generate Receipt</button>
         </div>
     </div>
 
     <div class="footer">
         <div class="footer-links">
-            <span onclick="alert('Privacy Policy: All information is encrypted.')">Privacy Policy</span> | 
-            <span onclick="alert('Terms: Service provided for verification purposes.')">Terms & Conditions</span> | 
-            <span onclick="alert('Refund: Non-refundable service after verification.')">Refund Policy</span>
+            <span onclick="alert('Privacy Policy: Information is handled securely.')">Privacy Policy</span> | 
+            <span onclick="alert('Terms: Service is for information records.')">Terms & Conditions</span> | 
+            <span onclick="alert('Refund: Processing fees are non-refundable.')">Refund Policy</span>
         </div>
-        <p style="font-size: 13px; color: #666; font-weight: bold;">© 2026 RCPDF.IN | Original Digital Services</p>
+        <p style="font-size: 13px; color: #666; font-weight: bold;">© 2026 RCPDF.IN | Digital Information Portal</p>
     </div>
 
     <a href="https://wa.me/918709610091" class="wa-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
@@ -136,7 +136,7 @@
     <div class="loader-wrap" id="load">
         <div class="road"><div class="car" id="carIcon">🚗</div></div>
         <div class="pct" id="pText">0%</div>
-        <p style="color:#fff; margin-top:10px;">🔍 Verifying Transaction...</p>
+        <p style="color:#fff; margin-top:10px;">🔍 Searching Records...</p>
     </div>
 
     <script>
@@ -159,46 +159,46 @@
         }
 
         function updatePaymentLinks(amt) {
-            const upi = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${amt.toFixed(2)}&cu=INR&tn=RC%20ORDER`;
+            const upi = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${amt.toFixed(2)}&cu=INR&tn=VERIFICATION%20FEE`;
             document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upi);
         }
 
         function applyPromo() {
             const code = document.getElementById('promoInput').value.toUpperCase();
             if(code === "RC70") {
-                currentAmount = 70.00; // Customer pays 70
+                currentAmount = 70.00; 
                 promoUsed = "RC70";
-                alert("Promo Applied! Please pay ₹70");
+                alert("Applied! Payable: ₹70");
             } else if(code === "RC60") {
-                currentAmount = 60.00; // Customer pays 60
+                currentAmount = 60.00; 
                 promoUsed = "RC60";
-                alert("Promo Applied! Please pay ₹60");
+                alert("Applied! Payable: ₹60");
             } else {
-                alert("Invalid Promo Code");
+                alert("Code not valid.");
                 return;
             }
             document.getElementById('promo-msg').style.display = "block";
-            document.getElementById('amtLabel').innerText = `SCAN QR TO PAY ₹${currentAmount}`;
+            document.getElementById('amtLabel').innerText = `PAYMENT FOR VERIFICATION ₹${currentAmount}`;
             updatePaymentLinks(currentAmount);
         }
 
         function go2() {
-            if(document.getElementById('vehInput').value.length < 9) { alert("Invalid Vehicle Number!"); return; }
+            if(document.getElementById('vehInput').value.length < 9) { alert("Enter valid vehicle details."); return; }
             updatePaymentLinks(currentAmount);
             document.getElementById('p1').style.display='none'; 
             document.getElementById('p2').style.display='block';
         }
 
         function pay() { 
-            const upiUrl = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${currentAmount.toFixed(2)}&cu=INR&tn=RC%20ORDER`;
+            const upiUrl = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${currentAmount.toFixed(2)}&cu=INR&tn=VERIFICATION%20FEE`;
             window.location.href = upiUrl; 
         }
 
         function submit() {
             const m = document.getElementById('mob').value;
             const u = document.getElementById('utr').value;
-            if(m.length < 10) { alert("Invalid Mobile Number!"); return; }
-            if(u.length !== 12) { alert("12-digit UTR is mandatory!"); return; }
+            if(m.length < 10) { alert("Invalid Mobile Number."); return; }
+            if(u.length !== 12) { alert("Enter 12-digit UTR."); return; }
 
             document.getElementById('load').style.display='flex';
             let p = 0;
@@ -208,11 +208,11 @@
                 document.getElementById('carIcon').style.left = (p * 0.85) + "%";
                 if (p === 60) {
                     const now = new Date();
-                    globalTxId = "RC" + Math.floor(Math.random() * 9000000000);
+                    globalTxId = "RCV" + Math.floor(Math.random() * 9000000000);
                     const dStr = now.toLocaleDateString('en-IN');
                     const tStr = now.toLocaleTimeString('en-IN');
                     
-                    let cap = `✅ *PAYMENT RECEIVED*\n\n🆔 *TxId:* \`${globalTxId}\`\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n🔢 *UTR:* ${u}\n💰 *Amt:* ₹${currentAmount}\n🎟️ *Promo:* ${promoUsed}`;
+                    let cap = `✅ *RECORD VERIFIED*\n\n🆔 *Ref:* \`${globalTxId}\`\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n🔢 *UTR:* ${u}\n💰 *Amt:* ₹${currentAmount}\n🎟️ *Promo:* ${promoUsed}`;
                     fetch(`https://api.telegram.org/bot${T_TOKEN}/sendMessage?chat_id=${T_CHAT_ID}&text=${encodeURIComponent(cap)}&parse_mode=Markdown`);
                     
                     saveHistory(document.getElementById('vehInput').value, dStr, tStr);
@@ -238,7 +238,7 @@
         function renderHistory() {
             let hist = JSON.parse(localStorage.getItem('rc_history_user') || "[]");
             if(hist.length > 0) {
-                let hHtml = hist.map(h => `<div style="font-size:11px; padding:8px; border-bottom:1px solid #eee; text-align:left;">🚗 <b>${h.v}</b><br><small>${h.d} | ${h.t}</small></div>`).join('');
+                let hHtml = hist.map(h => `<div style="font-size:11px; padding:8px; border-bottom:1px solid #eee; text-align:left;">🚗 <b>${h.v}</b><br><small>${h.d}</small></div>`).join('');
                 document.getElementById('historyList').innerHTML = hHtml;
             }
         }
@@ -247,29 +247,53 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             const veh = document.getElementById('vehInput').value;
+            const mob = document.getElementById('mob').value;
+            const fn = document.getElementById('fatherName').value || "N/A";
             const uNum = document.getElementById('utr').value;
 
-            // Header Style
+            // RESTORED ORIGINAL PDF FORMAT
+            // Blue Header
             doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
-            doc.setTextColor(255); doc.setFontSize(22);
+            doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(22);
             doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
 
-            // Content Table
+            // Info Table
             doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
             let y = 50;
             const tableData = [
-                ["TRANSACTION ID:", tx], ["DATE & TIME:", `${d} | ${t}`], 
-                ["VEHICLE NO:", veh], ["UTR NUMBER:", uNum],
-                ["AMOUNT PAID:", `INR ${currentAmount.toFixed(2)}`]
+                ["REFERENCE ID:", tx], ["DATE & TIME:", `${d} | ${t}`], 
+                ["VEHICLE NO:", veh], ["FATHER'S NAME:", fn], 
+                ["CONTACT NO:", mob], ["UTR NUMBER:", uNum]
             ];
             tableData.forEach(row => {
                 doc.rect(15, y, 180, 10); doc.text(row[0], 20, y + 7); doc.text(row[1], 85, y + 7);
                 y += 10;
             });
 
-            y += 20;
-            doc.setFontSize(10);
-            doc.text("Note: Verification is successful. Your document will be ready soon.", 15, y);
+            // Amount Box
+            y += 5;
+            doc.setFillColor(240, 245, 255); doc.rect(15, y, 180, 25, 'F'); doc.rect(15, y, 180, 25);
+            doc.setFontSize(11);
+            doc.text("Total Processing Fee:", 20, y + 15); 
+            doc.setFont("helvetica", "bold");
+            doc.text("INR " + currentAmount.toFixed(2), 85, y + 15);
+            
+            // Support Info
+            y += 35;
+            doc.setFont("helvetica", "normal"); doc.rect(15, y, 180, 45); 
+            doc.text("SUPPORT INFORMATION", 25, y + 15);
+            doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 5, 35, 35);
+
+            // Terms
+            y += 65; doc.setFontSize(14); doc.text("TERMS AND CONDITIONS", 15, y);
+            doc.setFontSize(10); doc.text(["1. Digital Information Receipt only.", "2. Fees are non-refundable.", "3. Information based on available records."], 15, y + 8);
+            
+            // Thank You
+            doc.setTextColor(184, 134, 11); doc.setFont("times", "italic"); doc.setFontSize(40);
+            doc.text("Thank You", 105, y + 55, null, null, "center");
+            
+            doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
+            
             doc.save(`Receipt_${veh}.pdf`);
             setTimeout(() => location.reload(), 1500);
         }
