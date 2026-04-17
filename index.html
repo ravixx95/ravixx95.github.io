@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCPDF.IN | Premium Services</title>
+    <title>RCPDF.IN | Premium Vehicle Services</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
@@ -15,9 +15,8 @@
         :root { --neon: #00f3ff; --pink: #ff00c8; --ind-blue: #003399; }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Poppins', sans-serif; }
 
-        /* Full Screen Sky Mountain Background */
         body { 
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
                         url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1350&q=80');
             background-size: cover; background-position: center; background-attachment: fixed;
             min-height: 100vh; color: #fff; overflow-x: hidden;
@@ -26,208 +25,204 @@
         /* Login Screen */
         #loginScreen { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
         .google-btn { 
-            background: #fff; color: #444; padding: 12px 25px; border-radius: 50px; 
+            background: #fff; color: #444; padding: 15px 30px; border-radius: 50px; 
             border: none; font-size: 18px; font-weight: 600; cursor: pointer;
-            display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: 0.3s;
+            display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
         }
-        .google-btn:hover { transform: scale(1.05); }
 
-        /* Main App UI */
-        #mainApp { display: none; padding-top: 70px; }
-        .navbar { position: fixed; top: 0; width: 100%; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
+        /* Main App */
+        #mainApp { display: none; padding-top: 80px; }
+        .navbar { position: fixed; top: 0; width: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.1); }
 
-        .card { background: rgba(255, 255, 255, 0.95); color: #333; margin: 20px auto; width: 92%; max-width: 450px; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; }
-
-        /* Wallet Popup */
-        #promoPopup { 
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
-            background: #fff; color: #333; padding: 25px; border-radius: 20px; z-index: 2000;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5); text-align: center; transition: 0.5s;
-        }
-        #promoPopup.active { transform: translate(-50%, -50%) scale(1); }
+        .card { background: rgba(255, 255, 255, 0.95); color: #333; margin: 20px auto; width: 92%; max-width: 450px; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; }
 
         /* Neon RGB Button */
         .neon-btn {
-            background: #000; color: #fff; border: none; padding: 15px; width: 100%; 
+            background: #000; color: #fff; border: none; padding: 2px; width: 100%; 
             border-radius: 12px; font-weight: 900; cursor: pointer; position: relative;
-            overflow: hidden; text-transform: uppercase; margin: 15px 0;
+            overflow: hidden; margin: 15px 0; display: block;
         }
-        .neon-btn::before {
+        .neon-btn span { background: #000; display: block; padding: 15px; border-radius: 10px; position: relative; z-index: 2; }
+        .neon-btn::after {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);
-            animation: rotate 3s linear infinite; z-index: 0;
+            background: conic-gradient(#ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff, #ff0000);
+            animation: rotate 3s linear infinite; z-index: 1;
         }
-        .neon-btn span { position: relative; z-index: 1; background: #000; display: block; padding: 10px; border-radius: 8px; }
-
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        .btn-blue { background: var(--ind-blue); color: #fff; width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #ddd; text-align: center; font-weight: bold; }
-        
-        #rechargePanel { display: none; }
+        /* Promo Popup */
+        #promoPopup { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
+            background: #fff; color: #333; padding: 30px; border-radius: 20px; z-index: 2000;
+            box-shadow: 0 0 50px rgba(0,0,0,0.6); text-align: center; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #promoPopup.active { transform: translate(-50%, -50%) scale(1); }
+
+        .btn-blue { background: var(--ind-blue); color: #fff; width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; font-size: 16px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd; text-align: center; font-size: 16px; font-weight: bold; }
     </style>
 </head>
-<body onload="checkAuth()">
+<body>
 
     <div id="loginScreen">
-        <h1 style="font-size: 45px; margin-bottom: 10px;">RCPDF.IN</h1>
-        <p style="margin-bottom: 30px; opacity: 0.8;">Premium Vehicle Information Services</p>
+        <h1 style="font-size: 50px; letter-spacing: 2px;">RCPDF.IN</h1>
+        <p style="margin-bottom: 30px; font-weight: 300;">Safe & Secure Vehicle Portal</p>
         <button class="google-btn" onclick="googleLogin()">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="25">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="20">
             Login with Google
         </button>
     </div>
 
+    <div id="promoPopup">
+        <h2 style="color:var(--ind-blue)">Recharge Offer! 🚀</h2>
+        <p style="margin: 15px 0;">Top-up your wallet & get <br><b style="color:var(--pink); font-size:22px;">20% EXTRA BALANCE</b></p>
+        <button class="btn-blue" onclick="openRecharge()">RECHARGE NOW</button>
+        <p onclick="this.parentElement.classList.remove('active')" style="margin-top:15px; cursor:pointer; font-size:12px; color:#888;">Close</p>
+    </div>
+
     <div id="mainApp">
         <div class="navbar">
-            <div onclick="toggleRecharge()"><i class="fas fa-bars"></i></div>
-            <b>RCPDF.IN</b>
-            <div id="balView">Bal: ₹0.00</div>
+            <i class="fas fa-wallet" onclick="openRecharge()"></i>
+            <b style="font-size: 20px;">RCPDF.IN</b>
+            <div id="walletDisplay" style="background:rgba(255,255,255,0.2); padding:5px 12px; border-radius:20px;">₹0.00</div>
         </div>
 
         <div class="card" id="homeCard">
-            <h2 style="color: var(--ind-blue);">Vehicle Info Report</h2>
-            <input type="text" id="vNum" placeholder="CH-01-AB-1234" maxlength="13">
-            <button class="btn-blue" onclick="checkBalanceAndProceed()">CONTINUE</button>
+            <h3 style="margin-bottom:15px; color:var(--ind-blue)">Check Vehicle Info</h3>
+            <input type="text" id="vNum" placeholder="BR 01 AA 0000" maxlength="13">
+            <button class="btn-blue" onclick="startProcess()">GET REPORT</button>
+            <p style="font-size:11px; margin-top:10px; color:#666;">Service Charge: ₹100</p>
         </div>
 
-        <div class="card" id="rechargePanel">
-            <h3>Top-up Wallet</h3>
-            <img id="qrImg" src="" width="180" style="border: 2px solid #ddd; padding: 5px; border-radius: 10px;">
-            <p id="qrAmtText" style="font-weight: bold; color: #444;">Amount: ₹120</p>
+        <div class="card" id="rechargeCard" style="display:none;">
+            <h3>Wallet Recharge</h3>
+            <img id="qrImg" src="" width="200" style="margin:15px 0; border:1px solid #ddd; padding:5px;">
+            <p id="amtTag" style="font-weight:bold;">Payable: ₹120</p>
             
-            <button class="neon-btn" onclick="payNow()"><span>PAY WITH UPI ❤️</span></button>
+            <button class="neon-btn" onclick="payWithUPI()"><span>PAY WITH UPI ❤️</span></button>
             
-            <input type="text" id="promoInp" placeholder="Enter Promo Code">
-            <button onclick="applyPromo()" style="background:none; border:none; color:var(--ind-blue); font-weight:bold; cursor:pointer;">Apply RC20</button>
+            <input type="text" id="promoCode" placeholder="Promo Code (RC20)">
+            <button onclick="applyPromo()" style="color:var(--ind-blue); border:none; background:none; font-weight:bold; cursor:pointer; margin-bottom:10px;">Apply Code</button>
             
-            <input type="tel" id="utrInp" placeholder="Enter 12-Digit UTR Number">
-            <button class="btn-blue" onclick="submitUTR()">SUBMIT & UPDATE</button>
+            <input type="tel" id="utrBox" placeholder="Enter 12-Digit UTR Number">
+            <button class="btn-blue" onclick="submitUTR()">SUBMIT FOR UPDATE</button>
         </div>
 
-        <div class="card" id="detailsPanel" style="display:none;">
-            <h3>User Details</h3>
-            <input type="tel" id="waNum" placeholder="WhatsApp Number">
-            <input type="text" id="fName" placeholder="Father's Name (Optional)">
-            <button class="btn-blue" onclick="completeOrder()">SUBMIT REPORT REQUEST</button>
+        <div class="card" id="detailsCard" style="display:none;">
+            <h3>Final Details</h3>
+            <input type="tel" id="waBox" placeholder="WhatsApp Number">
+            <input type="text" id="fBox" placeholder="Father's Name (Optional)">
+            <button class="btn-blue" onclick="finalOrder()">CONFIRM & DOWNLOAD</button>
         </div>
-    </div>
-
-    <div id="promoPopup">
-        <h2>🔥 Special Offer!</h2>
-        <p>Top-up your wallet now & get <br><b style="color:var(--pink); font-size:20px;">20% EXTRA BALANCE</b></p>
-        <button class="btn-blue" style="margin-top:15px;" onclick="goToRecharge()">TOP-UP NOW</button>
-        <p onclick="closePop()" style="margin-top:10px; font-size:12px; cursor:pointer; color:#888;">Maybe Later</p>
     </div>
 
     <script>
-        // FIREBASE SETUP
-        const firebaseConfig = { apiKey: "YOUR_API_KEY", authDomain: "YOUR_PROJECT.firebaseapp.com", projectId: "YOUR_ID", storageBucket: "YOUR_ID.appspot.com", messagingSenderId: "YOUR_MSG_ID", appId: "YOUR_APP_ID" };
+        // FIREBASE CONFIG (Photo wali details)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBa32Wn9S9d72FzrbB4QjNbNWC0Jxd4vYs",
+            authDomain: "rcpdf-new.firebaseapp.com",
+            projectId: "rcpdf-new",
+            storageBucket: "rcpdf-new.firebasestorage.app",
+            messagingSenderId: "968547234303",
+            appId: "1:968547234303:web:7bb61e32683ee5235137ca"
+        };
+
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
         const T_TOKEN = "8138238341:AAGi4LxV7247hUvs_HoGLSKRhkcEapMCSuA";
         const T_CHAT_ID = "5600045707";
-        let walletBal = 0;
-        let rechargeAmt = 120;
+        let myBalance = 0;
+        let payAmount = 120;
 
         function googleLogin() {
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider);
         }
 
-        function checkAuth() {
-            auth.onAuthStateChanged(user => {
-                if (user) {
-                    document.getElementById('loginScreen').style.display = 'none';
-                    document.getElementById('mainApp').style.display = 'block';
-                    loadUserData(user.uid);
-                    setTimeout(() => { document.getElementById('promoPopup').classList.add('active'); }, 2000);
-                }
-            });
-        }
+        auth.onAuthStateChanged(user => {
+            if(user) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                loadBalance(user.uid);
+                setTimeout(() => document.getElementById('promoPopup').classList.add('active'), 2000);
+            }
+        });
 
-        function loadUserData(uid) {
+        function loadBalance(uid) {
             db.collection("users").doc(uid).onSnapshot(doc => {
-                walletBal = doc.exists ? doc.data().walletBalance : 0;
-                document.getElementById('balView').innerText = `Bal: ₹${walletBal.toFixed(2)}`;
+                myBalance = doc.exists ? doc.data().walletBalance : 0;
+                document.getElementById('walletDisplay').innerText = "₹" + myBalance.toFixed(2);
             });
         }
 
-        function closePop() { document.getElementById('promoPopup').classList.remove('active'); }
-        function goToRecharge() { closePop(); toggleRecharge(); }
-
-        function toggleRecharge() {
-            const panel = document.getElementById('rechargePanel');
-            panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+        function openRecharge() {
+            document.getElementById('promoPopup').classList.remove('active');
+            document.getElementById('homeCard').style.display = 'none';
+            document.getElementById('detailsCard').style.display = 'none';
+            document.getElementById('rechargeCard').style.display = 'block';
             updateQR();
         }
 
         function updateQR() {
-            const upi = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${rechargeAmt}&cu=INR&tn=WalletTopup`;
+            const upi = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${payAmount}&cu=INR`;
             document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upi)}`;
-            document.getElementById('qrAmtText').innerText = `Amount: ₹${rechargeAmt}`;
+            document.getElementById('amtTag').innerText = "Payable: ₹" + payAmount;
         }
 
         function applyPromo() {
-            if(document.getElementById('promoInp').value.toUpperCase() === "RC20") {
-                rechargeAmt = 100; updateQR(); alert("RC20 Applied! Amount: ₹100");
+            if(document.getElementById('promoCode').value.toUpperCase() === "RC20") {
+                payAmount = 100; updateQR(); alert("RC20 Applied! Pay ₹100 only.");
             }
         }
 
-        function payNow() {
-            window.location.href = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${rechargeAmt}&cu=INR&tn=WalletTopup`;
+        function payWithUPI() {
+            window.location.href = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${payAmount}&cu=INR`;
         }
 
         function submitUTR() {
-            const utr = document.getElementById('utrInp').value;
-            if(utr.length !== 12) return alert("Enter 12-digit UTR!");
-            sendTelegram(`💰 *TOPUP REQUEST*\n👤 User: ${auth.currentUser.displayName}\n💵 Amt: ₹${rechargeAmt}\n🔢 UTR: \`${utr}\``);
-            alert("Verification Sent! Balance will update in 10-15 mins.");
+            const utr = document.getElementById('utrBox').value;
+            if(utr.length !== 12) return alert("Enter valid 12-digit UTR!");
+            sendMsg(`💰 *RECHARGE REQUEST*\n👤 User: ${auth.currentUser.displayName}\n💵 Amt: ₹${payAmount}\n🔢 UTR: \`${utr}\``);
+            alert("Request Sent! 10-15 min me balance update ho jayega.");
             location.reload();
         }
 
-        function checkBalanceAndProceed() {
-            if(walletBal < 100) {
-                alert("❌ Balance Is Too Low! Top up your wallet.");
-                toggleRecharge();
+        function startProcess() {
+            if(document.getElementById('vNum').value.length < 5) return alert("Enter Vehicle Number!");
+            if(myBalance < 100) {
+                alert("❌ Balance is too low! Please top-up.");
+                openRecharge();
             } else {
                 document.getElementById('homeCard').style.display = 'none';
-                document.getElementById('detailsPanel').style.display = 'block';
+                document.getElementById('detailsCard').style.display = 'block';
             }
         }
 
-        async function completeOrder() {
-            const wa = document.getElementById('waNum').value;
-            const f = document.getElementById('fName').value || "N/A";
-            if(wa.length < 10) return alert("Enter valid WhatsApp!");
-
+        async function finalOrder() {
+            const wa = document.getElementById('waBox').value;
+            if(wa.length < 10) return alert("Enter WhatsApp Number!");
+            
             const user = auth.currentUser;
-            await db.collection("users").doc(user.uid).update({ walletBalance: walletBal - 100 });
+            await db.collection("users").doc(user.uid).update({ walletBalance: myBalance - 100 });
+            
+            const msg = `🚗 *NEW ORDER*\n👤 Name: ${user.displayName}\n🚗 No: ${document.getElementById('vNum').value}\n📱 WA: ${wa}\n👨 Father: ${document.getElementById('fBox').value || 'N/A'}`;
+            sendMsg(msg);
 
-            if(confirm("Deduct ₹100 & Download Receipt?")) {
-                generatePDF(wa);
-                sendTelegram(`🚗 *NEW VEHICLE ORDER*\n👤 User: ${user.displayName}\n🚗 No: ${document.getElementById('vNum').value}\n📱 WA: ${wa}\n👤 Father: ${f}\n💰 Paid: ₹100`);
-                alert("✅ Success! 10-15 min me aapko jaankari WhatsApp par mil jayegi.");
-                location.reload();
-            }
-        }
-
-        function sendTelegram(msg) {
-            fetch(`https://api.telegram.org/bot${T_TOKEN}/sendMessage?chat_id=${T_CHAT_ID}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`);
-        }
-
-        function generatePDF(wa) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            doc.setFontSize(20); doc.text("RCPDF.IN - ORDER RECEIPT", 105, 20, null, null, "center");
-            doc.setFontSize(12);
-            doc.text(`Vehicle No: ${document.getElementById('vNum').value}`, 20, 40);
-            doc.text(`WhatsApp: ${wa}`, 20, 50);
-            doc.text(`Status: Payment Confirmed (₹100)`, 20, 60);
+            doc.text("RCPDF.IN - ORDER RECEIPT", 10, 20);
+            doc.text("Vehicle No: " + document.getElementById('vNum').value, 10, 30);
+            doc.text("Status: PAID", 10, 40);
             doc.save("Receipt.pdf");
+
+            alert("✅ Success! 10-15 min me details WhatsApp par mil jayengi.");
+            location.reload();
+        }
+
+        function sendMsg(text) {
+            fetch(`https://api.telegram.org/bot${T_TOKEN}/sendMessage?chat_id=${T_CHAT_ID}&text=${encodeURIComponent(text)}&parse_mode=Markdown`);
         }
     </script>
 </body>
