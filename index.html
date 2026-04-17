@@ -3,100 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCPDF.IN - All Services</title>
+    <title>RCPDF.IN - Professional Services</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #ff0066; --ind-blue: #003399; }
-        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
+        :root { --primary: #003399; --accent: #ff0066; --success: #138808; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Poppins', sans-serif; }
         
         body { 
-            background: linear-gradient(180deg, #FF9933 0%, #ffffff 40%, #ffffff 60%, #138808 100%);
+            background: #f4f7fe;
+            background-image: linear-gradient(180deg, #FF9933 0%, #ffffff 40%, #ffffff 60%, #138808 100%);
             background-attachment: fixed;
-            color: #000; overflow-x: hidden; min-height: 100vh;
+            min-height: 100vh;
         }
 
-        .header { position: fixed; top: 0; width: 100%; background: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; height: 60px; border-bottom: 3px solid var(--ind-blue); }
-        .logo { color: var(--ind-blue); font-weight: 900; font-size: 22px; text-decoration: none; position: absolute; left: 50%; transform: translateX(-50%); }
+        .header { position: fixed; top: 0; width: 100%; background: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; border-bottom: 3px solid var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .logo { color: var(--primary); font-weight: 900; font-size: 24px; text-decoration: none; position: absolute; left: 50%; transform: translateX(-50%); }
 
-        .card { margin: 100px auto 20px; width: 92%; max-width: 420px; background: rgba(255, 255, 255, 0.98); padding: 30px 20px; border-radius: 25px; text-align: center; border: 2px solid var(--ind-blue); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .card { margin: 100px auto 30px; width: 92%; max-width: 420px; background: #fff; padding: 30px 20px; border-radius: 30px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #eee; }
 
-        .hsrp-plate { background: #fff; width: 100%; height: 80px; border: 2px solid #000; border-radius: 12px; display: flex; align-items: center; overflow: hidden; margin-bottom: 15px; position: relative; }
-        .ind-strip { background: var(--ind-blue); width: 65px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; z-index: 2; position: absolute; left: 0; }
-        .ind-strip img { width: 30px; margin-bottom: 4px; }
-        
-        #vehInput { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; outline: none; text-transform: uppercase; width: 100%; padding-left: 70px; }
-        #fatherName, .utr-field { width: 100%; padding: 16px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; font-size: 18px; text-align: center; font-weight: bold; }
+        /* Modern Input Styling */
+        .hsrp-plate { background: #fff; width: 100%; height: 75px; border: 2px solid #000; border-radius: 15px; display: flex; align-items: center; overflow: hidden; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .ind-strip { background: var(--primary); width: 55px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; font-size: 10px; font-weight: bold; }
+        .ind-strip img { width: 25px; margin-bottom: 3px; }
+        #vehInput { flex: 1; border: none; font-size: 24px; font-weight: 900; text-align: center; outline: none; text-transform: uppercase; }
 
-        /* Neon RGB Box */
-        .neon-box { position: relative; padding: 4px; border-radius: 15px; background: #000; overflow: hidden; margin-bottom: 20px; }
-        .neon-box::before {
+        input[type="text"], input[type="tel"] { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #eee; margin-bottom: 15px; font-size: 16px; font-weight: 600; transition: 0.3s; }
+        input:focus { border-color: var(--primary); background: #f9faff; }
+
+        /* Promo Box */
+        .promo-container { display: flex; gap: 10px; margin-bottom: 20px; }
+        #promoInput { margin-bottom: 0; flex: 1; border: 2px dashed #ccc; }
+        .apply-btn { background: #333; color: #fff; border: none; padding: 0 20px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .apply-btn:active { transform: scale(0.95); }
+
+        /* Neon RGB for UTR Section */
+        .neon-wrapper { position: relative; padding: 4px; border-radius: 18px; background: #000; overflow: hidden; margin-bottom: 25px; }
+        .neon-wrapper::before {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: conic-gradient(#ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
-            animation: rotateRGB 3s linear infinite;
+            animation: rotateRGB 4s linear infinite;
         }
-        .inner-box { position: relative; background: #fff; border-radius: 11px; padding: 15px; z-index: 1; }
+        .neon-inner { position: relative; background: #fff; border-radius: 15px; padding: 20px; z-index: 1; }
         @keyframes rotateRGB { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--ind-blue); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; }
+        /* Button */
+        .btn { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--primary); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(0, 51, 153, 0.2); }
+        .btn:hover { background: #002673; }
 
+        /* Promo Success Modal */
+        #promoModal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.5); background: #fff; padding: 30px; border-radius: 25px; text-align: center; z-index: 10000; display: none; box-shadow: 0 0 100px rgba(0,0,0,0.5); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #promoModal.show { display: block; transform: translate(-50%, -50%) scale(1); }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; display: none; }
+
+        /* Loaders */
         .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; color: #fff; }
-        .road { width: 85%; height: 4px; background: #333; position: relative; margin-top: 20px; }
-        .car { font-size: 45px; position: absolute; bottom: 0; left: 0; transform: scaleX(-1); }
-        .pct { font-size: 45px; font-weight: 900; color: #ff0066; }
-        .overlay { position: fixed; inset: 0; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; background: rgba(0, 128, 0, 0.98); }
+        .road { width: 80%; height: 4px; background: #333; position: relative; margin-top: 20px; border-radius: 10px; }
+        .car { font-size: 40px; position: absolute; bottom: 0; left: 0; transform: scaleX(-1); }
+        .overlay { position: fixed; inset: 0; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; background: rgba(19, 136, 8, 0.95); color: #fff; }
     </style>
 </head>
 <body>
 
     <div class="header">
+        <i class="fas fa-bars" style="font-size: 20px; color: var(--primary);"></i>
         <b class="logo">RCPDF.IN</b>
-        <button style="background:none; border:none; font-size:24px; cursor:pointer;" onclick="location.reload()">🏠</button>
+        <i class="fas fa-home" style="font-size: 20px; color: var(--primary); cursor:pointer;" onclick="location.reload()"></i>
     </div>
 
-    <div id="successOverlay" class="overlay">
-        <h1 style="font-size: 40px;">😊</h1>
-        <h1 style="font-size: 30px;">Congratulations!</h1>
-        <p>Receipt Download ho rahi hai...</p>
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <div id="promoModal">
+        <div style="font-size: 50px;">🎉</div>
+        <h2 style="color: var(--success); margin: 10px 0;">Promo Applied!</h2>
+        <p id="promoDetail" style="font-weight: bold; color: #555;">Code: RC60</p>
+        <p style="font-size: 14px; margin-top: 10px;">New Price: <span style="color: var(--accent); font-size: 20px;">₹60</span></p>
+        <button class="btn" style="margin-top: 20px; padding: 10px;" onclick="closePromo()">GREAT!</button>
     </div>
 
     <div class="card">
         <div id="p1">
-            <h2 style="margin-bottom:15px; color: var(--ind-blue);">Download Digital RC</h2>
+            <h2 style="margin-bottom: 20px; color: var(--primary);">Digital RC Copy</h2>
             <div class="hsrp-plate">
-                <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg"><span>IND</span></div>
+                <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg"><br>IND</div>
                 <input type="text" id="vehInput" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatV(this)">
             </div>
-            <button class="btn" onclick="go2()">CONTINUE</button>
+            <button class="btn" onclick="go2()">PROCEED <i class="fas fa-chevron-right"></i></button>
         </div>
 
         <div id="p2" style="display:none;">
-            <div style="background:#fff; padding:10px; border-radius:15px; display:inline-block; margin-bottom:15px; border:1px solid #ddd;">
-                <img id="qr" src="" width="160">
-                <p id="amtLabel" style="font-size:12px; font-weight:bold; margin-top:5px;">PAY ₹120</p>
+            <div style="background:#f9faff; padding:15px; border-radius:20px; border:1px solid #eef2ff; margin-bottom:20px;">
+                <img id="qr" src="" width="150" style="border: 5px solid #fff; border-radius: 10px;">
+                <p id="amtLabel" style="font-size:18px; font-weight:900; color: #000; margin-top: 10px;">TOTAL: ₹120</p>
             </div>
 
-            <input type="text" id="promoInput" placeholder="PROMO CODE" style="width:100%; padding:10px; border-radius:10px; border:1px solid #ddd; margin-bottom:10px; text-transform:uppercase;">
-            <button class="btn" style="background:#555; padding:8px; margin-bottom:15px; font-size:14px;" onclick="applyPromo()">APPLY CODE</button>
+            <div class="promo-container">
+                <input type="text" id="promoInput" placeholder="PROMO CODE">
+                <button class="apply-btn" onclick="applyPromo()">APPLY</button>
+            </div>
 
             <input type="text" id="fatherName" placeholder="Father's Name (Optional)">
 
-            <div class="neon-box">
-                <div class="inner-box">
-                    <input type="tel" id="utr" class="utr-field" placeholder="Enter 12 Digit UTR" maxlength="12" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-                    <p style="font-size:11px; margin:5px 0; color:#888;">━━━━━━━━ OR ━━━━━━━━</p>
-                    <input type="file" id="ss" accept="image/*" style="width:100%;">
-                    <p style="font-size:11px; margin-top:5px; color:#555; font-weight:bold;">Upload Payment Screenshot</p>
+            <div class="neon-wrapper">
+                <div class="neon-inner">
+                    <p style="font-size: 13px; font-weight: 900; margin-bottom: 10px;">VERIFY PAYMENT</p>
+                    <input type="tel" id="utr" placeholder="12 Digit UTR Number" maxlength="12" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                    <div style="font-size: 11px; color: #999; margin-bottom: 10px;">-- OR --</div>
+                    <input type="file" id="ss" accept="image/*" style="font-size: 12px; width: 100%;">
                 </div>
             </div>
 
-            <button class="btn" onclick="submit()">Verify & Download Receipt</button>
+            <button class="btn" onclick="submit()">DOWNLOAD PDF <i class="fas fa-download"></i></button>
         </div>
     </div>
 
     <div class="loader-wrap" id="load">
         <div class="road"><div class="car" id="carIcon">🚗</div></div>
-        <div class="pct" id="pText">0%</div>
+        <div id="pText" style="font-size: 30px; font-weight: 900; margin-top: 10px;">0%</div>
+        <p style="margin-top: 10px; font-size: 14px; letter-spacing: 1px;">GENRATING YOUR RECEIPT...</p>
+    </div>
+
+    <div id="successOverlay" class="overlay">
+        <div style="font-size: 60px;">✅</div>
+        <h2 style="margin-top: 15px;">SUCCESSFUL!</h2>
+        <p>Your PDF is downloading...</p>
     </div>
 
     <script>
@@ -117,48 +146,47 @@
         function updateQR(amt) {
             const upi = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${amt.toFixed(2)}&cu=INR&tn=RCORDER`;
             document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upi);
-            document.getElementById('amtLabel').innerText = `PAY ₹${amt}`;
-        }
-
-        function applyPromo() {
-            let code = document.getElementById('promoInput').value.toUpperCase();
-            if (code === "RC60") { currentAmount = 60.00; promoUsed = "RC60"; alert("RC60 Applied!"); updateQR(60); }
-            else { alert("Invalid Code"); }
+            document.getElementById('amtLabel').innerText = `TOTAL: ₹${amt}`;
         }
 
         function go2() {
-            if(document.getElementById('vehInput').value.length < 9) { alert("Invalid Number!"); return; }
+            if(document.getElementById('vehInput').value.length < 9) { alert("Invalid Vehicle No!"); return; }
             updateQR(currentAmount);
             document.getElementById('p1').style.display='none'; 
             document.getElementById('p2').style.display='block';
         }
 
-        function sendToWhatsApp(d, t, tx) {
-            let fn = document.getElementById('fatherName').value || "N/A";
-            let uVal = document.getElementById('utr').value || "N/A";
-            let veh = document.getElementById('vehInput').value;
-            let msg = `*🚀 NEW RC ORDER RECEIVED*\n\n*📦 VEHICLE INFORMATION*\n━━━━━━━━━━━━━━━━━━\n🚗 *Vehicle:* ${veh}\n👤 *Father:* ${fn}\n━━━━━━━━━━━━━━━━━━\n*💳 PAYMENT*\n🆔 *TxId:* ${tx}\n🔢 *UTR:* ${uVal}\n💰 *Amt:* ₹${currentAmount} ✅\n📅 *Date:* ${d} | ${t}\n\n_Please process soon._ 🙏`;
-            window.open(`https://wa.me/${ADMIN_WA}?text=` + encodeURIComponent(msg), '_blank');
+        function applyPromo() {
+            let code = document.getElementById('promoInput').value.toUpperCase();
+            if (code === "RC60") {
+                currentAmount = 60.00;
+                promoUsed = "RC60";
+                document.getElementById('modalOverlay').style.display = "block";
+                document.getElementById('promoModal').classList.add('show');
+                updateQR(60);
+            } else { alert("Invalid Code!"); }
+        }
+
+        function closePromo() {
+            document.getElementById('modalOverlay').style.display = "none";
+            document.getElementById('promoModal').classList.remove('show');
         }
 
         function submit() {
-            const u = document.getElementById('utr').value;
-            const s = document.getElementById('ss').files[0];
-            if(!u && !s) { alert("UTR or Screenshot required!"); return; }
-
+            if(!document.getElementById('utr').value && !document.getElementById('ss').files[0]) {
+                alert("Enter UTR or Upload Screenshot!"); return;
+            }
             document.getElementById('load').style.display='flex';
             let p = 0;
             let iv = setInterval(() => {
                 p += 2;
                 document.getElementById('pText').innerText = p + "%";
-                document.getElementById('carIcon').style.left = (p * 0.85) + "%";
+                document.getElementById('carIcon').style.left = (p * 0.8) + "%";
                 if (p === 60) {
-                    const now = new Date();
                     const txId = "RC" + Math.floor(Math.random() * 9000000);
-                    const dStr = now.toLocaleDateString('en-IN');
-                    const tStr = now.toLocaleTimeString('en-IN');
-                    makePDF(dStr, tStr, txId);
-                    sendToWhatsApp(dStr, tStr, txId);
+                    const now = new Date();
+                    makePDF(now.toLocaleDateString(), now.toLocaleTimeString(), txId);
+                    sendWA(now.toLocaleDateString(), now.toLocaleTimeString(), txId);
                 }
                 if (p >= 100) {
                     clearInterval(iv);
@@ -169,31 +197,29 @@
             }, 80);
         }
 
+        function sendWA(d, t, tx) {
+            let veh = document.getElementById('vehInput').value;
+            let fn = document.getElementById('fatherName').value || "N/A";
+            let uVal = document.getElementById('utr').value || "N/A";
+            let msg = `*🚀 NEW RC ORDER RECEIVED*\n\n🚗 *Vehicle:* ${veh}\n👤 *Father:* ${fn}\n🆔 *TxId:* ${tx}\n🔢 *UTR:* ${uVal}\n💰 *Amt:* ₹${currentAmount}\n🎁 *Promo:* ${promoUsed}\n📅 *Date:* ${d} | ${t}`;
+            window.open(`https://wa.me/${ADMIN_WA}?text=` + encodeURIComponent(msg), '_blank');
+        }
+
         function makePDF(d, t, tx) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            const veh = document.getElementById('vehInput').value;
-            const fn = document.getElementById('fatherName').value || "N/A";
-
-            doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
-            doc.setTextColor(255); doc.setFontSize(20); doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
-
+            doc.setFillColor(0, 51, 153); doc.rect(0, 0, 210, 40, 'F');
+            doc.setTextColor(255); doc.setFontSize(22); doc.text("RCPDF.IN - RECEIPT", 105, 25, null, null, "center");
             doc.setTextColor(0); doc.setFontSize(12);
-            doc.setFont("helvetica", "bold"); doc.text("VEHICLE INFORMATION", 15, 50);
-            
-            // Table Format
-            doc.setFont("helvetica", "normal");
             let y = 60;
-            const rows = [["TRANSACTION ID", tx], ["DATE & TIME", `${d} | ${t}`], ["VEHICLE NO", veh], ["FATHER NAME", fn], ["AMOUNT PAID", "INR " + currentAmount], ["STATUS", "SUCCESSFUL"]];
+            const rows = [["TxID", tx], ["Vehicle", document.getElementById('vehInput').value], ["Date", d + " " + t], ["Amount", "₹" + currentAmount], ["Status", "Success"]];
             rows.forEach(r => {
-                doc.rect(15, y, 80, 10); doc.rect(95, y, 100, 10);
-                doc.text(r[0], 18, y + 7); doc.text(r[1], 98, y + 7);
+                doc.rect(20, y, 60, 10); doc.rect(80, y, 110, 10);
+                doc.text(r[0], 25, y + 7); doc.text(r[1], 85, y + 7);
                 y += 10;
             });
-
-            doc.setFont("helvetica", "bold");
-            doc.text("Thank you for using our service!", 105, y + 20, null, null, "center");
-            doc.save(`Receipt_${veh}.pdf`);
+            doc.text("Thank you for using RCPDF.in!", 105, y + 20, null, null, "center");
+            doc.save(`Receipt_${tx}.pdf`);
         }
     </script>
 </body>
