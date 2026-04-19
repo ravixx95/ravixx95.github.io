@@ -149,8 +149,12 @@
         .legal-list { padding-left: 20px; margin: 10px 0 20px 0; color: #444; font-size: 14px; line-height: 1.6; }
         .legal-list li { margin-bottom: 6px; }
 
-        /* Perfected High-Quality PDF Styling */
-        #pdfRenderBox { display: none; position: absolute; top: -9999px; left: -9999px; }
+        /* FIXED PDF RENDERING BOX */
+        /* Isko hide nahi kiya gaya, bas piche bheja gaya hai opacity 0 ke saath taaki hang na ho */
+        #pdfRenderBox { 
+            position: absolute; top: 0; left: 0; width: 800px; 
+            z-index: -9999; opacity: 0; pointer-events: none; 
+        }
         #pdfArea { 
             width: 800px; padding: 50px; background: #ffffff; 
             position: relative; font-family: Arial, sans-serif; box-sizing: border-box;
@@ -407,9 +411,7 @@
             target.value = formatted;
         });
 
-        // ==========================================
         // MASSIVE DATABASE (ALL BIKES, CARS, 3-WHEELERS)
-        // ==========================================
         const db = {
             Bike: {
                 "Hero": [
@@ -600,6 +602,23 @@
             document.getElementById('qrCode').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiStr)}&color=000000&bgcolor=ffffff`;
         }
 
+        // WhatsApp Redirection Function (Fallback Safe)
+        function sendToWhatsApp(d) {
+            let waText = `*Apex Insurance Request*\n\n`;
+            waText += `*Vehicle:* ${d.vNo}\n*Mobile:* ${d.mNo}\n*Make/Model:* ${d.make} ${d.model}\n*Type:* ${d.iType}\n`;
+            if(d.iType === 'Third Party') {
+                waText += `*Amount:* ₹${d.amt}\n*UTR:* ${d.utr}\n`;
+            } else {
+                waText += `*Docs:* Aadhar Uploaded\n`;
+            }
+
+            setTimeout(() => {
+                document.getElementById('loaderOverlay').style.display = 'none';
+                window.location.href = `https://wa.me/918709610091?text=${encodeURIComponent(waText)}`;
+                nextStep(1); 
+            }, 2000); // 2 Second delay to let user see the tick animation
+        }
+
         function finalSubmit() {
             let form = document.getElementById('mainForm');
             if(!form.checkValidity()) { form.reportValidity(); return; }
@@ -617,6 +636,13 @@
                 amt: finalAmt,
                 utr: document.getElementById('utrCode').value
             };
+
+            // Checking if PDF library loaded
+            if (typeof html2pdf === 'undefined') {
+                console.warn("PDF library not loaded. Triggering safe fallback to WhatsApp.");
+                sendToWhatsApp(d);
+                return;
+            }
 
             document.getElementById('p_vNo').innerText = d.vNo;
             document.getElementById('p_mNo').innerText = d.mNo;
@@ -638,34 +664,23 @@
                 ra.classList.remove('hidden');
             }
 
-            let renderBox = document.getElementById('pdfRenderBox');
-            renderBox.style.display = 'block';
-            
             let element = document.getElementById('pdfArea');
             let opt = {
                 margin: 0,
                 filename: `${d.vNo}_Policy_App.pdf`,
                 image: { type: 'jpeg', quality: 1 },
-                html2canvas: { scale: 2, useCORS: true }, 
+                html2canvas: { scale: 2, useCORS: true, logging: false }, 
                 jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
             };
 
-            html2pdf().set(opt).from(element).save().then(() => {
-                renderBox.style.display = 'none';
-                
-                let waText = `*Apex Insurance Request*\n\n`;
-                waText += `*Vehicle:* ${d.vNo}\n*Mobile:* ${d.mNo}\n*Make/Model:* ${d.make} ${d.model}\n*Type:* ${d.iType}\n`;
-                if(d.iType === 'Third Party') {
-                    waText += `*Amount:* ₹${d.amt}\n*UTR:* ${d.utr}\n`;
-                } else {
-                    waText += `*Docs:* Aadhar Uploaded\n`;
-                }
-
-                setTimeout(() => {
-                    document.getElementById('loaderOverlay').style.display = 'none';
-                    window.location.href = `https://wa.me/918709610091?text=${encodeURIComponent(waText)}`;
-                    nextStep(1); 
-                }, 3000);
+            // Promise with Error Catching
+            html2pdf().set(opt).from(element).save()
+            .then(() => {
+                sendToWhatsApp(d);
+            })
+            .catch(err => {
+                console.error("PDF Engine Error:", err);
+                sendToWhatsApp(d); // Agar error aaye, to bhi whatsapp par chala jaye.
             });
         }
     </script>
