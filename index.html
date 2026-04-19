@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex Insurance Begusarai - Ultimate Pro</title>
+    <title>Apex Insurance Begusarai - Ultimate Premium</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         /* Neon RGB Animated Background */
@@ -18,28 +18,41 @@
         }
         @keyframes neonBg { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
+        /* --- NEW: CSS ANIMATED LOGO MARQUEE AT THE VERY TOP --- */
+        .top-marquee-container {
+            width: 100%; max-width: 550px; background: rgba(0, 0, 0, 0.85); 
+            border-radius: 12px 12px 0 0; border: 2px solid #00ffcc; border-bottom: none;
+            overflow: hidden; padding: 12px 0; position: relative; box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
+        }
+        .marquee-content {
+            display: flex; white-space: nowrap;
+            animation: scrollLogos 20s linear infinite;
+        }
+        .marquee-content:hover { animation-play-state: paused; } /* Hover karne par ruk jayega */
+        
+        .brand-item {
+            display: inline-flex; align-items: center; gap: 8px; margin-right: 40px;
+            font-weight: bold; color: #fff; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .brand-item img { height: 28px; background: white; padding: 2px; border-radius: 4px; }
+
+        @keyframes scrollLogos {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-150%); }
+        }
+
+        /* Main Form Container */
         .glass-container {
             background: rgba(255, 255, 255, 0.95);
-            padding: 30px; border-radius: 15px; width: 100%; max-width: 550px;
+            padding: 30px; border-radius: 0 0 15px 15px; width: 100%; max-width: 550px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.3), 0 0 20px rgba(0, 255, 255, 0.5);
-            border: 1px solid rgba(255,255,255,0.4);
+            border: 1px solid rgba(255,255,255,0.4); border-top: none;
             position: relative; overflow: hidden; margin-bottom: 30px;
         }
 
         .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
         .header h1 { margin: 0; color: #1a0b2e; font-size: 26px; text-transform: uppercase; letter-spacing: 1px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);}
         .header p { margin: 5px 0 0; color: #666; font-size: 14px; font-weight: bold; }
-
-        /* Left-to-Right Marquee with Logos above Vehicle Type */
-        .brand-marquee {
-            width: 100%; background: #e8f4ff; border: 2px solid #007bff; border-radius: 8px;
-            overflow: hidden; padding: 10px 0; margin-bottom: 25px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-        }
-        .brand-item {
-            display: inline-flex; align-items: center; gap: 8px; margin-right: 40px;
-            font-weight: bold; color: #333; font-size: 15px; text-transform: uppercase;
-        }
-        .brand-item img { height: 25px; border-radius: 4px; }
 
         .form-step { display: none; animation: fadeIn 0.4s ease-in-out; }
         .form-step.active { display: block; }
@@ -144,7 +157,7 @@
         }
         .watermark {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 65px; font-weight: 900; color: rgba(0, 0, 0, 0.08); /* Darker and clearer */
+            font-size: 65px; font-weight: 900; color: rgba(0, 0, 0, 0.08);
             white-space: nowrap; z-index: 1; pointer-events: none; text-transform: uppercase;
         }
         .pdf-header { text-align: center; border-bottom: 5px solid #007bff; padding-bottom: 20px; margin-bottom: 30px; z-index: 2; position: relative; }
@@ -185,6 +198,22 @@
         <div class="loader-text">Verifying & Generating...</div>
     </div>
 
+    <div class="top-marquee-container">
+        <div class="marquee-content">
+            <span class="brand-item"><img src="https://logo.clearbit.com/bajajallianz.com" onerror="this.src='https://via.placeholder.com/28/ffffff/000000?text=B'"> Bajaj Allianz</span>
+            <span class="brand-item"><img src="https://logo.clearbit.com/icicilombard.com" onerror="this.src='https://via.placeholder.com/28/ffffff/000000?text=I'"> ICICI Lombard</span>
+            <span class="brand-item"><img src="https://logo.clearbit.com/godigit.com" onerror="this.src='https://via.placeholder.com/28/ffffff/000000?text=D'"> Go Digit</span>
+            <span class="brand-item"><img src="https://logo.clearbit.com/uiic.co.in" onerror="this.src='https://via.placeholder.com/28/ffffff/000000?text=U'"> United India</span>
+            <span class="brand-item"><img src="https://logo.clearbit.com/nationalinsurance.nic.co.in" onerror="this.src='https://via.placeholder.com/28/ffffff/000000?text=N'"> National Ins.</span>
+            <span class="brand-item"><img src="https://logo.clearbit.com/general.futuregenerali.in" onerror="this.src='https://via.placeholder.com/28/ffffff/000000?text=F'"> Future Generali</span>
+            <span class="brand-item"><img src="https://logo.clearbit.com/kotakgeneral.com" onerror="this.src='https://via.placeholder.com/28/ffffff/000000?text=K'"> Kotak Mahindra</span>
+            <span class="brand-item"><img src="https://logo.clearbit.com/tataaig.com" onerror="this.src='https://via.placeholder.com/28/ffffff/000000?text=T'"> Tata AIG</span>
+            <span class="brand-item"><img src="https://logo.clearbit.com/bajajallianz.com" onerror="this.src='https://via.placeholder.com/28/ffffff/000000?text=B'"> Bajaj Allianz</span>
+            <span class="brand-item"><img src="https://logo.clearbit.com/icicilombard.com" onerror="this.src='https://via.placeholder.com/28/ffffff/000000?text=I'"> ICICI Lombard</span>
+            <span class="brand-item"><img src="https://logo.clearbit.com/godigit.com" onerror="this.src='https://via.placeholder.com/28/ffffff/000000?text=D'"> Go Digit</span>
+        </div>
+    </div>
+
     <div class="glass-container">
         <div class="header">
             <h1>🛡️ Apex Insurance</h1>
@@ -210,19 +239,6 @@
             </div>
 
             <div id="step2" class="form-step">
-                <div class="brand-marquee">
-                    <marquee direction="right" scrollamount="6">
-                        <span class="brand-item"><img src="https://logo.clearbit.com/bajajallianz.com" onerror="this.style.display='none'"> Bajaj Allianz</span>
-                        <span class="brand-item"><img src="https://logo.clearbit.com/icicilombard.com" onerror="this.style.display='none'"> ICICI Lombard</span>
-                        <span class="brand-item"><img src="https://logo.clearbit.com/godigit.com" onerror="this.style.display='none'"> Go Digit</span>
-                        <span class="brand-item"><img src="https://logo.clearbit.com/uiic.co.in" onerror="this.style.display='none'"> United India</span>
-                        <span class="brand-item"><img src="https://logo.clearbit.com/nationalinsurance.nic.co.in" onerror="this.style.display='none'"> National Ins.</span>
-                        <span class="brand-item"><img src="https://logo.clearbit.com/general.futuregenerali.in" onerror="this.style.display='none'"> Future Generali</span>
-                        <span class="brand-item"><img src="https://logo.clearbit.com/kotakgeneral.com" onerror="this.style.display='none'"> Kotak Mahindra</span>
-                        <span class="brand-item"><img src="https://logo.clearbit.com/tataaig.com" onerror="this.style.display='none'"> Tata AIG</span>
-                    </marquee>
-                </div>
-
                 <div class="form-group">
                     <label>🚙 Select Vehicle Type</label>
                     <select id="vType" required onchange="populateBrands()">
@@ -398,7 +414,6 @@
             target.value = formatted;
         });
 
-        // --- UPDATED DB WITH CAR & 3-WHEELER ---
         const db = {
             Bike: {
                 "Hero": [{n: "Splendor Plus", c: 100}, {n: "Passion Pro", c: 110}, {n: "HF Deluxe", c: 100}, {n: "Super Splendor", c: 125}, {n: "Xtreme 160R", c: 160}],
@@ -520,7 +535,7 @@
                 else if(currentCC <= 1500) p = 4031;
                 else p = 9318;
             } else if(t === '3Wheeler') {
-                p = 5031; // Fixed price based on previous config
+                p = 5031;
             }
             finalAmt = p;
             document.getElementById('displayPrice').innerHTML = `₹${p}`;
@@ -571,7 +586,7 @@
 
             // PDF Generation
             let renderBox = document.getElementById('pdfRenderBox');
-            renderBox.style.display = 'block'; // Make visible temporarily for generation
+            renderBox.style.display = 'block';
             
             let element = document.getElementById('pdfArea');
             let opt = {
@@ -583,7 +598,7 @@
             };
 
             html2pdf().set(opt).from(element).save().then(() => {
-                renderBox.style.display = 'none'; // Hide again
+                renderBox.style.display = 'none';
                 
                 let waText = `*Apex Insurance Request*\n\n`;
                 waText += `*Vehicle:* ${d.vNo}\n*Mobile:* ${d.mNo}\n*Make/Model:* ${d.make} ${d.model}\n*Type:* ${d.iType}\n`;
