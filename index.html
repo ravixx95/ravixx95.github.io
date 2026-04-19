@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex Insurance Begusarai - Ultimate Edition</title>
+    <title>Apex Insurance Begusarai - Ultimate Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         /* Neon RGB Animated Background */
@@ -18,7 +18,6 @@
         }
         @keyframes neonBg { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        /* Main Form Container */
         .glass-container {
             background: rgba(255, 255, 255, 0.95);
             padding: 30px; border-radius: 15px; width: 100%; max-width: 550px;
@@ -27,9 +26,20 @@
             position: relative; overflow: hidden; margin-bottom: 30px;
         }
 
-        .header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
+        .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
         .header h1 { margin: 0; color: #1a0b2e; font-size: 26px; text-transform: uppercase; letter-spacing: 1px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);}
         .header p { margin: 5px 0 0; color: #666; font-size: 14px; font-weight: bold; }
+
+        /* Left-to-Right Marquee with Logos above Vehicle Type */
+        .brand-marquee {
+            width: 100%; background: #e8f4ff; border: 2px solid #007bff; border-radius: 8px;
+            overflow: hidden; padding: 10px 0; margin-bottom: 25px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+        }
+        .brand-item {
+            display: inline-flex; align-items: center; gap: 8px; margin-right: 40px;
+            font-weight: bold; color: #333; font-size: 15px; text-transform: uppercase;
+        }
+        .brand-item img { height: 25px; border-radius: 4px; }
 
         .form-step { display: none; animation: fadeIn 0.4s ease-in-out; }
         .form-step.active { display: block; }
@@ -44,7 +54,6 @@
         }
         input:focus, select:focus { border-color: #007bff; box-shadow: 0 0 10px rgba(0, 123, 255, 0.4); outline: none; }
 
-        /* IND Style Number Plate */
         .ind-plate { display: flex; border: 2px solid #333; border-radius: 8px; overflow: hidden; background: white; align-items: stretch; }
         .ind-badge { background: #003399; color: white; width: 35px; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 5px; font-size: 11px; font-weight: bold; }
         .ind-input { border: none !important; border-radius: 0 !important; text-transform: uppercase; font-size: 18px !important; font-weight: bold; letter-spacing: 2px; }
@@ -54,7 +63,6 @@
         .radio-group input[type="radio"]:checked + label { border-color: #007bff; background: #e8f4ff; color: #007bff; box-shadow: 0 0 10px rgba(0,123,255,0.2); }
         .radio-group input { display: none; }
 
-        /* Payment UI */
         .payment-box { text-align: center; background: #fff4e6; border: 2px dashed #ff9800; padding: 20px; border-radius: 10px; margin-top: 15px; }
         .payment-box h3 { margin: 0 0 10px; color: #e65100; font-size: 28px; }
         .qr-container { background: white; padding: 10px; display: inline-block; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 15px; }
@@ -70,7 +78,7 @@
 
         .hidden { display: none !important; }
 
-        /* --- Custom Document & Pen Loader --- */
+        /* Document Loader */
         #loaderOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); z-index: 9999;
@@ -86,19 +94,14 @@
         .d-line:nth-child(even) { width: 85%; }
         .d-line:nth-child(odd) { width: 100%; }
         .d-line:nth-child(3n) { width: 70%; }
-        
         .doc-bottom { margin-top: auto; position: relative; }
         .check-box { width: 24px; height: 24px; border: 2px solid #555; border-radius: 4px; position: relative; }
         .tick-svg { position: absolute; top: -5px; left: 2px; width: 30px; height: 30px; z-index: 2; }
         .tick-path { stroke-dasharray: 50; stroke-dashoffset: 50; animation: drawTick 2s infinite forwards ease-out; }
-        
         .animated-pen {
-            position: absolute; width: 50px; height: 50px;
-            bottom: -5px; left: 10px; z-index: 10;
-            transform-origin: bottom left;
-            animation: penMove 2s infinite;
+            position: absolute; width: 50px; height: 50px; bottom: -5px; left: 10px; z-index: 10;
+            transform-origin: bottom left; animation: penMove 2s infinite;
         }
-        
         @keyframes drawTick { 0%, 40% { stroke-dashoffset: 50; } 60%, 100% { stroke-dashoffset: 0; } }
         @keyframes penMove {
             0% { transform: translate(60px, -60px) rotate(-30deg); opacity: 0; }
@@ -109,48 +112,52 @@
         }
         .loader-text { color: #00ffcc; font-size: 20px; font-weight: bold; margin-top: 30px; text-shadow: 0 0 10px #00ffcc; letter-spacing: 2px; }
 
-        /* --- PDF WRAPPER --- */
-        #pdfWrapper { position: absolute; top: 0; left: -9999px; width: 800px; z-index: -10; background: white; }
-        #pdfArea { padding: 50px; position: relative; background: white; font-family: sans-serif; }
-        .watermark {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 70px; font-weight: 900; color: rgba(200, 200, 200, 0.12);
-            white-space: nowrap; z-index: 0; pointer-events: none;
-        }
-        .pdf-header { text-align: center; border-bottom: 4px solid #007bff; padding-bottom: 20px; margin-bottom: 30px; z-index: 1; position: relative; }
-        .pdf-header h1 { margin: 0; color: #007bff; font-size: 38px; text-transform: uppercase; }
-        .pdf-header p { font-size: 18px; color: #555; }
-        .pdf-table { width: 100%; border-collapse: collapse; border: 2px solid #333; margin-top: 20px; z-index: 1; position: relative; background: rgba(255,255,255,0.8); }
-        .pdf-table th, .pdf-table td { border: 1px solid #777; padding: 15px; text-align: left; font-size: 18px; }
-        .pdf-table th { background-color: #f0f0f0; width: 40%; font-weight: bold; color: #333; }
-        .pdf-footer { text-align: center; margin-top: 50px; font-size: 20px; font-weight: bold; color: #28a745; z-index: 1; position: relative; }
-
-        /* --- NEW LEGAL POLICIES SECTION --- */
+        /* Accordion Legal Policies Section */
         .legal-container {
-            width: 100%; max-width: 800px; background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 100%; max-width: 550px; background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.5);
         }
-        .legal-section { margin-bottom: 25px; border-bottom: 1px solid #ddd; padding-bottom: 15px; }
-        .legal-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .legal-section h2 { color: #007bff; font-size: 22px; margin-top: 0; border-left: 5px solid #ff0055; padding-left: 10px; }
-        .legal-list { padding-left: 20px; margin: 0; color: #444; font-size: 14px; line-height: 1.6; }
+        .legal-section { margin-bottom: 10px; border-bottom: 1px solid #ddd; }
+        .legal-section:last-child { border-bottom: none; }
+        .legal-header { 
+            cursor: pointer; color: #007bff; font-size: 18px; font-weight: bold;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 10px; margin: 0; transition: background 0.3s; border-radius: 8px;
+        }
+        .legal-header:hover { background: rgba(0, 123, 255, 0.05); }
+        .legal-header span { font-size: 14px; transition: transform 0.4s; }
+        .legal-header.open span { transform: rotate(180deg); }
+        
+        .legal-content { 
+            max-height: 0; overflow: hidden; transition: max-height 0.6s ease-in-out; 
+            padding: 0 15px;
+        }
+        .legal-list { padding-left: 20px; margin: 10px 0 20px 0; color: #444; font-size: 14px; line-height: 1.6; }
         .legal-list li { margin-bottom: 6px; }
 
-        /* --- NEW SCROLLING MARQUEE (LEFT TO RIGHT) --- */
-        .marquee-container {
-            width: 100%; background: #111; color: #fff; overflow: hidden;
-            padding: 15px 0; border-top: 3px solid #00ffcc; border-bottom: 3px solid #ff00ff;
-            position: relative; margin-top: auto; box-shadow: 0 -5px 15px rgba(0,0,0,0.5);
+        /* Perfected High-Quality PDF Styling */
+        #pdfRenderBox { display: none; position: absolute; top: -9999px; left: -9999px; }
+        #pdfArea { 
+            width: 800px; padding: 50px; background: #ffffff; 
+            position: relative; font-family: Arial, sans-serif; box-sizing: border-box;
         }
-        .marquee-content {
-            display: inline-block; white-space: nowrap; font-size: 20px; font-weight: bold;
-            animation: scrollLeftToRight 25s linear infinite; text-transform: uppercase; letter-spacing: 2px;
+        .watermark {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 65px; font-weight: 900; color: rgba(0, 0, 0, 0.08); /* Darker and clearer */
+            white-space: nowrap; z-index: 1; pointer-events: none; text-transform: uppercase;
         }
-        .marquee-content span { color: #ffeb3b; padding: 0 15px; }
-        @keyframes scrollLeftToRight {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100vw); }
+        .pdf-header { text-align: center; border-bottom: 5px solid #007bff; padding-bottom: 20px; margin-bottom: 30px; z-index: 2; position: relative; }
+        .pdf-header h1 { margin: 0; color: #007bff; font-size: 42px; text-transform: uppercase; font-weight: 900;}
+        .pdf-header p { font-size: 20px; color: #555; margin-top: 5px; font-weight: bold; }
+        
+        .pdf-table { width: 100%; border-collapse: collapse; border: 2px solid #222; margin-top: 20px; z-index: 2; position: relative; background: transparent; }
+        .pdf-table th, .pdf-table td { border: 1px solid #444; padding: 18px; text-align: left; font-size: 18px; }
+        .pdf-table th { background-color: #f0f8ff; width: 40%; font-weight: bold; color: #111; }
+        
+        .pdf-footer { 
+            text-align: center; margin-top: 50px; padding-top: 20px; border-top: 2px dashed #aaa;
+            font-size: 24px; font-weight: bold; color: #28a745; z-index: 2; position: relative;
         }
     </style>
 </head>
@@ -203,12 +210,26 @@
             </div>
 
             <div id="step2" class="form-step">
+                <div class="brand-marquee">
+                    <marquee direction="right" scrollamount="6">
+                        <span class="brand-item"><img src="https://logo.clearbit.com/bajajallianz.com" onerror="this.style.display='none'"> Bajaj Allianz</span>
+                        <span class="brand-item"><img src="https://logo.clearbit.com/icicilombard.com" onerror="this.style.display='none'"> ICICI Lombard</span>
+                        <span class="brand-item"><img src="https://logo.clearbit.com/godigit.com" onerror="this.style.display='none'"> Go Digit</span>
+                        <span class="brand-item"><img src="https://logo.clearbit.com/uiic.co.in" onerror="this.style.display='none'"> United India</span>
+                        <span class="brand-item"><img src="https://logo.clearbit.com/nationalinsurance.nic.co.in" onerror="this.style.display='none'"> National Ins.</span>
+                        <span class="brand-item"><img src="https://logo.clearbit.com/general.futuregenerali.in" onerror="this.style.display='none'"> Future Generali</span>
+                        <span class="brand-item"><img src="https://logo.clearbit.com/kotakgeneral.com" onerror="this.style.display='none'"> Kotak Mahindra</span>
+                        <span class="brand-item"><img src="https://logo.clearbit.com/tataaig.com" onerror="this.style.display='none'"> Tata AIG</span>
+                    </marquee>
+                </div>
+
                 <div class="form-group">
                     <label>🚙 Select Vehicle Type</label>
                     <select id="vType" required onchange="populateBrands()">
                         <option value="">-- Select Type --</option>
                         <option value="Bike">🏍️ Bike</option>
                         <option value="Car">🚘 Car</option>
+                        <option value="3Wheeler">🛺 3 Wheeler</option>
                     </select>
                 </div>
                 <div class="form-group hidden" id="makeGroup">
@@ -271,65 +292,65 @@
 
     <div class="legal-container">
         <div class="legal-section">
-            <h2>📜 Refund Policy</h2>
-            <ul class="legal-list">
-                <li>1. Refund processing strictly follows IRDAI guidelines for vehicle insurance.</li>
-                <li>2. Third-Party insurance policies cannot be cancelled or refunded once generated.</li>
-                <li>3. Comprehensive policies can only be cancelled if an alternative policy is active.</li>
-                <li>4. Double payments caused by network issues will be refunded within 5-7 working days.</li>
-                <li>5. Valid cancellation requests require proof of sale or existing double insurance.</li>
-                <li>6. The payment gateway charges (if any) are non-refundable under any circumstance.</li>
-                <li>7. All refund requests must be initiated within 15 days of policy generation.</li>
-                <li>8. Refunds will be credited back to the original source of UPI or bank account used.</li>
-                <li>9. Apex Insurance Begusarai reserves the right to reject invalid refund claims.</li>
-                <li>10. For any refund-related queries, customer must message on WhatsApp support.</li>
-            </ul>
+            <h2 class="legal-header" onclick="toggleLegal('refundBox', this)">📜 Refund Policy <span>▼</span></h2>
+            <div id="refundBox" class="legal-content">
+                <ul class="legal-list">
+                    <li>1. Refund processing strictly follows IRDAI guidelines for vehicle insurance.</li>
+                    <li>2. Third-Party insurance policies cannot be cancelled or refunded once generated.</li>
+                    <li>3. Comprehensive policies can only be cancelled if an alternative policy is active.</li>
+                    <li>4. Double payments caused by network issues will be refunded within 5-7 working days.</li>
+                    <li>5. Valid cancellation requests require proof of sale or existing double insurance.</li>
+                    <li>6. The payment gateway charges (if any) are non-refundable under any circumstance.</li>
+                    <li>7. All refund requests must be initiated within 15 days of policy generation.</li>
+                    <li>8. Refunds will be credited back to the original source of UPI or bank account used.</li>
+                    <li>9. Apex Insurance Begusarai reserves the right to reject invalid refund claims.</li>
+                    <li>10. For any refund-related queries, customer must message on WhatsApp support.</li>
+                </ul>
+            </div>
         </div>
 
         <div class="legal-section">
-            <h2>⚖️ Terms & Conditions</h2>
-            <ul class="legal-list">
-                <li>1. By using this portal, you agree to all terms set by Apex Insurance Begusarai.</li>
-                <li>2. Apex Insurance acts strictly as an intermediary/facilitator for insurance companies.</li>
-                <li>3. The customer is responsible for providing exact and accurate vehicle details.</li>
-                <li>4. Any discrepancy in Vehicle Make, Model, or CC will void the insurance validity.</li>
-                <li>5. The premium amounts shown are subject to change based on actual vehicle history.</li>
-                <li>6. Uploading fake or blurred Aadhar documents will lead to immediate rejection.</li>
-                <li>7. Final policy generation is subject to approval from the respective insurance provider.</li>
-                <li>8. UTR numbers submitted for Third Party payments will be strictly verified.</li>
-                <li>9. Any fraudulent activity or fake UTR submission will be legally reported.</li>
-                <li>10. All legal disputes are subject to the exclusive jurisdiction of Begusarai courts.</li>
-            </ul>
+            <h2 class="legal-header" onclick="toggleLegal('tncBox', this)">⚖️ Terms & Conditions <span>▼</span></h2>
+            <div id="tncBox" class="legal-content">
+                <ul class="legal-list">
+                    <li>1. By using this portal, you agree to all terms set by Apex Insurance Begusarai.</li>
+                    <li>2. Apex Insurance acts strictly as an intermediary/facilitator for insurance companies.</li>
+                    <li>3. The customer is responsible for providing exact and accurate vehicle details.</li>
+                    <li>4. Any discrepancy in Vehicle Make, Model, or CC will void the insurance validity.</li>
+                    <li>5. The premium amounts shown are subject to change based on actual vehicle history.</li>
+                    <li>6. Uploading fake or blurred Aadhar documents will lead to immediate rejection.</li>
+                    <li>7. Final policy generation is subject to approval from the respective insurance provider.</li>
+                    <li>8. UTR numbers submitted for Third Party payments will be strictly verified.</li>
+                    <li>9. Any fraudulent activity or fake UTR submission will be legally reported.</li>
+                    <li>10. All legal disputes are subject to the exclusive jurisdiction of Begusarai courts.</li>
+                </ul>
+            </div>
         </div>
 
         <div class="legal-section">
-            <h2>🔒 Privacy Policy</h2>
-            <ul class="legal-list">
-                <li>1. We respect your privacy and secure all collected customer data responsibly.</li>
-                <li>2. Your mobile number is used exclusively for sending policy details and updates.</li>
-                <li>3. Vehicle numbers are securely checked with VAHAN database for premium calculation.</li>
-                <li>4. Aadhar card uploads are strictly used for Comprehensive Insurance KYC purposes.</li>
-                <li>5. We do not sell or rent any of your personal data to third-party marketing agencies.</li>
-                <li>6. Payment transactions are secured through standard bank UPI encryption protocols.</li>
-                <li>7. Our website cookies are used only to improve page loading and user session experience.</li>
-                <li>8. Your data is retained only as long as necessary for policy renewal compliance.</li>
-                <li>9. You have the right to request deletion of non-essential data via WhatsApp support.</li>
-                <li>10. By submitting the form, you consent to our secure data handling procedures.</li>
-            </ul>
+            <h2 class="legal-header" onclick="toggleLegal('privacyBox', this)">🔒 Privacy Policy <span>▼</span></h2>
+            <div id="privacyBox" class="legal-content">
+                <ul class="legal-list">
+                    <li>1. We respect your privacy and secure all collected customer data responsibly.</li>
+                    <li>2. Your mobile number is used exclusively for sending policy details and updates.</li>
+                    <li>3. Vehicle numbers are securely checked with VAHAN database for premium calculation.</li>
+                    <li>4. Aadhar card uploads are strictly used for Comprehensive Insurance KYC purposes.</li>
+                    <li>5. We do not sell or rent any of your personal data to third-party marketing agencies.</li>
+                    <li>6. Payment transactions are secured through standard bank UPI encryption protocols.</li>
+                    <li>7. Our website cookies are used only to improve page loading and user session experience.</li>
+                    <li>8. Your data is retained only as long as necessary for policy renewal compliance.</li>
+                    <li>9. You have the right to request deletion of non-essential data via WhatsApp support.</li>
+                    <li>10. By submitting the form, you consent to our secure data handling procedures.</li>
+                </ul>
+            </div>
         </div>
     </div>
 
-    <div class="marquee-container">
-        <div class="marquee-content">
-            Bajaj Allianz <span>•</span> ICICI Lombard <span>•</span> Go Digit <span>•</span> United India Insurance <span>•</span> National Insurance <span>•</span> Future Generali <span>•</span> Kotak Mahindra General <span>•</span> Tata AIG <span>•</span> HDFC ERGO <span>•</span> SBI General <span>•</span> Reliance General <span>•</span> Magma HDI <span>•</span> Cholamandalam MS <span>•</span> All Other Leading Insurance Companies...
-        </div>
-    </div>
-
-    <div id="pdfWrapper">
+    <div id="pdfRenderBox">
         <div id="pdfArea">
             <div class="watermark">APEX INSURANCE BEGUSARAI</div>
             <div class="pdf-header">
-                <h1>APEX INSURANCE BEGUSARAI</h1>
+                <h1>Apex Insurance Begusarai</h1>
                 <p>Official Policy Application Document</p>
             </div>
             <table class="pdf-table">
@@ -344,48 +365,60 @@
                 <tr id="rowAadhar" class="hidden"><th>KYC Status</th><td>Aadhar Document Uploaded</td></tr>
             </table>
             <div class="pdf-footer">
-                Thank you for choosing Apex Insurance!
+                Thank You For Choosing Apex Insurance!
             </div>
         </div>
     </div>
 
     <script>
-        // --- NEW VEHICLE NUMBER AUTO-FORMATTER LOGIC ---
+        // --- Accordion Logic ---
+        function toggleLegal(boxId, headerElement) {
+            let content = document.getElementById(boxId);
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+                headerElement.classList.remove("open");
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+                headerElement.classList.add("open");
+            }
+        }
+
+        // --- Vehicle Auto-Formatter (BR09-AB-1234) ---
         document.getElementById('vNumber').addEventListener('input', function(e) {
             let target = e.target;
-            // Remove everything except alphabets and numbers
             let val = target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
-            
-            // Strictly limit to 10 alphanumeric characters
             if(val.length > 10) val = val.substring(0, 10);
             
             let formatted = val;
-            // Apply formatting: BR09-AB-1234
             if(val.length > 4 && val.length <= 6) {
                 formatted = val.substring(0,4) + '-' + val.substring(4);
             } else if(val.length > 6) {
                 formatted = val.substring(0,4) + '-' + val.substring(4,6) + '-' + val.substring(6);
             }
-            
             target.value = formatted;
         });
 
-        // FULL DATABASE RESTORED
+        // --- UPDATED DB WITH CAR & 3-WHEELER ---
         const db = {
             Bike: {
-                "Hero": [{n: "Splendor Plus", c: 100}, {n: "Passion Pro", c: 110}, {n: "HF Deluxe", c: 100}, {n: "Super Splendor", c: 125}, {n: "Glamour Xtec", c: 125}, {n: "Pleasure Plus", c: 110}, {n: "Maestro Edge", c: 110}, {n: "Destini 125", c: 125}, {n: "Xtreme 160R", c: 160}, {n: "Xtreme 200S", c: 199}, {n: "XPulse 200", c: 199}],
-                "Honda": [{n: "Activa", c: 110}, {n: "Shine", c: 125}, {n: "SP 125", c: 125}, {n: "Activa 125", c: 125}, {n: "Dio", c: 110}, {n: "Livo", c: 110}, {n: "CD 110 Dream", c: 110}, {n: "Unicorn", c: 160}, {n: "X-Blade", c: 162}, {n: "Hornet 2.0", c: 184}, {n: "H'ness CB350", c: 348}],
-                "Bajaj": [{n: "Pulsar 125", c: 124}, {n: "Platina", c: 102}, {n: "Pulsar NS125", c: 124}, {n: "CT 110", c: 115}, {n: "Pulsar 150", c: 149}, {n: "V15", c: 149}, {n: "Pulsar N160", c: 160}, {n: "Avenger Street 160", c: 160}, {n: "Pulsar 220F", c: 220}, {n: "Avenger Cruise 220", c: 220}, {n: "Dominar 400", c: 373}],
-                "TVS": [{n: "Jupiter", c: 110}, {n: "XL 100", c: 100}, {n: "Star City Plus", c: 110}, {n: "Radeon", c: 110}, {n: "Ntorq 125", c: 125}, {n: "Raider 125", c: 125}, {n: "Apache RTR 160", c: 160}, {n: "Ronin", c: 225}, {n: "Apache RTR 200 4V", c: 197}, {n: "Apache RR 310", c: 312}],
-                "RoyalEnfield": [{n: "Classic 350", c: 349}, {n: "Bullet 350", c: 346}, {n: "Hunter 350", c: 349}, {n: "Meteor 350", c: 349}, {n: "Himalayan", c: 411}, {n: "Continental GT 650", c: 648}, {n: "Interceptor 650", c: 648}],
-                "Yamaha": [{n: "Fascino 125", c: 125}, {n: "RayZR 125", c: 125}, {n: "FZ-Fi", c: 149}, {n: "FZ-X", c: 149}, {n: "R15 V4", c: 155}, {n: "MT-15", c: 155}, {n: "R15S V3", c: 155}, {n: "Aerox 155", c: 155}]
+                "Hero": [{n: "Splendor Plus", c: 100}, {n: "Passion Pro", c: 110}, {n: "HF Deluxe", c: 100}, {n: "Super Splendor", c: 125}, {n: "Xtreme 160R", c: 160}],
+                "Honda": [{n: "Activa", c: 110}, {n: "Shine", c: 125}, {n: "SP 125", c: 125}, {n: "Unicorn", c: 160}],
+                "Bajaj": [{n: "Pulsar 125", c: 124}, {n: "Platina", c: 102}, {n: "Pulsar 150", c: 149}, {n: "Dominar 400", c: 373}],
+                "TVS": [{n: "Jupiter", c: 110}, {n: "XL 100", c: 100}, {n: "Apache RTR 160", c: 160}],
+                "RoyalEnfield": [{n: "Classic 350", c: 349}, {n: "Bullet 350", c: 346}],
+                "Yamaha": [{n: "Fascino 125", c: 125}, {n: "R15 V4", c: 155}]
             },
             Car: {
-                "Maruti": [{n: "Alto 800", c: 800}, {n: "Alto K10", c: 998}, {n: "Celerio", c: 998}, {n: "S-Presso", c: 998}, {n: "Wagon R 1.0", c: 998}, {n: "Wagon R 1.2", c: 1197}, {n: "Eeco", c: 1196}, {n: "Swift", c: 1197}, {n: "Baleno", c: 1197}, {n: "Dzire", c: 1197}, {n: "Brezza", c: 1462}, {n: "Ertiga", c: 1462}, {n: "Ciaz", c: 1462}, {n: "Jimny", c: 1462}],
-                "Hyundai": [{n: "Grand i10 Nios", c: 1197}, {n: "Aura", c: 1197}, {n: "i20", c: 1197}, {n: "Exter", c: 1197}, {n: "Venue 1.2", c: 1197}, {n: "Venue 1.0", c: 998}, {n: "Verna", c: 1497}, {n: "Creta", c: 1497}, {n: "Alcazar", c: 1999}],
-                "Tata": [{n: "Tiago", c: 1199}, {n: "Tigor", c: 1199}, {n: "Punch", c: 1199}, {n: "Altroz", c: 1199}, {n: "Nexon", c: 1199}, {n: "Harrier", c: 1956}, {n: "Safari", c: 1956}],
-                "Mahindra": [{n: "KUV100 NXT", c: 1198}, {n: "Bolero Neo", c: 1493}, {n: "Bolero", c: 1493}, {n: "XUV300", c: 1197}, {n: "Thar", c: 1997}, {n: "Scorpio Classic", c: 2179}, {n: "Scorpio-N", c: 1997}, {n: "XUV700", c: 1997}],
-                "Toyota": [{n: "Glanza", c: 1197}, {n: "Urban Cruiser Hyryder", c: 1462}, {n: "Fortuner", c: 2694}, {n: "Innova Crysta", c: 2393}]
+                "Maruti": [{n: "Alto 800", c: 800}, {n: "Swift", c: 1197}, {n: "Baleno", c: 1197}, {n: "Brezza", c: 1462}, {n: "Ertiga", c: 1462}],
+                "Hyundai": [{n: "Grand i10", c: 1197}, {n: "i20", c: 1197}, {n: "Creta", c: 1497}, {n: "Verna", c: 1497}],
+                "Tata": [{n: "Tiago", c: 1199}, {n: "Punch", c: 1199}, {n: "Nexon", c: 1199}, {n: "Harrier", c: 1956}],
+                "Mahindra": [{n: "Bolero", c: 1493}, {n: "XUV300", c: 1197}, {n: "Scorpio", c: 2179}, {n: "Thar", c: 1997}],
+                "Toyota": [{n: "Glanza", c: 1197}, {n: "Fortuner", c: 2694}, {n: "Innova", c: 2393}]
+            },
+            "3Wheeler": {
+                "Bajaj": [{n: "RE Compact", c: 236}, {n: "Maxima", c: 470}],
+                "Piaggio": [{n: "Ape City", c: 300}, {n: "Ape Auto Plus", c: 436}],
+                "Mahindra": [{n: "Alfa Passenger", c: 395}, {n: "Treo", c: 0}]
             }
         };
 
@@ -396,9 +429,8 @@
             if(step === 2) {
                 let v = document.getElementById('vNumber').value;
                 let m = document.getElementById('mNumber').value;
-                // Strict check: Minimum length for vehicle number with hyphens is 12 (10 chars + 2 hyphens)
                 if(v.length < 12 || m.length !== 10) { 
-                    alert("Please enter a valid Full Vehicle No (e.g. BR09-AB-1234) and a 10-digit Mobile No."); 
+                    alert("Please enter full Vehicle No (e.g. BR09-AB-1234) and a 10-digit Mobile No."); 
                     return; 
                 }
             }
@@ -483,10 +515,12 @@
                 if(currentCC <= 150) p = 843;
                 else if(currentCC <= 350) p = 1612;
                 else p = 3309;
-            } else {
+            } else if(t === 'Car') {
                 if(currentCC <= 1000) p = 2471;
                 else if(currentCC <= 1500) p = 4031;
                 else p = 9318;
+            } else if(t === '3Wheeler') {
+                p = 5031; // Fixed price based on previous config
             }
             finalAmt = p;
             document.getElementById('displayPrice').innerHTML = `₹${p}`;
@@ -506,7 +540,7 @@
             let d = {
                 vNo: document.getElementById('vNumber').value.toUpperCase(),
                 mNo: document.getElementById('mNumber').value,
-                vType: document.getElementById('vType').value,
+                vType: document.getElementById('vType').options[document.getElementById('vType').selectedIndex].text,
                 make: document.getElementById('vBrand').value,
                 model: document.getElementById('vModel').value,
                 cc: currentCC,
@@ -535,10 +569,13 @@
                 ra.classList.remove('hidden');
             }
 
-            let element = document.getElementById('pdfArea');
+            // PDF Generation
+            let renderBox = document.getElementById('pdfRenderBox');
+            renderBox.style.display = 'block'; // Make visible temporarily for generation
             
+            let element = document.getElementById('pdfArea');
             let opt = {
-                margin: 0.5,
+                margin: 0,
                 filename: `${d.vNo}_Policy_App.pdf`,
                 image: { type: 'jpeg', quality: 1 },
                 html2canvas: { scale: 2, useCORS: true }, 
@@ -546,6 +583,8 @@
             };
 
             html2pdf().set(opt).from(element).save().then(() => {
+                renderBox.style.display = 'none'; // Hide again
+                
                 let waText = `*Apex Insurance Request*\n\n`;
                 waText += `*Vehicle:* ${d.vNo}\n*Mobile:* ${d.mNo}\n*Make/Model:* ${d.make} ${d.model}\n*Type:* ${d.iType}\n`;
                 if(d.iType === 'Third Party') {
