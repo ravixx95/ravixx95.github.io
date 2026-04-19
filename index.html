@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apex Insurance Begusarai - Pro Edition</title>
+    <title>Apex Insurance Begusarai - Ultimate Edition</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         /* Neon RGB Animated Background */
         body {
-            margin: 0; padding: 20px; min-height: 100vh;
-            display: flex; justify-content: center; align-items: center;
+            margin: 0; padding: 20px 10px; min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(45deg, #ff0055, #0000ff, #00ffcc, #ff00ff);
             background-size: 400% 400%;
@@ -18,12 +18,13 @@
         }
         @keyframes neonBg { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
+        /* Main Form Container */
         .glass-container {
             background: rgba(255, 255, 255, 0.95);
             padding: 30px; border-radius: 15px; width: 100%; max-width: 550px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.3), 0 0 20px rgba(0, 255, 255, 0.5);
             border: 1px solid rgba(255,255,255,0.4);
-            position: relative; overflow: hidden;
+            position: relative; overflow: hidden; margin-bottom: 30px;
         }
 
         .header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
@@ -69,7 +70,7 @@
 
         .hidden { display: none !important; }
 
-        /* --- NEW DOCUMENT & PEN LOADER CSS --- */
+        /* --- Custom Document & Pen Loader --- */
         #loaderOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); z-index: 9999;
@@ -80,14 +81,12 @@
             padding: 15px; position: relative; box-shadow: 0 10px 30px rgba(0,255,255,0.2);
             display: flex; flex-direction: column;
         }
-        /* 10 Dummy Lines */
         .dummy-lines { flex: 1; }
         .d-line { height: 4px; background: #e0e0e0; margin-bottom: 8px; border-radius: 2px; }
         .d-line:nth-child(even) { width: 85%; }
         .d-line:nth-child(odd) { width: 100%; }
         .d-line:nth-child(3n) { width: 70%; }
         
-        /* Checkbox & Pen Animation */
         .doc-bottom { margin-top: auto; position: relative; }
         .check-box { width: 24px; height: 24px; border: 2px solid #555; border-radius: 4px; position: relative; }
         .tick-svg { position: absolute; top: -5px; left: 2px; width: 30px; height: 30px; z-index: 2; }
@@ -108,10 +107,9 @@
             60% { transform: translate(30px, -20px) rotate(-15deg); }
             80%, 100% { transform: translate(80px, -80px) rotate(30deg); opacity: 0; }
         }
-
         .loader-text { color: #00ffcc; font-size: 20px; font-weight: bold; margin-top: 30px; text-shadow: 0 0 10px #00ffcc; letter-spacing: 2px; }
 
-        /* --- PDF FIX: Rendered off-screen securely --- */
+        /* --- PDF WRAPPER --- */
         #pdfWrapper { position: absolute; top: 0; left: -9999px; width: 800px; z-index: -10; background: white; }
         #pdfArea { padding: 50px; position: relative; background: white; font-family: sans-serif; }
         .watermark {
@@ -126,6 +124,34 @@
         .pdf-table th, .pdf-table td { border: 1px solid #777; padding: 15px; text-align: left; font-size: 18px; }
         .pdf-table th { background-color: #f0f0f0; width: 40%; font-weight: bold; color: #333; }
         .pdf-footer { text-align: center; margin-top: 50px; font-size: 20px; font-weight: bold; color: #28a745; z-index: 1; position: relative; }
+
+        /* --- NEW LEGAL POLICIES SECTION --- */
+        .legal-container {
+            width: 100%; max-width: 800px; background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.5);
+        }
+        .legal-section { margin-bottom: 25px; border-bottom: 1px solid #ddd; padding-bottom: 15px; }
+        .legal-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .legal-section h2 { color: #007bff; font-size: 22px; margin-top: 0; border-left: 5px solid #ff0055; padding-left: 10px; }
+        .legal-list { padding-left: 20px; margin: 0; color: #444; font-size: 14px; line-height: 1.6; }
+        .legal-list li { margin-bottom: 6px; }
+
+        /* --- NEW SCROLLING MARQUEE (LEFT TO RIGHT) --- */
+        .marquee-container {
+            width: 100%; background: #111; color: #fff; overflow: hidden;
+            padding: 15px 0; border-top: 3px solid #00ffcc; border-bottom: 3px solid #ff00ff;
+            position: relative; margin-top: auto; box-shadow: 0 -5px 15px rgba(0,0,0,0.5);
+        }
+        .marquee-content {
+            display: inline-block; white-space: nowrap; font-size: 20px; font-weight: bold;
+            animation: scrollLeftToRight 25s linear infinite; text-transform: uppercase; letter-spacing: 2px;
+        }
+        .marquee-content span { color: #ffeb3b; padding: 0 15px; }
+        @keyframes scrollLeftToRight {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100vw); }
+        }
     </style>
 </head>
 <body>
@@ -166,7 +192,7 @@
                         <div class="ind-badge">
                             <span style="color:orange">•</span><span style="color:white">•</span><span style="color:green">•</span>IND
                         </div>
-                        <input type="text" id="vNumber" class="ind-input" placeholder="BR-09-AB-1234" required>
+                        <input type="text" id="vNumber" class="ind-input" placeholder="BR09-AB-1234" required>
                     </div>
                 </div>
                 <div class="form-group">
@@ -243,6 +269,62 @@
         </form>
     </div>
 
+    <div class="legal-container">
+        <div class="legal-section">
+            <h2>📜 Refund Policy</h2>
+            <ul class="legal-list">
+                <li>1. Refund processing strictly follows IRDAI guidelines for vehicle insurance.</li>
+                <li>2. Third-Party insurance policies cannot be cancelled or refunded once generated.</li>
+                <li>3. Comprehensive policies can only be cancelled if an alternative policy is active.</li>
+                <li>4. Double payments caused by network issues will be refunded within 5-7 working days.</li>
+                <li>5. Valid cancellation requests require proof of sale or existing double insurance.</li>
+                <li>6. The payment gateway charges (if any) are non-refundable under any circumstance.</li>
+                <li>7. All refund requests must be initiated within 15 days of policy generation.</li>
+                <li>8. Refunds will be credited back to the original source of UPI or bank account used.</li>
+                <li>9. Apex Insurance Begusarai reserves the right to reject invalid refund claims.</li>
+                <li>10. For any refund-related queries, customer must message on WhatsApp support.</li>
+            </ul>
+        </div>
+
+        <div class="legal-section">
+            <h2>⚖️ Terms & Conditions</h2>
+            <ul class="legal-list">
+                <li>1. By using this portal, you agree to all terms set by Apex Insurance Begusarai.</li>
+                <li>2. Apex Insurance acts strictly as an intermediary/facilitator for insurance companies.</li>
+                <li>3. The customer is responsible for providing exact and accurate vehicle details.</li>
+                <li>4. Any discrepancy in Vehicle Make, Model, or CC will void the insurance validity.</li>
+                <li>5. The premium amounts shown are subject to change based on actual vehicle history.</li>
+                <li>6. Uploading fake or blurred Aadhar documents will lead to immediate rejection.</li>
+                <li>7. Final policy generation is subject to approval from the respective insurance provider.</li>
+                <li>8. UTR numbers submitted for Third Party payments will be strictly verified.</li>
+                <li>9. Any fraudulent activity or fake UTR submission will be legally reported.</li>
+                <li>10. All legal disputes are subject to the exclusive jurisdiction of Begusarai courts.</li>
+            </ul>
+        </div>
+
+        <div class="legal-section">
+            <h2>🔒 Privacy Policy</h2>
+            <ul class="legal-list">
+                <li>1. We respect your privacy and secure all collected customer data responsibly.</li>
+                <li>2. Your mobile number is used exclusively for sending policy details and updates.</li>
+                <li>3. Vehicle numbers are securely checked with VAHAN database for premium calculation.</li>
+                <li>4. Aadhar card uploads are strictly used for Comprehensive Insurance KYC purposes.</li>
+                <li>5. We do not sell or rent any of your personal data to third-party marketing agencies.</li>
+                <li>6. Payment transactions are secured through standard bank UPI encryption protocols.</li>
+                <li>7. Our website cookies are used only to improve page loading and user session experience.</li>
+                <li>8. Your data is retained only as long as necessary for policy renewal compliance.</li>
+                <li>9. You have the right to request deletion of non-essential data via WhatsApp support.</li>
+                <li>10. By submitting the form, you consent to our secure data handling procedures.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="marquee-container">
+        <div class="marquee-content">
+            Bajaj Allianz <span>•</span> ICICI Lombard <span>•</span> Go Digit <span>•</span> United India Insurance <span>•</span> National Insurance <span>•</span> Future Generali <span>•</span> Kotak Mahindra General <span>•</span> Tata AIG <span>•</span> HDFC ERGO <span>•</span> SBI General <span>•</span> Reliance General <span>•</span> Magma HDI <span>•</span> Cholamandalam MS <span>•</span> All Other Leading Insurance Companies...
+        </div>
+    </div>
+
     <div id="pdfWrapper">
         <div id="pdfArea">
             <div class="watermark">APEX INSURANCE BEGUSARAI</div>
@@ -268,6 +350,26 @@
     </div>
 
     <script>
+        // --- NEW VEHICLE NUMBER AUTO-FORMATTER LOGIC ---
+        document.getElementById('vNumber').addEventListener('input', function(e) {
+            let target = e.target;
+            // Remove everything except alphabets and numbers
+            let val = target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+            
+            // Strictly limit to 10 alphanumeric characters
+            if(val.length > 10) val = val.substring(0, 10);
+            
+            let formatted = val;
+            // Apply formatting: BR09-AB-1234
+            if(val.length > 4 && val.length <= 6) {
+                formatted = val.substring(0,4) + '-' + val.substring(4);
+            } else if(val.length > 6) {
+                formatted = val.substring(0,4) + '-' + val.substring(4,6) + '-' + val.substring(6);
+            }
+            
+            target.value = formatted;
+        });
+
         // FULL DATABASE RESTORED
         const db = {
             Bike: {
@@ -294,7 +396,11 @@
             if(step === 2) {
                 let v = document.getElementById('vNumber').value;
                 let m = document.getElementById('mNumber').value;
-                if(v.length < 5 || m.length !== 10) { alert("Please enter valid Vehicle No and 10-digit Mobile No."); return; }
+                // Strict check: Minimum length for vehicle number with hyphens is 12 (10 chars + 2 hyphens)
+                if(v.length < 12 || m.length !== 10) { 
+                    alert("Please enter a valid Full Vehicle No (e.g. BR09-AB-1234) and a 10-digit Mobile No."); 
+                    return; 
+                }
             }
             if(step === 1) { document.getElementById('mainForm').reset(); resetLogic(); }
 
@@ -431,7 +537,6 @@
 
             let element = document.getElementById('pdfArea');
             
-            // PDF Generation using the off-screen rendered element
             let opt = {
                 margin: 0.5,
                 filename: `${d.vNo}_Policy_App.pdf`,
