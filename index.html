@@ -81,7 +81,7 @@
         .qr-container { background: white; padding: 10px; display: inline-block; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 10px; }
         .qr-container img { width: 150px; height: 150px; }
 
-        /* --- 3D UPI BUTTON CSS --- */
+        /* 3D UPI BUTTON */
         .btn-upi {
             display: inline-block;
             background: linear-gradient(to right, #00b09b, #96c93d);
@@ -151,7 +151,7 @@
         .legal-container {
             width: 100%; max-width: 550px; background: rgba(255, 255, 255, 0.95);
             border-radius: 12px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            margin-bottom: 30px; border: 1px solid rgba(255,255,255,0.5);
+            margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.5);
         }
         .legal-section { margin-bottom: 10px; border-bottom: 1px solid #ddd; }
         .legal-section:last-child { border-bottom: none; }
@@ -171,12 +171,21 @@
         .legal-list { padding-left: 20px; margin: 10px 0 20px 0; color: #444; font-size: 14px; line-height: 1.6; }
         .legal-list li { margin-bottom: 6px; }
 
-        /* 100% FIXED PDF RENDER BOX */
+        /* COPYRIGHT FOOTER CSS */
+        .copyright-footer {
+            text-align: center; color: white; margin-top: 15px; margin-bottom: 20px;
+            font-weight: bold; font-size: 14px; letter-spacing: 1px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        }
+
+        /* --- PDF RENDER BOX (Fixed strictly for proper capture) --- */
         #pdfWrapper {
             position: absolute;
-            left: -10000px;
+            right: -9999px; /* Placed out of view, but fully rendered by browser */
             top: 0;
             width: 800px;
+            background: white;
+            z-index: -1;
         }
         #pdfArea { 
             width: 100%; padding: 40px; background: #ffffff; 
@@ -185,7 +194,7 @@
         }
         .watermark {
             position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 70px; font-weight: 900; color: rgba(0, 0, 0, 0.1); 
+            font-size: 70px; font-weight: 900; color: rgba(0, 0, 0, 0.08); 
             white-space: nowrap; z-index: 1; pointer-events: none; text-transform: uppercase;
         }
         .pdf-header { text-align: center; border-bottom: 5px solid #007bff; padding-bottom: 20px; margin-bottom: 30px; z-index: 2; position: relative; }
@@ -223,7 +232,7 @@
                 </svg>
             </div>
         </div>
-        <div class="loader-text">Verifying & Generating...</div>
+        <div class="loader-text">Downloading PDF...</div>
     </div>
 
     <div class="top-marquee-container">
@@ -389,6 +398,10 @@
         </div>
     </div>
 
+    <div class="copyright-footer">
+        &copy; 2026 Apex Insurance Begusarai. All Rights Reserved.
+    </div>
+
     <div id="pdfWrapper">
         <div id="pdfArea">
             <div class="watermark">APEX INSURANCE BEGUSARAI</div>
@@ -438,7 +451,7 @@
             target.value = formatted;
         });
 
-        // MASSIVE FULL DATABASE (ALL VEHICLES PRESERVED)
+        // MASSIVE FULL DATABASE
         const db = {
             Bike: {
                 "Hero": [
@@ -627,38 +640,16 @@
             let msg = `${vNo} TP`;
             let upiStr = `upi://pay?pa=stk-8709610091-1@okbizaxis&pn=Apex%20Insurance&am=${p}&cu=INR&tn=${encodeURIComponent(msg)}`;
             
-            // Set QR
             document.getElementById('qrCode').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiStr)}&color=000000&bgcolor=ffffff`;
-            
-            // Set UPI Button Link
             document.getElementById('upiLinkBtn').href = upiStr;
-        }
-
-        let isRedirecting = false;
-
-        function finishProcess(d) {
-            if (isRedirecting) return;
-            isRedirecting = true;
-            
-            let waText = `*Apex Insurance Request*\n\n`;
-            waText += `*Vehicle:* ${d.vNo}\n*Mobile:* ${d.mNo}\n*Make/Model:* ${d.make} ${d.model}\n*Type:* ${d.iType}\n`;
-            if(d.iType === 'Third Party') {
-                waText += `*Amount:* ₹${d.amt}\n*UTR:* ${d.utr}\n`;
-            } else {
-                waText += `*Docs:* Aadhar Uploaded\n`;
-            }
-
-            document.getElementById('loaderOverlay').style.display = 'none';
-            window.location.href = `https://wa.me/918709610091?text=${encodeURIComponent(waText)}`;
-            nextStep(1); 
         }
 
         function finalSubmit() {
             let form = document.getElementById('mainForm');
             if(!form.checkValidity()) { form.reportValidity(); return; }
 
+            // START LOADER (TIMER REMOVED)
             document.getElementById('loaderOverlay').style.display = 'flex';
-            isRedirecting = false;
 
             let d = {
                 vNo: document.getElementById('vNumber').value.toUpperCase(),
@@ -671,10 +662,6 @@
                 amt: finalAmt,
                 utr: document.getElementById('utrCode').value
             };
-
-            let watchdog = setTimeout(() => {
-                finishProcess(d);
-            }, 5000);
 
             document.getElementById('p_vNo').innerText = d.vNo;
             document.getElementById('p_mNo').innerText = d.mNo;
@@ -696,6 +683,7 @@
                 ra.classList.remove('hidden');
             }
 
+            // PDF CREATION (NO REDIRECT UNTIL PDF IS FULLY DOWNLOADED)
             if (typeof html2pdf !== 'undefined') {
                 let element = document.getElementById('pdfArea');
                 let opt = {
@@ -707,15 +695,25 @@
                 };
 
                 html2pdf().set(opt).from(element).save().then(() => {
-                    clearTimeout(watchdog);
-                    finishProcess(d);
+                    // PDF IS DOWNLOADED SUCCESSFULLY -> NOW REDIRECT TO WHATSAPP
+                    let waText = `*Apex Insurance Request*\n\n`;
+                    waText += `*Vehicle:* ${d.vNo}\n*Mobile:* ${d.mNo}\n*Make/Model:* ${d.make} ${d.model}\n*Type:* ${d.iType}\n`;
+                    if(d.iType === 'Third Party') {
+                        waText += `*Amount:* ₹${d.amt}\n*UTR:* ${d.utr}\n`;
+                    } else {
+                        waText += `*Docs:* Aadhar Uploaded\n`;
+                    }
+
+                    document.getElementById('loaderOverlay').style.display = 'none';
+                    window.location.href = `https://wa.me/918709610091?text=${encodeURIComponent(waText)}`;
+                    nextStep(1); 
                 }).catch(err => {
-                    clearTimeout(watchdog);
-                    finishProcess(d);
+                    alert("PDF Creation Failed. Please check your browser settings or try again.");
+                    document.getElementById('loaderOverlay').style.display = 'none';
                 });
             } else {
-                clearTimeout(watchdog);
-                finishProcess(d);
+                alert("PDF Library could not load. Please check your internet connection.");
+                document.getElementById('loaderOverlay').style.display = 'none';
             }
         }
     </script>
