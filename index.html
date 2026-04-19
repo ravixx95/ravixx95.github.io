@@ -78,8 +78,30 @@
 
         .payment-box { text-align: center; background: #fff4e6; border: 2px dashed #ff9800; padding: 20px; border-radius: 10px; margin-top: 15px; }
         .payment-box h3 { margin: 0 0 10px; color: #e65100; font-size: 28px; }
-        .qr-container { background: white; padding: 10px; display: inline-block; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        .qr-container { background: white; padding: 10px; display: inline-block; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 10px; }
         .qr-container img { width: 150px; height: 150px; }
+
+        /* --- 3D UPI BUTTON CSS --- */
+        .btn-upi {
+            display: inline-block;
+            background: linear-gradient(to right, #00b09b, #96c93d);
+            color: white;
+            padding: 14px 28px;
+            font-size: 17px;
+            font-weight: 900;
+            text-decoration: none;
+            border-radius: 10px;
+            margin: 10px 0 25px 0;
+            box-shadow: 0 8px 0 #008060, 0 15px 20px rgba(0,0,0,0.3);
+            transition: all 0.1s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 80%;
+        }
+        .btn-upi:active {
+            transform: translateY(8px);
+            box-shadow: 0 0 0 #008060, 0 5px 10px rgba(0,0,0,0.3);
+        }
 
         .btn { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; color: white; }
         .btn-next { background: #007bff; }
@@ -149,32 +171,34 @@
         .legal-list { padding-left: 20px; margin: 10px 0 20px 0; color: #444; font-size: 14px; line-height: 1.6; }
         .legal-list li { margin-bottom: 6px; }
 
-        /* FIXED PDF RENDERING BOX */
-        /* Isko hide nahi kiya gaya, bas piche bheja gaya hai opacity 0 ke saath taaki hang na ho */
-        #pdfRenderBox { 
-            position: absolute; top: 0; left: 0; width: 800px; 
-            z-index: -9999; opacity: 0; pointer-events: none; 
+        /* 100% FIXED PDF RENDER BOX */
+        #pdfWrapper {
+            position: absolute;
+            left: -10000px;
+            top: 0;
+            width: 800px;
         }
         #pdfArea { 
-            width: 800px; padding: 50px; background: #ffffff; 
-            position: relative; font-family: Arial, sans-serif; box-sizing: border-box;
+            width: 100%; padding: 40px; background: #ffffff; 
+            font-family: 'Arial', sans-serif; box-sizing: border-box;
+            border: 2px solid #fff;
         }
         .watermark {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 65px; font-weight: 900; color: rgba(0, 0, 0, 0.08);
+            position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 70px; font-weight: 900; color: rgba(0, 0, 0, 0.1); 
             white-space: nowrap; z-index: 1; pointer-events: none; text-transform: uppercase;
         }
         .pdf-header { text-align: center; border-bottom: 5px solid #007bff; padding-bottom: 20px; margin-bottom: 30px; z-index: 2; position: relative; }
-        .pdf-header h1 { margin: 0; color: #007bff; font-size: 42px; text-transform: uppercase; font-weight: 900;}
-        .pdf-header p { font-size: 20px; color: #555; margin-top: 5px; font-weight: bold; }
+        .pdf-header h1 { margin: 0; color: #007bff; font-size: 38px; text-transform: uppercase; font-weight: 900;}
+        .pdf-header p { font-size: 20px; color: #444; margin-top: 5px; font-weight: bold; }
         
         .pdf-table { width: 100%; border-collapse: collapse; border: 2px solid #222; margin-top: 20px; z-index: 2; position: relative; background: transparent; }
-        .pdf-table th, .pdf-table td { border: 1px solid #444; padding: 18px; text-align: left; font-size: 18px; }
+        .pdf-table th, .pdf-table td { border: 1px solid #444; padding: 15px; text-align: left; font-size: 18px; }
         .pdf-table th { background-color: #f0f8ff; width: 40%; font-weight: bold; color: #111; }
         
         .pdf-footer { 
-            text-align: center; margin-top: 50px; padding-top: 20px; border-top: 2px dashed #aaa;
-            font-size: 24px; font-weight: bold; color: #28a745; z-index: 2; position: relative;
+            text-align: center; margin-top: 40px; padding-top: 20px; border-top: 2px dashed #aaa;
+            font-size: 22px; font-weight: bold; color: #28a745; z-index: 2; position: relative;
         }
     </style>
 </head>
@@ -296,6 +320,9 @@
                         <img id="qrCode" src="" alt="Scan to Pay">
                     </div>
                     <p style="margin:0 0 15px; font-size:14px; color:#555;">Scan QR to pay using any UPI app</p>
+                    
+                    <a href="#" id="upiLinkBtn" class="btn-upi">Pay With UPI 📲</a>
+                    
                     <div class="form-group" style="text-align: left;">
                         <label>🧾 Enter 12-Digit UTR No.</label>
                         <input type="text" id="utrCode" placeholder="⌨️ Ex: 123456789012" maxlength="12" minlength="12" pattern="\d{12}" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
@@ -362,7 +389,7 @@
         </div>
     </div>
 
-    <div id="pdfRenderBox">
+    <div id="pdfWrapper">
         <div id="pdfArea">
             <div class="watermark">APEX INSURANCE BEGUSARAI</div>
             <div class="pdf-header">
@@ -411,7 +438,7 @@
             target.value = formatted;
         });
 
-        // MASSIVE DATABASE (ALL BIKES, CARS, 3-WHEELERS)
+        // MASSIVE FULL DATABASE (ALL VEHICLES PRESERVED)
         const db = {
             Bike: {
                 "Hero": [
@@ -599,11 +626,20 @@
             let vNo = document.getElementById('vNumber').value.replace(/\s+/g, '');
             let msg = `${vNo} TP`;
             let upiStr = `upi://pay?pa=stk-8709610091-1@okbizaxis&pn=Apex%20Insurance&am=${p}&cu=INR&tn=${encodeURIComponent(msg)}`;
+            
+            // Set QR
             document.getElementById('qrCode').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiStr)}&color=000000&bgcolor=ffffff`;
+            
+            // Set UPI Button Link
+            document.getElementById('upiLinkBtn').href = upiStr;
         }
 
-        // WhatsApp Redirection Function (Fallback Safe)
-        function sendToWhatsApp(d) {
+        let isRedirecting = false;
+
+        function finishProcess(d) {
+            if (isRedirecting) return;
+            isRedirecting = true;
+            
             let waText = `*Apex Insurance Request*\n\n`;
             waText += `*Vehicle:* ${d.vNo}\n*Mobile:* ${d.mNo}\n*Make/Model:* ${d.make} ${d.model}\n*Type:* ${d.iType}\n`;
             if(d.iType === 'Third Party') {
@@ -612,11 +648,9 @@
                 waText += `*Docs:* Aadhar Uploaded\n`;
             }
 
-            setTimeout(() => {
-                document.getElementById('loaderOverlay').style.display = 'none';
-                window.location.href = `https://wa.me/918709610091?text=${encodeURIComponent(waText)}`;
-                nextStep(1); 
-            }, 2000); // 2 Second delay to let user see the tick animation
+            document.getElementById('loaderOverlay').style.display = 'none';
+            window.location.href = `https://wa.me/918709610091?text=${encodeURIComponent(waText)}`;
+            nextStep(1); 
         }
 
         function finalSubmit() {
@@ -624,6 +658,7 @@
             if(!form.checkValidity()) { form.reportValidity(); return; }
 
             document.getElementById('loaderOverlay').style.display = 'flex';
+            isRedirecting = false;
 
             let d = {
                 vNo: document.getElementById('vNumber').value.toUpperCase(),
@@ -637,12 +672,9 @@
                 utr: document.getElementById('utrCode').value
             };
 
-            // Checking if PDF library loaded
-            if (typeof html2pdf === 'undefined') {
-                console.warn("PDF library not loaded. Triggering safe fallback to WhatsApp.");
-                sendToWhatsApp(d);
-                return;
-            }
+            let watchdog = setTimeout(() => {
+                finishProcess(d);
+            }, 5000);
 
             document.getElementById('p_vNo').innerText = d.vNo;
             document.getElementById('p_mNo').innerText = d.mNo;
@@ -664,24 +696,27 @@
                 ra.classList.remove('hidden');
             }
 
-            let element = document.getElementById('pdfArea');
-            let opt = {
-                margin: 0,
-                filename: `${d.vNo}_Policy_App.pdf`,
-                image: { type: 'jpeg', quality: 1 },
-                html2canvas: { scale: 2, useCORS: true, logging: false }, 
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-            };
+            if (typeof html2pdf !== 'undefined') {
+                let element = document.getElementById('pdfArea');
+                let opt = {
+                    margin: 0,
+                    filename: `${d.vNo}_Policy_App.pdf`,
+                    image: { type: 'jpeg', quality: 1 },
+                    html2canvas: { scale: 2, useCORS: true, logging: false }, 
+                    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                };
 
-            // Promise with Error Catching
-            html2pdf().set(opt).from(element).save()
-            .then(() => {
-                sendToWhatsApp(d);
-            })
-            .catch(err => {
-                console.error("PDF Engine Error:", err);
-                sendToWhatsApp(d); // Agar error aaye, to bhi whatsapp par chala jaye.
-            });
+                html2pdf().set(opt).from(element).save().then(() => {
+                    clearTimeout(watchdog);
+                    finishProcess(d);
+                }).catch(err => {
+                    clearTimeout(watchdog);
+                    finishProcess(d);
+                });
+            } else {
+                clearTimeout(watchdog);
+                finishProcess(d);
+            }
         }
     </script>
 </body>
