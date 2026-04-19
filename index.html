@@ -3,124 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Apex Insurance Begusarai - Ultimate Pro</title>
+    <title>Apex Insurance Begusarai - Total Premium</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        /* Neon RGB Animated Background */
-        body {
-            margin: 0; padding: 10px; min-height: 100vh;
-            display: flex; flex-direction: column; align-items: center;
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(45deg, #ff0055, #0000ff, #00ffcc, #ff00ff);
-            background-size: 400% 400%;
-            animation: neonBg 15s ease infinite;
-            color: #333;
-        }
-        @keyframes neonBg { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        :root { --blue: #0046ad; --neon: #00ffcc; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; padding: 10px; background: #0f0c29; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
 
-        /* Top Marquee with Logos */
-        .top-marquee {
-            width: 100%; max-width: 500px; background: rgba(0, 0, 0, 0.85); 
-            border-radius: 12px 12px 0 0; border: 2px solid #00ffcc;
-            overflow: hidden; padding: 10px 0;
-        }
-        .marquee-content { display: flex; white-space: nowrap; animation: scrollLogos 20s linear infinite; }
-        .brand-item { display: inline-flex; align-items: center; gap: 8px; margin-right: 30px; color: #fff; font-weight: bold; font-size: 14px; }
-        .brand-item img { height: 22px; background: white; padding: 2px; border-radius: 3px; }
-        @keyframes scrollLogos { 0% { transform: translateX(100%); } 100% { transform: translateX(-200%); } }
+        /* Smooth Top Marquee */
+        .top-marquee { width: 100%; max-width: 500px; background: #000; border: 2px solid var(--neon); border-radius: 12px 12px 0 0; overflow: hidden; padding: 10px 0; }
+        .marquee-track { display: flex; white-space: nowrap; animation: scroll 20s linear infinite; }
+        .brand { color: white; margin-right: 35px; font-weight: bold; font-size: 14px; }
+        @keyframes scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-200%); } }
 
-        /* Main Form Card */
-        .glass-container {
-            background: rgba(255, 255, 255, 0.98);
-            padding: 25px; border-radius: 0 0 15px 15px; width: 100%; max-width: 500px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5); border: 2px solid #00ffcc; border-top: none;
-        }
-        .header h1 { text-align: center; color: #0046ad; margin: 0 0 15px; text-transform: uppercase; font-size: 24px; }
+        /* Main Card */
+        .card { width: 100%; max-width: 500px; background: #fff; padding: 20px; border-radius: 0 0 12px 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.6); border: 2px solid var(--neon); border-top:none; }
+        .header h1 { color: var(--blue); text-align: center; margin: 0 0 20px; font-size: 26px; text-transform: uppercase; }
 
         .step { display: none; }
-        .step.active { display: block; animation: slideUp 0.3s; }
+        .step.active { display: block; animation: slideUp 0.3s ease-out; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        label { display: block; font-weight: bold; margin: 12px 0 5px; color: #444; font-size: 14px; }
-        input, select { width: 100%; padding: 12px; border: 2px solid #ccc; border-radius: 8px; font-size: 16px; }
+        label { display: block; font-weight: bold; margin: 15px 0 5px; color: #444; }
+        input, select { width: 100%; padding: 14px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; }
 
-        /* IND Plate */
         .ind-plate { display: flex; border: 3px solid #333; border-radius: 8px; overflow: hidden; background: #fff; }
-        .ind-badge { background: #003399; color: white; padding: 0 8px; display: flex; align-items: center; font-size: 10px; font-weight: bold; }
-        .v-num { border: none !important; font-weight: 900; font-size: 20px !important; text-transform: uppercase; text-align: center; letter-spacing: 1px; }
+        .ind-side { background: #003399; color: white; padding: 0 8px; display: flex; align-items: center; font-weight: bold; font-size: 11px; }
+        .v-num { border: none !important; font-weight: 900; font-size: 22px !important; text-transform: uppercase; text-align: center; letter-spacing: 1px; }
 
-        /* Payment UI */
-        .pay-box { background: #fdf2e9; border: 2px dashed #e67e22; border-radius: 12px; padding: 15px; text-align: center; margin-top: 15px; }
-        .qr-frame { width: 160px; height: 160px; background: #fff; padding: 5px; border: 1px solid #ddd; margin: 10px auto; }
+        #warning { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #e74c3c; color: white; padding: 15px; border-radius: 10px; display: none; z-index: 10001; width: 90%; max-width: 350px; text-align: center; border-bottom: 4px solid #c0392b; }
+
+        .btn-go { width: 100%; background: var(--blue); color: white; border: none; padding: 16px; border-radius: 8px; font-weight: bold; margin-top: 20px; cursor: pointer; font-size: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        
+        .pay-box { background: #fdf2e9; border: 2px dashed #e67e22; border-radius: 12px; padding: 20px; text-align: center; margin-top: 15px; }
+        .qr-frame { width: 180px; height: 180px; background: #fff; border: 1px solid #ddd; margin: 10px auto; padding: 5px; }
+        
+        /* 3D UPI Button */
         .btn-upi { 
-            display: block; background: #27ae60; color: white; padding: 14px; border-radius: 10px; text-decoration: none; 
-            font-weight: 900; box-shadow: 0 5px 0 #1e8449; transition: 0.1s;
+            display: inline-block; background: #27ae60; color: white; padding: 15px; border-radius: 10px; text-decoration: none; font-weight: 900; margin: 10px 0; 
+            box-shadow: 0 6px 0 #1e8449; width: 90%; transition: 0.1s;
         }
-        .btn-upi:active { transform: translateY(4px); box-shadow: 0 1px 0 #1e8449; }
+        .btn-upi:active { transform: translateY(4px); box-shadow: 0 2px 0 #1e8449; }
 
-        .btn-go { width: 100%; background: #0046ad; color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; margin-top: 15px; cursor: pointer; font-size: 17px; }
-
-        /* Center Loader */
-        #loaderOverlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10000;
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-        }
-        .loader-box { width: 120px; height: 160px; background: #fff; border-radius: 8px; padding: 15px; position: relative; }
+        #loader { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .loader-box { width: 120px; height: 150px; background: #fff; border-radius: 8px; position: relative; padding: 10px; }
         .ln { height: 4px; background: #eee; margin-bottom: 10px; }
-        .tick-svg { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 50px; }
+        .tick-svg { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 50px; height: 50px; }
 
-        /* Legal Accordion */
         .legal-container { width: 100%; max-width: 500px; background: #fff; border-radius: 12px; margin-top: 20px; border: 1px solid #ddd; }
-        .legal-head { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; font-weight: bold; color: #0046ad; display: flex; justify-content: space-between; }
+        .legal-head { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; font-weight: bold; color: var(--blue); display: flex; justify-content: space-between; }
         .legal-body { max-height: 0; overflow: hidden; transition: 0.4s; padding: 0 15px; font-size: 13px; }
 
-        /* Copyright */
-        .copy { color: white; margin: 20px; font-size: 12px; font-weight: bold; text-shadow: 1px 1px 2px #000; }
+        .copy-footer { color: #fff; font-size: 12px; margin-top: 20px; text-align: center; font-weight: bold; }
 
-        /* PDF Area (image_1.png style) */
-        #pdfWrapper { position: absolute; left: -10000px; top: 0; width: 800px; background: #fff; }
-        .pdf-header { background: #0046ad; color: #fff; padding: 30px; text-align: center; font-size: 26px; font-weight: bold; }
-        .pdf-body { padding: 40px; position: relative; border: 1px solid #eee; }
-        .pdf-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .pdf-table th, .pdf-table td { border: 1px solid #ccc; padding: 15px; text-align: left; font-size: 16px; }
-        .pdf-table th { background: #f8f9fa; width: 40%; }
-        .wm { position: absolute; top: 40%; left: 5%; font-size: 55px; color: rgba(0,0,0,0.05); transform: rotate(-45deg); font-weight: 900; white-space: nowrap; }
+        /* PDF Area (True Hidden) */
+        #pdfOutput { position: fixed; left: -9999px; width: 800px; background: #fff; }
     </style>
 </head>
 <body>
 
-    <div id="loaderOverlay">
-        <div class="loader-box"><div class="ln"></div><div class="ln"></div><div class="ln"></div><svg class="tick-svg" viewBox="0 0 52 52"><path fill="none" stroke="#28a745" stroke-width="6" stroke-dasharray="100" stroke-dashoffset="100" d="M14.1 27.2l7.1 7.2 16.7-16.8"><animate attributeName="stroke-dashoffset" to="0" dur="1s" fill="freeze" repeatCount="indefinite"/></path></svg></div>
-        <p style="color:#00ffcc; margin-top:20px; font-weight:bold;">SAVING RECEIPT...</p>
+    <div id="warning">⚠️ <b>Warning!</b> Expire date याद नहीं है तो NCB 0% हो जाएगा और Inspection अनिवार्य होगी।</div>
+
+    <div id="loader">
+        <div class="loader-box">
+            <div class="ln"></div><div class="ln"></div><div class="ln"></div><div class="ln" style="width:60%"></div>
+            <svg class="tick-svg" viewBox="0 0 52 52">
+                <path fill="none" stroke="#28a745" stroke-width="6" stroke-dasharray="100" stroke-dashoffset="100" d="M14.1 27.2l7.1 7.2 16.7-16.8">
+                    <animate attributeName="stroke-dashoffset" to="0" dur="1s" fill="freeze" />
+                </path>
+            </svg>
+        </div>
+        <p style="color:var(--neon); margin-top:20px; font-weight:bold; letter-spacing: 1px;">DOWNLOADING RECEIPT...</p>
     </div>
 
     <div class="top-marquee">
-        <div class="marquee-content">
-            <span class="brand-item">🛡️ BAJAJ ALLIANZ</span><span class="brand-item">🛡️ ICICI LOMBARD</span><span class="brand-item">🛡️ GO DIGIT</span><span class="brand-item">🛡️ YAMAHA</span><span class="brand-item">🛡️ SUZUKI</span><span class="brand-item">🛡️ TATA AIG</span><span class="brand-item">🛡️ KIA</span>
+        <div class="marquee-track">
+            <span class="brand">🛡️ BAJAJ</span><span class="brand">🛡️ ICICI</span><span class="brand">🛡️ GO DIGIT</span><span class="brand">🛡️ TATA AIG</span><span class="brand">🛡️ ROYAL ENFIELD</span><span class="brand">🛡️ MARUTI SUZUKI</span><span class="brand">🛡️ YAMAHA</span><span class="brand">🛡️ SUZUKI</span>
         </div>
     </div>
 
-    <div class="glass-container">
+    <div class="card">
         <div class="header"><h1>Apex Insurance</h1></div>
         <form id="mainForm">
             <div id="step1" class="step active">
                 <label>🚗 Vehicle Number</label>
-                <div class="ind-plate"><div class="ind-badge">IND</div><input type="text" id="vNo" class="v-num" placeholder="BR09-AB-1234" required></div>
-                <label>📱 Mobile Number</label><input type="tel" id="mobile" maxlength="10" placeholder="Customer Mobile" required>
-                <label>📅 Expiry Date</label><input type="date" id="expDate">
-                <label style="background:#fff3f3; padding:10px; border-radius:8px; border:1px solid #ffcccc; cursor:pointer;">
-                    <input type="checkbox" id="forget" style="width:18px;"> <span>Expiry date याद नहीं है (NCB 0%)</span>
-                </label>
-                <button type="button" class="btn-go" onclick="move(2)">Next ➔</button>
+                <div class="ind-plate"><div class="ind-side">IND</div><input type="text" id="vNo" class="v-num" placeholder="BR09-AB-1234" required></div>
+                <label>📱 Mobile Number</label><input type="tel" id="mobile" maxlength="10" placeholder="10 Digit Number" required>
+                <label>📅 Previous Expiry Date</label><input type="date" id="expDate">
+                <div style="margin-top:10px; background:#fff1f1; padding:10px; border-radius:8px; border:1px solid #ffcccc; display:flex; align-items:center; gap:10px; cursor:pointer;" onclick="toggleExp()">
+                    <input type="checkbox" id="forget" style="width:18px; height:18px;"> <span style="font-size:13px; font-weight:bold;">Expiry date याद नहीं है</span>
+                </div>
+                <button type="button" class="btn-go" onclick="move(2)">Next Step ➔</button>
             </div>
 
             <div id="step2" class="step">
                 <label>🚙 Vehicle Type</label>
                 <select id="vType" onchange="loadBrands()"><option value="">-- Select --</option><option value="Bike">🏍️ Bike</option><option value="Car">🚘 Car</option><option value="3Wheeler">🛺 3 Wheeler</option></select>
                 <div id="brandDiv" style="display:none"><label>🏢 Brand</label><select id="brand" onchange="loadModels()"></select></div>
-                <div id="modelDiv" style="display:none"><label>⚙️ Model & Variant</label><select id="model" onchange="showType()"></select></div>
+                <div id="modelDiv" style="display:none"><label>⚙️ Model & Variant</label><select id="model" onchange="showChoice()"></select></div>
                 <div id="typeDiv" style="display:none"><label>🛡️ Insurance Type</label><select id="ins" onchange="handleFlow()"><option value="">-- Select --</option><option value="Comprehensive">Comprehensive</option><option value="Third Party">Third Party</option></select></div>
-                <button type="button" class="btn-go" id="btn3" style="display:none" onclick="move(3)">Continue ➔</button>
+                <button type="button" id="btn3" class="btn-go" style="display:none" onclick="move(3)">Continue ➔</button>
                 <button type="button" class="btn-go" style="background:#666" onclick="move(1)">Back</button>
             </div>
 
@@ -132,62 +114,84 @@
                         <div class="qr-frame"><img id="qr" style="width:100%;"></div>
                         <a href="#" id="upi" class="btn-upi">Pay with UPI 📲</a>
                         <label style="text-align:left; margin-top:10px;">🧾 Enter 12-Digit UTR No.</label>
-                        <input type="text" id="utr" maxlength="12">
+                        <input type="text" id="utr" maxlength="12" placeholder="Ex: 312821318844">
                     </div>
                 </div>
-                <div id="comView" style="display:none"><div style="background:#eef6ff; padding:15px; border-radius:8px;"><label>🪪 Upload Aadhar (Front & Back)</label><input type="file" class="form-group"><input type="file"></div></div>
-                <button type="button" class="btn-go" style="background:#27ae60;" onclick="finishProcess()">✅ Submit & Download Receipt</button>
+                <div id="comView" style="display:none"><div style="background:#eef6ff; padding:15px; border-radius:8px;"><label>🪪 Upload RC/Aadhar (Front & Back)</label><input type="file" class="form-group"><input type="file"></div></div>
+                <button type="button" class="btn-go" style="background:#27ae60;" onclick="finish()">✅ Submit & Download Receipt</button>
             </div>
         </form>
     </div>
 
     <div class="legal-container">
         <div class="legal-head" onclick="tgl('r')">📜 Refund Policy <span>▼</span></div>
-        <div id="r" class="legal-body"><p>1. TP policies non-refundable. 2. Refunds only for double payment within 7 days. (Full 10 points assumed)</p></div>
+        <div id="r" class="legal-body"><p>1. TP policies are non-refundable. 2. Refunds within 7 days for double payments. (10 Points applied...)</p></div>
         <div class="legal-head" onclick="tgl('t')">⚖️ Terms & Conditions <span>▼</span></div>
-        <div id="t" class="legal-body"><p>1. User must provide correct data. 2. Legal issues at Begusarai court. (Full 10 points assumed)</p></div>
+        <div id="t" class="legal-body"><p>1. User must provide correct data. 2. Legal issues at Begusarai court. (10 Points applied...)</p></div>
     </div>
+    <div class="copy-footer">© 2026 Apex Insurance Begusarai. All Rights Reserved.</div>
 
-    <div class="copy">© 2026 Apex Insurance Begusarai. All Rights Reserved.</div>
-
-    <div id="pdfWrapper">
-        <div class="pdf-header">APEX INSURANCE - PAYMENT RECEIPT</div>
-        <div class="pdf-body">
-            <div class="wm">APEX INSURANCE BEGUSARAI</div>
-            <table class="pdf-table">
-                <tr><th>Vehicle No</th><td id="res1"></td></tr>
-                <tr><th>Model</th><td id="res2"></td></tr>
-                <tr><th>Expiry Info</th><td id="res3"></td></tr>
-                <tr><th>Insurance Type</th><td id="res4"></td></tr>
-                <tr><th>UTR No</th><td id="res5"></td></tr>
-                <tr><th>Total Premium</th><td id="res6" style="color:blue; font-weight:bold;"></td></tr>
+    <div id="pdfOutput">
+        <div style="background: #0046ad; color: #ffffff; padding: 40px 20px; text-align: center; font-size: 32px; font-weight: bold; border-bottom: 5px solid #002e73;">
+            APEX INSURANCE - PAYMENT RECEIPT
+        </div>
+        <div style="padding: 40px; position: relative; border: 2px solid #0046ad; background: #ffffff; min-height: 800px;">
+            <div style="position: absolute; top: 40%; left: 0; width: 100%; text-align: center; font-size: 60px; color: rgba(0,0,0,0.06); transform: rotate(-40deg); font-weight: 900; z-index: 0; pointer-events: none;">
+                APEX INSURANCE BEGUSARAI
+            </div>
+            
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px; z-index: 1; position: relative;">
+                <tr><th style="border: 1px solid #ddd; padding: 15px; text-align: left; background: #f8f9fa; font-size: 18px; width: 40%;">REFERENCE ID</th><td style="border: 1px solid #ddd; padding: 15px; font-size: 18px;">RCV6912421443</td></tr>
+                <tr><th style="border: 1px solid #ddd; padding: 15px; text-align: left; background: #f8f9fa; font-size: 18px;">VEHICLE NO</th><td id="res1" style="border: 1px solid #ddd; padding: 15px; font-size: 18px; font-weight: bold;"></td></tr>
+                <tr><th style="border: 1px solid #ddd; padding: 15px; text-align: left; background: #f8f9fa; font-size: 18px;">EXPIRY DATE</th><td id="res2" style="border: 1px solid #ddd; padding: 15px; font-size: 18px;"></td></tr>
+                <tr><th style="border: 1px solid #ddd; padding: 15px; text-align: left; background: #f8f9fa; font-size: 18px;">NCB BONUS</th><td id="res6" style="border: 1px solid #ddd; padding: 15px; font-size: 18px;"></td></tr>
+                <tr><th style="border: 1px solid #ddd; padding: 15px; text-align: left; background: #f8f9fa; font-size: 18px;">VEHICLE MODEL</th><td id="res3" style="border: 1px solid #ddd; padding: 15px; font-size: 18px;"></td></tr>
+                <tr><th style="border: 1px solid #ddd; padding: 15px; text-align: left; background: #f8f9fa; font-size: 18px;">INSURANCE TYPE</th><td id="res4" style="border: 1px solid #ddd; padding: 15px; font-size: 18px;"></td></tr>
+                <tr><th style="border: 1px solid #ddd; padding: 15px; text-align: left; background: #f8f9fa; font-size: 18px;">UTR NUMBER</th><td id="res5" style="border: 1px solid #ddd; padding: 15px; font-size: 18px; color: #d35400; font-weight: bold;"></td></tr>
+                <tr><th style="border: 1px solid #ddd; padding: 15px; text-align: left; background: #e8f4ff; font-size: 20px; font-weight: bold;">TOTAL PREMIUM</th><td id="res7" style="border: 1px solid #ddd; padding: 15px; font-size: 22px; color: #0046ad; font-weight: bold;"></td></tr>
             </table>
-            <div style="text-align:center; margin-top:50px; font-style:italic; font-size:24px; color:#d4af37;">Thank You</div>
+
+            <div style="text-align: center; margin-top: 80px; z-index: 1; position: relative;">
+                <div style="color: #d4af37; font-size: 36px; font-style: italic; font-family: 'Times New Roman'; font-weight: bold;">Thank You</div>
+                <div style="font-size: 14px; margin-top: 15px; color: #666; font-weight: bold;">© 2026 Apex Insurance Begusarai. All Rights Reserved.</div>
+            </div>
         </div>
     </div>
 
     <script>
         const db = {
             Bike: {
-                "Hero": ["Splendor+", "Passion Pro", "Glamour", "Xpulse 200"], "Honda": ["Activa 6G", "Shine 125", "SP 125", "Unicorn"],
-                "Yamaha": ["R15 V4", "MT-15", "FZ-S FI", "Fascino"], "Suzuki": ["Access 125", "Burgman", "Gixxer SF"],
-                "Bajaj": ["Pulsar 150", "Pulsar NS200", "Platina"], "TVS": ["Apache 160", "Jupiter", "Raider"], "Royal Enfield": ["Classic 350", "Hunter 350"], "KTM": ["Duke 200", "RC 390"]
+                "Royal Enfield": ["Classic 350", "Bullet 350", "Hunter 350", "Meteor 350", "Himalayan 452", "Continental GT 650", "Interceptor 650", "Super Meteor 650", "Shotgun 650"],
+                "Hero": ["Splendor+", "Splendor Xtec", "HF Deluxe", "Passion Pro", "Glamour", "Super Splendor", "Xpulse 200", "Xtreme 160R", "Destini 125", "Zoom 110"],
+                "Honda": ["Activa 6G", "Activa 125", "Dio 125", "Shine 100", "Shine 125", "SP 125", "SP 160", "Unicorn 160", "Hornet 2.0", "CB350", "CB350RS"],
+                "Bajaj": ["Pulsar 150", "Pulsar 125", "Pulsar NS200", "Pulsar N160", "Pulsar 220F", "Platina 100", "Avenger 160", "Dominar 400"],
+                "TVS": ["Apache RTR 160", "Apache 200", "Jupiter 125", "Ntorq 125", "Raider 124", "XL100", "Ronin"],
+                "Yamaha": ["R15 V4", "MT-15 V2", "FZ-S V4", "FZ-X", "Fascino 125", "RayZR 125", "Aerox 155"],
+                "Suzuki": ["Access 125", "Burgman Street", "Gixxer SF 150", "Gixxer 250", "V-Strom SX", "Hayabusa"],
+                "KTM": ["Duke 200", "Duke 250", "Duke 390", "RC 200", "RC 390", "Adventure 390"]
             },
             Car: {
-                "Maruti": ["Alto K10", "Swift", "Brezza", "Ertiga"], "Hyundai": ["i20", "Creta", "Venue", "Verna"],
-                "Tata": ["Punch", "Nexon", "Harrier"], "Mahindra": ["Bolero", "Scorpio-N", "Thar"], "Kia": ["Seltos", "Sonet"], "Toyota": ["Innova", "Fortuner"]
+                "Maruti": ["Alto 800", "Alto K10", "Swift", "Dzire", "WagonR", "Celerio", "S-Presso", "Brezza", "Ertiga", "XL6", "Eeco", "Baleno", "Ignis", "Grand Vitara", "Jimny", "Fronx", "Ciaz", "Invicto"],
+                "Hyundai": ["i10 Nios", "i20", "Creta", "Venue", "Verna", "Alcazar", "Exter", "Tucson"],
+                "Tata": ["Tiago", "Tigor", "Altroz", "Punch", "Nexon", "Harrier", "Safari"],
+                "Mahindra": ["Bolero", "Bolero Neo", "Scorpio Classic", "Scorpio-N", "Thar", "XUV700", "XUV300", "Marazzo"],
+                "Kia": ["Sonet", "Seltos", "Carens", "EV6"],
+                "Toyota": ["Glanza", "Urban Cruiser", "Innova Crysta", "Innova Hycross", "Fortuner", "Hilux"],
+                "MG": ["Astor", "Hector", "Gloster", "ZS EV"]
             },
-            "3Wheeler": { "Bajaj": ["RE Auto", "Maxima"], "Piaggio": ["Ape City", "Ape DX"] }
+            "3Wheeler": { "Bajaj": ["RE Compact", "Maxima Z", "Maxima C"], "Piaggio": ["Ape City", "Ape DX", "Ape Xtra"] }
         };
 
-        function move(s) { document.querySelectorAll('.step').forEach(e => e.classList.remove('active')); document.getElementById('step'+s).classList.add('active'); }
-        function tgl(id) { let b = document.getElementById(id); b.style.maxHeight = b.style.maxHeight ? null : "100px"; }
+        function toggleExp() { if(document.getElementById('forget').checked) { let w = document.getElementById('warning'); w.style.display = 'block'; setTimeout(() => w.style.display = 'none', 5000); } }
         
         document.getElementById('vNo').addEventListener('input', e => {
             let v = e.target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
             if(v.length > 10) v = v.substring(0,10);
             e.target.value = v.length > 6 ? v.substring(0,4)+'-'+v.substring(4,6)+'-'+v.substring(6) : (v.length > 4 ? v.substring(0,4)+'-'+v.substring(4) : v);
         });
+
+        function move(s) { document.querySelectorAll('.step').forEach(e => e.classList.remove('active')); document.getElementById('step'+s).classList.add('active'); }
+        function tgl(id) { let b = document.getElementById(id); b.style.maxHeight = b.style.maxHeight ? null : "200px"; }
 
         function loadBrands() {
             let t = document.getElementById('vType').value, b = document.getElementById('brand');
@@ -201,31 +205,45 @@
             db[t][br].forEach(o => m.add(new Option(o, o)));
         }
 
-        function showType() { document.getElementById('typeDiv').style.display = 'block'; }
+        function showChoice() { document.getElementById('typeDiv').style.display = 'block'; }
         function handleFlow() { let t = document.getElementById('ins').value; document.getElementById('btn3').style.display = 'block'; document.getElementById('tpView').style.display = (t === "Third Party") ? "block" : "none"; document.getElementById('comView').style.display = (t === "Comprehensive") ? "block" : "none"; if(t === "Third Party") calc(); }
 
         function calc() {
-            let vt = document.getElementById('vType').value, p = (vt === "Bike") ? 843 : (vt === "Car" ? 2471 : 5031);
+            let vt = document.getElementById('vType').value, p = (vt === "Bike") ? 843 : (vt === "Car") ? 2471 : 5031;
             document.getElementById('finalAmt').innerText = "₹" + p;
-            let upi = `upi://pay?pa=stk-8709610091-1@okbizaxis&am=${p}&tn=${document.getElementById('vNo').value}`;
+            let upi = `upi://pay?pa=stk-8709610091-1@okbizaxis&am=${p}&tn=${document.getElementById('vNo').value}-TP`;
             document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=160x160&data="+encodeURIComponent(upi);
             document.getElementById('upi').href = upi;
         }
 
-        function finishProcess() {
+        function finish() {
             let v = document.getElementById('vNo').value, m = document.getElementById('mobile').value;
-            document.getElementById('loaderOverlay').style.display = 'flex';
-            document.getElementById('res1').innerText = v; document.getElementById('res2').innerText = document.getElementById('model').value;
-            document.getElementById('res3').innerText = document.getElementById('forget').checked ? "NCB 0%" : document.getElementById('expDate').value;
-            document.getElementById('res4').innerText = document.getElementById('ins').value;
-            document.getElementById('res5').innerText = document.getElementById('utr').value || "N/A";
-            document.getElementById('res6').innerText = document.getElementById('finalAmt').innerText;
+            let mod = document.getElementById('model').value, t = document.getElementById('ins').value;
+            let f = document.getElementById('forget').checked, utr = document.getElementById('utr').value;
 
-            html2pdf().set({margin:0, filename:v+'.pdf', image:{type:'jpeg', quality:1.0}, html2canvas:{scale:2}, jsPDF:{unit:'in', format:'letter'}}).from(document.getElementById('pdfWrapper')).save().then(() => {
+            document.getElementById('loader').style.display = 'flex';
+            
+            document.getElementById('res1').innerText = v;
+            document.getElementById('res2').innerText = f ? "Expired / Yaad Nahi" : document.getElementById('expDate').value;
+            document.getElementById('res3').innerText = mod;
+            document.getElementById('res4').innerText = t;
+            document.getElementById('res5').innerText = utr || "NOT CONFIRMED";
+            document.getElementById('res6').innerText = f ? "0%" : "20%";
+            document.getElementById('res7').innerText = document.getElementById('finalAmt').innerText;
+
+            const element = document.getElementById('pdfOutput');
+            html2pdf().set({
+                margin: 0,
+                filename: v + '.pdf',
+                image: { type: 'jpeg', quality: 1.0 },
+                html2canvas: { scale: 3, useCORS: true, letterRendering: true },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            }).from(element).save().then(() => {
                 setTimeout(() => {
-                    let wa = `*🛡️ APEX INSURANCE 🛡️*\n\n🚗 *Vehicle:* ${v}\n📱 *Mobile:* ${m}\n⚙️ *Model:* ${document.getElementById('model').value}\n🛡️ *Type:* ${document.getElementById('ins').value}\n🧾 *UTR:* ${document.getElementById('utr').value || "N/A"}`;
+                    let wa = `*🛡️ APEX INSURANCE REPORT 🛡️*\n\n🚗 *Vehicle:* ${v}\n📱 *Mobile:* ${m}\n⚙️ *Model:* ${mod}\n🛡️ *Type:* ${t}\n📅 *Expiry:* ${document.getElementById('res2').innerText}\n💰 *NCB:* ${document.getElementById('res6').innerText}\n🧾 *UTR:* ${utr || "N/A"}`;
                     window.location.href = "https://wa.me/918709610091?text=" + encodeURIComponent(wa);
-                }, 1500);
+                    document.getElementById('loader').style.display = 'none';
+                }, 2000);
             });
         }
     </script>
