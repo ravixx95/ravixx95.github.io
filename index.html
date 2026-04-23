@@ -104,42 +104,42 @@
         const T_CHAT_ID = "5600045707";
         let curPol = ""; let curCat = ""; let curAmt = 0; let txId = "";
 
-        // SARE MODELS AND COMPANIES WITH CC
         const insData = {
             bike: {
-                brands: ["Yamaha", "Honda", "Hero", "Royal Enfield", "TVS", "Suzuki", "KTM", "Bajaj"],
+                brands: ["Bajaj", "Yamaha", "Honda", "Hero", "Royal Enfield", "TVS", "Suzuki", "KTM"],
                 models: {
-                    "Yamaha": [{n:"MT-15 (155cc)",p:1612},{n:"R15 V4 (155cc)",p:1612},{n:"FZ-S (149cc)",p:843},{n:"Fascino (125cc)",p:843}],
-                    "Honda": [{n:"Activa 6G (110cc)",p:843},{n:"Shine (125cc)",p:843},{n:"Unicorn (162cc)",p:1612},{n:"Hornet 2.0 (184cc)",p:1612}],
-                    "Hero": [{n:"Splendor Plus (97cc)",p:843},{n:"HF Deluxe (97cc)",p:843},{n:"Passion Pro (113cc)",p:843},{n:"Xpulse 200 (199cc)",p:1612}],
-                    "Royal Enfield": [{n:"Classic 350 (349cc)",p:1612},{n:"Bullet 350 (349cc)",p:1612},{n:"Hunter 350 (349cc)",p:1612},{n:"Himalayan (411cc)",p:3309},{n:"Continental GT (648cc)",p:3309}],
-                    "TVS": [{n:"Apache RTR 160",p:1612},{n:"Apache RTR 200",p:1612},{n:"Jupiter (110cc)",p:843},{n:"Ntorq (125cc)",p:843}],
-                    "KTM": [{n:"Duke 200",p:1612},{n:"Duke 250",p:1612},{n:"Duke 390",p:3309},{n:"RC 390",p:3309}],
-                    "Bajaj": [{n:"Pulsar 125",p:843},{n:"Pulsar 150",p:843},{n:"Pulsar NS200",p:1612},{n:"Dominar 400",p:3309}]
+                    "Bajaj": [{n:"Platina 100/110 (102cc)",p:843},{n:"CT 100 / CT 110 (115cc)",p:843},{n:"Pulsar 125/150",p:843},{n:"Pulsar NS200 / RS200",p:1612},{n:"Dominar 400",p:3309}],
+                    "Yamaha": [{n:"MT-15 (155cc)",p:1612},{n:"R15 V3/V4 (155cc)",p:1612},{n:"FZ-S / FZ-X (149cc)",p:843},{n:"Fascino / RayZR (125cc)",p:843}],
+                    "Honda": [{n:"Activa 6G / 125",p:843},{n:"Shine / SP 125",p:843},{n:"Unicorn 160",p:1612},{n:"CB350 H'ness",p:1612}],
+                    "Hero": [{n:"Splendor Plus / iSmart",p:843},{n:"HF Deluxe / Dawn",p:843},{n:"Glamour / Passion Pro",p:843},{n:"Xpulse 200 / Hunk",p:1612}],
+                    "Royal Enfield": [{n:"Classic 350 / Bullet",p:1612},{n:"Hunter 350",p:1612},{n:"Meteor 350",p:1612},{n:"Himalayan 411/450",p:3309},{n:"Interceptor 650",p:3309}],
+                    "TVS": [{n:"Jupiter 110/125",p:843},{n:"Apache RTR 160/180",p:1612},{n:"Apache RTR 200",p:1612},{n:"Raider 125",p:843}],
+                    "Suzuki": [{n:"Access 125 / Burgman",p:843},{n:"Gixxer 150",p:843},{n:"Hayabusa (1300cc)",p:3309}],
+                    "KTM": [{n:"Duke 200 / RC 200",p:1612},{n:"Duke 250",p:1612},{n:"Duke 390 / RC 390",p:3309}]
                 }
             },
             car: {
                 brands: ["Maruti Suzuki", "Hyundai", "Tata Motors", "Mahindra", "Toyota", "Kia"],
                 models: {
-                    "Maruti Suzuki": [{n:"Alto K10 (998cc)",p:2471},{n:"WagonR (1.0L)",p:2471},{n:"Swift (1197cc)",p:4031},{n:"Dzire (1197cc)",p:4031},{n:"Ertiga (1462cc)",p:4031}],
-                    "Hyundai": [{n:"Grand i10 Nios",p:4031},{n:"Venue (1.2L)",p:4031},{n:"Creta (1.5L)",p:4031}],
-                    "Tata Motors": [{n:"Tiago (1.2L)",p:4031},{n:"Nexon (1.2L/1.5L)",p:4031},{n:"Harrier (1956cc)",p:9318}],
-                    "Mahindra": [{n:"Bolero (1493cc)",p:4031},{n:"Scorpio-N (2198cc)",p:9318},{n:"Thar (2184cc)",p:9318}],
-                    "Toyota": [{n:"Glanza (1197cc)",p:4031},{n:"Innova Hycross (1987cc)",p:9318},{n:"Fortuner (2755cc)",p:9318}]
+                    "Maruti Suzuki": [{n:"Alto 800/K10 (0-1000cc)",p:2471},{n:"Swift / Dzire (1.2L)",p:4031},{n:"Ertiga (1.5L)",p:4031},{n:"Grand Vitara (1.5L)",p:4031}],
+                    "Hyundai": [{n:"Santro / Eon (<1000cc)",p:2471},{n:"i20 / Venue (1.2L)",p:4031},{n:"Creta / Alcazar (1.5L)",p:4031}],
+                    "Tata Motors": [{n:"Tiago / Punch (<1200cc)",p:4031},{n:"Nexon / Altroz (1.2L/1.5L)",p:4031},{n:"Harrier / Safari (2.0L)",p:9318}],
+                    "Mahindra": [{n:"Bolero / Neo (1.5L)",p:4031},{n:"XUV 300/700",p:9318},{n:"Scorpio-N / Classic",p:9318},{n:"Thar (2.2L)",p:9318}],
+                    "Toyota": [{n:"Glanza / Rumion",p:4031},{n:"Innova Crysta/Hycross",p:9318},{n:"Fortuner (2.8L)",p:9318}]
                 }
             },
             truck: {
                 brands: ["Tata", "Ashok Leyland", "Mahindra", "Eicher"],
                 models: {
-                    "Tata": [{n:"Ace Gold (Pickup)",p:17975},{n:"Intra V30",p:17975},{n:"Signa 2821 (Truck)",p:39551}],
-                    "Ashok Leyland": [{n:"Dost Plus (Pickup)",p:17975},{n:"Bada Dost",p:17975}]
+                    "Tata": [{n:"Ace Gold / Intra (<7500kg)",p:17975},{n:"407 Gold / 709",p:26048},{n:"Signa 2821 / 4825",p:39551}],
+                    "Ashok Leyland": [{n:"Dost Plus / Bada Dost",p:17975},{n:"Ecomet (7500-12000kg)",p:26048}]
                 }
             },
             tempo: {
                 brands: ["Bajaj", "Piaggio", "Mahindra"],
                 models: {
-                    "Bajaj": [{n:"RE Auto (3 Wheeler)",p:5031},{n:"Maxima C (Cargo)",p:5031}],
-                    "Piaggio": [{n:"Ape City",p:5031}]
+                    "Bajaj": [{n:"RE Auto 3 Wheeler",p:5031},{n:"Maxima Z (Passenger)",p:5031}],
+                    "Piaggio": [{n:"Ape City / DX / Xtra",p:5031}]
                 }
             }
         };
@@ -189,7 +189,7 @@
         function showPrice() { curAmt = document.getElementById('modelList').value; document.getElementById('priceText').innerText = "Normal Price: ₹" + curAmt; }
 
         function startInsPay() {
-            if(!curAmt) return alert("Please select model first");
+            if(!curAmt) return alert("Pehle Model Select Karein!");
             document.getElementById('ins-flow').style.display='none'; document.getElementById('main-card').style.display='block';
             document.getElementById('p1').style.display='none'; document.getElementById('p2').style.display='block';
             const upi = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${curAmt}&cu=INR&tn=INSURANCE`;
@@ -197,7 +197,7 @@
         }
 
         function submit() {
-            if(document.getElementById('utr').value.length < 12) return alert("12 Digit UTR!");
+            if(document.getElementById('utr').value.length < 12) return alert("12 Digit UTR Bhariye!");
             document.getElementById('load').style.display='flex';
             let p = 0;
             let iv = setInterval(() => {
@@ -223,7 +223,8 @@
             doc.setTextColor(255); doc.setFontSize(22); doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
             doc.setTextColor(0); doc.setFontSize(12);
             let y = 50;
-            const rows = [["REF ID:", txId], ["VEHICLE NO:", document.getElementById('vehInput').value || document.getElementById('insVeh').value], ["AMOUNT:", "INR " + curAmt], ["UTR:", document.getElementById('utr').value]];
+            const vNo = document.getElementById('vehInput').value || document.getElementById('insVeh').value;
+            const rows = [["REF ID:", txId], ["VEHICLE NO:", vNo], ["AMOUNT:", "INR " + curAmt], ["UTR:", document.getElementById('utr').value]];
             rows.forEach(r => { doc.rect(15, y, 180, 10); doc.text(r[0], 20, y+7); doc.text(r[1], 85, y+7); y+=10; });
             doc.save("Receipt.pdf"); location.reload();
         }
