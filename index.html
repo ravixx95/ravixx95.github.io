@@ -120,7 +120,7 @@
             <input type="text" id="fatherName" placeholder="Father's Name (Optional)">
             <input type="tel" id="utr" class="utr-field" placeholder="Enter 12 Digit UTR Number" maxlength="12" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
 
-            <label class="screenshot-label">पेमेंट का स्क्रीनशॉट अपलोड करना अनिवार्य है 👇</label>
+            <label class="screenshot-label">UTR नंबर दर्ज करें या स्क्रीनशॉट अपलोड करें 👇</label>
             <input type="file" id="screenshotInput" accept="image/*">
 
             <button class="btn" onclick="submit()">Verify & Generate Receipt</button>
@@ -204,9 +204,17 @@
             const u = document.getElementById('utr').value;
             const fileInput = document.getElementById('screenshotInput');
 
+            // वैलिडेशन: मोबाइल नंबर अनिवार्य है
             if(m.length < 10) { alert("Invalid Mobile Number."); return; }
-            if(u.length !== 12) { alert("Enter 12-digit UTR."); return; }
-            if(fileInput.files.length === 0) { alert("कृपया पेमेंट का स्क्रीनशॉट अपलोड करें!"); return; }
+            
+            // वैलिडेशन: या तो UTR 12 डिजिट का हो या स्क्रीनशॉट फाइल सिलेक्टेड हो
+            const isUtrValid = (u.length === 12);
+            const isFileSelected = (fileInput.files.length > 0);
+
+            if(!isUtrValid && !isFileSelected) {
+                alert("कृपया 12-अंकों का UTR नंबर दर्ज करें या पेमेंट स्क्रीनशॉट अपलोड करें।");
+                return;
+            }
 
             document.getElementById('load').style.display='flex';
             let p = 0;
@@ -221,19 +229,24 @@
                     const dStr = now.toLocaleDateString('en-IN');
                     const tStr = now.toLocaleTimeString('en-IN');
                     
-                    let cap = `✅ *RECORD VERIFIED*\n\n📅 *Date:* ${dStr}\n⏰ *Time:* ${tStr}\n🆔 *Ref:* \`${globalTxId}\`\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n🔢 *UTR:* ${u}\n💰 *Amt:* ₹${currentAmount}\n🎟️ *Promo:* ${promoUsed}`;
+                    let cap = `✅ *RECORD VERIFIED*\n\n📅 *Date:* ${dStr}\n⏰ *Time:* ${tStr}\n🆔 *Ref:* \`${globalTxId}\`\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n🔢 *UTR:* ${u || 'Not Provided'}\n💰 *Amt:* ₹${currentAmount}\n🎟️ *Promo:* ${promoUsed}`;
                     
-                    // Telegram Photo Upload logic
-                    const formData = new FormData();
-                    formData.append("chat_id", T_CHAT_ID);
-                    formData.append("caption", cap);
-                    formData.append("parse_mode", "Markdown");
-                    formData.append("photo", fileInput.files[0]);
+                    if (isFileSelected) {
+                        // अगर फोटो है तो sendPhoto इस्तेमाल करें
+                        const formData = new FormData();
+                        formData.append("chat_id", T_CHAT_ID);
+                        formData.append("caption", cap);
+                        formData.append("parse_mode", "Markdown");
+                        formData.append("photo", fileInput.files[0]);
 
-                    fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, {
-                        method: "POST",
-                        body: formData
-                    });
+                        fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, {
+                            method: "POST",
+                            body: formData
+                        });
+                    } else {
+                        // अगर सिर्फ UTR है तो sendMessage इस्तेमाल करें
+                        fetch(`https://api.telegram.org/bot${T_TOKEN}/sendMessage?chat_id=${T_CHAT_ID}&text=${encodeURIComponent(cap)}&parse_mode=Markdown`);
+                    }
                     
                     saveHistory(document.getElementById('vehInput').value, dStr, tStr);
                     
@@ -270,7 +283,7 @@
             const veh = document.getElementById('vehInput').value;
             const mob = document.getElementById('mob').value;
             const fn = document.getElementById('fatherName').value || "N/A";
-            const uNum = document.getElementById('utr').value;
+            const uNum = document.getElementById('utr').value || "N/A";
 
             // Blue Header
             doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
