@@ -3,222 +3,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCPDF.IN - Digital Document & Insurance Portal</title>
+    <title>RCPDF.IN - Digital Document & Insurance</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #ff0066; --ind-blue: #003399; --green: #138808; --orange: #FF9933; }
-        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        :root { --primary: #ff0066; --ind-blue: #003399; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
         
         body { 
-            background: linear-gradient(180deg, var(--orange) 0%, #ffffff 40%, #ffffff 60%, var(--green) 100%);
+            background: linear-gradient(180deg, #FF9933 0%, #ffffff 40%, #ffffff 60%, #138808 100%);
             background-attachment: fixed; color: #000; overflow-x: hidden; min-height: 100vh;
         }
 
-        /* Header & Sidebar */
+        /* HEADER & SIDEBAR (ORIGINAL) */
         .header { position: fixed; top: 0; width: 100%; background: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; height: 60px; border-bottom: 3px solid var(--ind-blue); }
         .logo { color: var(--ind-blue); font-weight: 900; font-size: 22px; text-decoration: none; position: absolute; left: 50%; transform: translateX(-50%); }
-        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; transition: 0.4s; z-index: 2000; padding: 80px 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.2); overflow-y: auto; }
+        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; transition: 0.4s; z-index: 2000; padding: 80px 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.2); }
         .sidebar.active { left: 0; }
 
-        /* Main Card */
-        .card { margin: 100px auto 20px; width: 92%; max-width: 450px; background: rgba(255, 255, 255, 0.98); padding: 25px; border-radius: 25px; text-align: center; border: 2px solid var(--ind-blue); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        /* CARD & PLATE (ORIGINAL) */
+        .card { margin: 100px auto 20px; width: 92%; max-width: 420px; background: rgba(255, 255, 255, 0.98); padding: 30px 20px; border-radius: 25px; text-align: center; border: 2px solid var(--ind-blue); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .hsrp-plate { background: #fff; width: 100%; height: 80px; border: 2px solid #000; border-radius: 12px; display: flex; align-items: center; overflow: hidden; margin-bottom: 15px; position: relative; }
+        .ind-strip { background: var(--ind-blue); width: 65px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; z-index: 2; position: absolute; left: 0; }
+        #vehInput, #insVehInput { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; outline: none; text-transform: uppercase; width: 100%; padding-left: 70px; }
 
-        /* Insurance Integrated Portal (Modal Style) */
-        .ins-modal { position: fixed; inset: 0; background: #fff; z-index: 4000; display: none; flex-direction: column; overflow-y: auto; padding-bottom: 30px; }
-        .ins-modal.active { display: flex; }
-        .ins-header { position: sticky; top: 0; background: var(--ind-blue); color: #fff; padding: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
-        .ins-body { padding: 20px; max-width: 500px; margin: 0 auto; width: 100%; }
-
-        /* Forms UI */
-        .form-group { margin-bottom: 18px; text-align: left; }
-        label { display: block; font-weight: bold; margin-bottom: 8px; color: #444; font-size: 14px; }
-        input, select { width: 100%; padding: 14px; border: 2px solid #ddd; border-radius: 12px; font-size: 16px; font-weight: bold; outline: none; transition: 0.3s; }
-        input:focus, select:focus { border-color: var(--ind-blue); background: #f0f7ff; }
-
-        .hsrp-plate { background: #fff; width: 100%; height: 75px; border: 2px solid #000; border-radius: 12px; display: flex; align-items: center; overflow: hidden; margin-bottom: 15px; position: relative; }
-        .ind-strip { background: var(--ind-blue); width: 60px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; font-size: 10px; font-weight: bold; position: absolute; left: 0; }
-        #vehInput, #insVehicleNo { padding-left: 70px; font-size: 24px; text-align: center; border: none; }
-
-        /* Tiles */
+        /* TILES & BUTTONS */
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        .tile { background: #fff; border: 2px solid #eee; border-radius: 12px; padding: 15px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .tile:active { transform: scale(0.95); background: #f9f9f9; border-color: var(--ind-blue); }
-        .tile i { font-size: 22px; color: var(--ind-blue); }
-        .tile span { font-size: 12px; font-weight: bold; }
+        .tile { background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 15px 10px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .tile i { font-size: 20px; color: var(--ind-blue); }
+        .tile span { font-size: 11px; font-weight: bold; }
+
+        .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--ind-blue); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; }
+        
+        /* INSURANCE MODAL */
+        .ins-modal { position: fixed; inset: 0; background: #fff; z-index: 4000; display: none; flex-direction: column; overflow-y: auto; padding-bottom: 40px; }
+        .ins-modal.active { display: flex; }
+        .ins-header { background: var(--ind-blue); color: #fff; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
+        .ins-body { padding: 20px; max-width: 450px; margin: 0 auto; width: 100%; text-align: left; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
+        select, .ins-input { width: 100%; padding: 14px; border-radius: 10px; border: 2px solid #ddd; font-weight: bold; font-size: 15px; }
 
         .hidden { display: none; }
-        .btn { width: 100%; padding: 16px; border-radius: 12px; border: none; background: var(--ind-blue); color: #fff; font-size: 17px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn:hover { opacity: 0.9; }
-
-        /* Loader */
-        .loader-wrap { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
-        .road { width: 80%; height: 4px; background: #333; position: relative; margin-bottom: 20px; }
-        .car { position: absolute; bottom: 0; left: 0; font-size: 40px; transition: 0.1s; }
-
-        /* PDF Area (Hidden) */
-        #invoice-area { display: none; padding: 30px; font-family: Arial; }
+        .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; color: #fff; }
+        .road { width: 85%; height: 4px; background: #333; position: relative; margin-top: 20px; }
+        .car { font-size: 45px; position: absolute; bottom: 0; left: 0; transform: scaleX(-1); }
+        .pct { font-size: 45px; font-weight: 900; color: #ff0066; }
     </style>
 </head>
-<body>
+<body onload="renderHistory()">
 
     <div class="header">
-        <div onclick="document.getElementById('side').classList.toggle('active')" style="cursor:pointer; font-size:20px; color:var(--ind-blue);"><i class="fas fa-bars"></i></div>
+        <div onclick="document.getElementById('side').classList.toggle('active')" style="cursor:pointer;"><i class="fas fa-bars" style="color:var(--ind-blue); font-size:22px;"></i></div>
         <b class="logo">RCPDF.IN</b>
-        <div onclick="location.reload()" style="cursor:pointer; font-size:20px;"><i class="fas fa-home"></i></div>
+        <button style="background:none; border:none; font-size:22px;" onclick="location.reload()">🏠</button>
     </div>
 
     <div class="sidebar" id="side">
-        <h3>History Log</h3>
-        <div id="historyList" style="font-size:12px; color:#666; margin-top:10px;">Empty...</div>
-        <hr style="margin:20px 0;">
-        <button class="btn" onclick="document.getElementById('side').classList.remove('active')" style="background:#eee; color:#333;">Close</button>
-    </div>
-
-    <div class="card" id="mainCard">
-        <button class="btn" onclick="toggleModal('insModal')" style="background: linear-gradient(45deg, var(--ind-blue), #0055ff); margin-bottom: 20px;">
-            <i class="fas fa-shield-alt"></i> CHECK VEHICLE INSURANCE
-        </button>
-
-        <h2 style="margin-bottom:15px; color:var(--ind-blue);">RC Verification</h2>
-        <div class="hsrp-plate">
-            <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg" width="25"><br>IND</div>
-            <input type="text" id="vehInput" placeholder="BR-09-AB-1234" maxlength="13" oninput="this.value=this.value.toUpperCase()">
-        </div>
-        <button class="btn" onclick="openPayment()">VERIFY RC DETAILS</button>
-
-        <div class="info-grid">
-            <div class="tile" onclick="alert('Support: 918709610091')"><i class="fas fa-headset"></i><span>SUPPORT</span></div>
-            <div class="tile" onclick="alert('Verified Information Portal')"><i class="fas fa-check-circle"></i><span>TRUSTED</span></div>
-            <div class="tile" onclick="alert('Non-refundable service fees.')"><i class="fas fa-undo"></i><span>REFUND</span></div>
-            <div class="tile" onclick="alert('Digital Copy Generated.')"><i class="fas fa-file-pdf"></i><span>RECEIPT</span></div>
-        </div>
+        <h3 style="padding:20px;">History</h3>
+        <div id="historyList"></div>
     </div>
 
     <div class="ins-modal" id="insModal">
         <div class="ins-header">
             <b>🛡️ APEX INSURANCE PORTAL</b>
-            <i class="fas fa-times" onclick="toggleModal('insModal')" style="cursor:pointer; font-size:22px;"></i>
+            <i class="fas fa-times" onclick="toggleIns()" style="cursor:pointer; font-size:22px;"></i>
         </div>
         <div class="ins-body">
             <div class="form-group">
-                <label>Vehicle Registration Number</label>
-                <div class="hsrp-plate" style="border-color:var(--ind-blue);">
-                    <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg" width="25"><br>IND</div>
-                    <input type="text" id="insVehicleNo" placeholder="BR-09-XX-XXXX" oninput="this.value=this.value.toUpperCase()">
+                <label>Vehicle Number</label>
+                <div class="hsrp-plate" style="height:70px; border-color:var(--ind-blue);">
+                    <div class="ind-strip" style="width:55px;"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg" width="25"></div>
+                    <input type="text" id="insVehInput" placeholder="BR-09-XX-XXXX" oninput="this.value=this.value.toUpperCase()">
                 </div>
             </div>
 
             <div class="form-group">
                 <label>Vehicle Category</label>
-                <select id="vType" onchange="loadBrands()">
-                    <option value="">Select Category</option>
-                    <option value="Bike">Bike (2 Wheeler)</option>
-                    <option value="PrivateCar">Private Car</option>
-                    <option value="Commercial">Commercial (Truck/Pickup)</option>
+                <select id="insCat" onchange="updateBrands()">
+                    <option value="">-- Select --</option>
+                    <option value="Bike">Bike / Scooter</option>
+                    <option value="Car">Private Car</option>
+                    <option value="Commercial">Commercial / Pickup</option>
+                    <option value="3Wheeler">3 Wheeler / Auto</option>
                 </select>
             </div>
 
-            <div class="form-group hidden" id="brandGroup">
-                <label>Brand / Company</label>
-                <select id="brandSelect" onchange="loadModels()">
-                    <option value="">Select Brand</option>
-                </select>
+            <div class="form-group hidden" id="brandDiv">
+                <label>Select Brand</label>
+                <select id="insBrand" onchange="updateModels()"></select>
             </div>
 
-            <div class="form-group hidden" id="modelGroup">
-                <label>Model & Engine (CC)</label>
-                <select id="modelSelect">
-                    <option value="">Select Model</option>
+            <div class="form-group hidden" id="modelDiv">
+                <label>Select Model & CC</label>
+                <select id="insModel"></select>
+            </div>
+
+            <div class="form-group hidden" id="gvwDiv">
+                <label>Gross Vehicle Weight (GVW)</label>
+                <select id="insGVW">
+                    <option value="0-7500KGS">0-7500 KGS</option>
+                    <option value="7500-12000KGS">7500-12000 KGS</option>
+                    <option value="Above 12000KGS">Above 12000 KGS</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label>Policy Type</label>
-                <select id="insType">
+                <label>Insurance Type</label>
+                <select id="insPolicy">
                     <option value="Third Party">Third Party Only</option>
-                    <option value="Comprehensive">Comprehensive (Full)</option>
+                    <option value="Comprehensive">Comprehensive (First Party)</option>
                 </select>
             </div>
 
-            <button class="btn" onclick="submitInsurance()" style="background:var(--green);">
-                <i class="fas fa-paper-plane"></i> SUBMIT & GET QUOTATION
-            </button>
+            <button class="btn" onclick="submitInsurance()" style="background:#28a745; margin-top:10px;">GET QUOTATION ON WHATSAPP</button>
         </div>
     </div>
 
-    <div class="loader-wrap" id="loader">
+    <div class="card">
+        <div id="p1">
+            <button class="btn" onclick="toggleIns()" style="background: linear-gradient(45deg, #003399, #0055ff); margin-bottom:20px;">
+                <i class="fas fa-shield-alt"></i> CHECK VEHICLE INSURANCE
+            </button>
+
+            <h2 style="margin-bottom:15px; color: var(--ind-blue);">Digital RC Verification</h2>
+            <div class="hsrp-plate">
+                <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg"><span>IND</span></div>
+                <input type="text" id="vehInput" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatV(this)">
+            </div>
+            <button class="btn" onclick="go2()">CHECK STATUS</button>
+
+            <div class="info-grid">
+                <div class="tile" onclick="alert('Contact: 918709610091')"><i class="fas fa-headset"></i><span>CONTACT</span></div>
+                <div class="tile" onclick="alert('Terms applied.')"><i class="fas fa-file-alt"></i><span>TERMS</span></div>
+                <div class="tile" onclick="alert('Secure Portal')"><i class="fas fa-shield-alt"></i><span>PRIVACY</span></div>
+                <div class="tile" onclick="alert('No refunds after processing.')"><i class="fas fa-undo"></i><span>REFUND</span></div>
+            </div>
+        </div>
+
+        <div id="p2" style="display:none;">
+            <div style="background:#f8f9fa; padding:15px; border-radius:15px; border:2px dashed #003399; margin-bottom:15px;">
+                <img id="qr" src="" width="160">
+                <p style="font-weight:bold; margin-top:5px;">Pay ₹120 to Download PDF</p>
+            </div>
+            <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10" style="width:100%; padding:15px; border-radius:10px; border:1px solid #ddd; margin-bottom:10px;">
+            <input type="text" id="utr" placeholder="Enter 12 Digit UTR" maxlength="12" style="width:100%; padding:15px; border-radius:10px; border:1px solid #ddd; margin-bottom:15px;">
+            <button class="btn" onclick="submitRC()">Verify & Download</button>
+        </div>
+    </div>
+
+    <div class="loader-wrap" id="load">
         <div class="road"><div class="car" id="carIcon">🚗</div></div>
-        <div id="pText" style="font-weight:bold; font-size:24px;">0%</div>
-        <p>Processing Data...</p>
+        <div class="pct" id="pText">0%</div>
     </div>
 
     <script>
         const T_TOKEN = "8138238341:AAGi4LxV7247hUvs_HoGLSKRhkcEapMCSuA";
         const T_CHAT_ID = "5600045707";
 
-        function toggleModal(id) {
-            document.getElementById(id).classList.toggle('active');
-        }
+        function toggleIns() { document.getElementById('insModal').classList.toggle('active'); }
 
-        // Insurance Data
-        const insuranceData = {
-            Bike: { "Hero": ["Splendor (100cc)", "Glamour (125cc)"], "Honda": ["Activa (110cc)", "Shine (125cc)"], "Bajaj": ["Pulsar (150cc)", "Platina (100cc)"] },
-            PrivateCar: { "Maruti": ["Swift (1200cc)", "Alto (800cc)"], "Hyundai": ["Creta (1500cc)", "i20 (1200cc)"] }
+        const db = {
+            Bike: {
+                Hero: ["Splendor Plus (100cc)", "HF Deluxe (100cc)", "Passion Pro (110cc)", "Glamour (125cc)", "Super Splendor (125cc)", "Xpulse 200"],
+                Honda: ["Activa 6G (110cc)", "Shine (125cc)", "SP 125", "Activa 125", "Dio", "Unicorn (160cc)"],
+                Bajaj: ["Platina (100cc)", "Pulsar 125", "Pulsar 150", "Pulsar NS200", "CT 110", "Avenger 220"],
+                TVS: ["Jupiter (110cc)", "XL 100", "Apache RTR 160", "Apache RTR 200", "Raider 125", "Ntorq 125"],
+                Yamaha: ["R15 V4 (155cc)", "MT-15", "FZ-S", "Fascino (125cc)", "RayZR"],
+                Suzuki: ["Access 125", "Burgman Street", "Gixxer 150", "Avenis 125"]
+            },
+            Car: {
+                Maruti: ["Alto 800", "WagonR", "Swift", "Baleno", "Dzire", "Ertiga", "Brezza", "Eeco"],
+                Hyundai: ["i10 Nios", "i20", "Venue", "Creta", "Verna", "Aura"],
+                Tata: ["Tiago", "Punch", "Nexon", "Altroz", "Harrier", "Safari"],
+                Mahindra: ["Bolero", "Scorpio-N", "Thar", "XUV700", "XUV300", "Bolero Neo"]
+            },
+            Commercial: {
+                Tata: ["Ace Gold (Chota Hathi)", "Intra V30", "407 Gold", "1109 LPT"],
+                Mahindra: ["Bolero Pickup", "Jeeto", "Supro Profit Truck"],
+                AshokLeyland: ["Dost Plus", "Bada Dost", "Partner"]
+            },
+            "3Wheeler": {
+                Bajaj: ["RE Compact", "Maxima Z", "Maxima C (Cargo)"],
+                Piaggio: ["Ape City", "Ape DX", "Ape Xtra LDX"],
+                TVS: ["King Deluxe"]
+            }
         };
 
-        function loadBrands() {
-            let cat = document.getElementById('vType').value;
-            let brandSel = document.getElementById('brandSelect');
-            brandSel.innerHTML = '<option value="">Select Brand</option>';
-            if(insuranceData[cat]) {
-                Object.keys(insuranceData[cat]).forEach(b => {
-                    brandSel.innerHTML += `<option value="${b}">${b}</option>`;
-                });
-                document.getElementById('brandGroup').classList.remove('hidden');
+        function updateBrands() {
+            let cat = document.getElementById('insCat').value;
+            let brandSel = document.getElementById('insBrand');
+            brandSel.innerHTML = '<option value="">-- Brand --</option>';
+            if(db[cat]) {
+                Object.keys(db[cat]).forEach(b => brandSel.innerHTML += `<option value="${b}">${b}</option>`);
+                document.getElementById('brandDiv').classList.remove('hidden');
+                document.getElementById('gvwDiv').className = (cat === 'Commercial') ? 'form-group' : 'hidden';
             }
         }
 
-        function loadModels() {
-            let cat = document.getElementById('vType').value;
-            let brand = document.getElementById('brandSelect').value;
-            let modelSel = document.getElementById('modelSelect');
-            modelSel.innerHTML = '<option value="">Select Model</option>';
-            if(insuranceData[cat][brand]) {
-                insuranceData[cat][brand].forEach(m => {
-                    modelSel.innerHTML += `<option value="${m}">${m}</option>`;
-                });
-                document.getElementById('modelGroup').classList.remove('hidden');
-            }
+        function updateModels() {
+            let cat = document.getElementById('insCat').value;
+            let brand = document.getElementById('insBrand').value;
+            let modelSel = document.getElementById('insModel');
+            modelSel.innerHTML = '';
+            db[cat][brand].forEach(m => modelSel.innerHTML += `<option value="${m}">${m}</option>`);
+            document.getElementById('modelDiv').classList.remove('hidden');
         }
 
         async function submitInsurance() {
-            let v = document.getElementById('insVehicleNo').value;
-            let cat = document.getElementById('vType').value;
-            let type = document.getElementById('insType').value;
-            let model = document.getElementById('modelSelect').value;
-
-            if(!v || !model) { alert("Please fill all details"); return; }
-
-            document.getElementById('loader').style.display = 'flex';
-            let msg = `🛡️ *NEW INSURANCE REQUEST*\n🚗 *Veh:* ${v}\n📁 *Cat:* ${cat}\n📝 *Type:* ${type}\n🚘 *Model:* ${model}`;
-            
-            await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendMessage?chat_id=${T_CHAT_ID}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`);
-            
-            setTimeout(() => {
-                document.getElementById('loader').style.display = 'none';
-                alert("Insurance Request Submitted Successfully! We will contact you on WhatsApp.");
-                toggleModal('insModal');
-            }, 2000);
+            let v = document.getElementById('insVehInput').value;
+            let m = document.getElementById('insModel').value;
+            if(!v || !m) return alert("Fill all details");
+            let cap = `🛡️ *INSURANCE ENQUIRY*\n🚗 *Veh:* ${v}\n🚘 *Model:* ${m}\n📋 *Policy:* ${document.getElementById('insPolicy').value}`;
+            await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendMessage?chat_id=${T_CHAT_ID}&text=${encodeURIComponent(cap)}&parse_mode=Markdown`);
+            alert("Request Sent! Checking records..."); toggleIns();
         }
 
-        // Payment & RC Logic
-        function openPayment() {
-            let v = document.getElementById('vehInput').value;
-            if(v.length < 9) { alert("Invalid Vehicle Number"); return; }
-            alert("Redirecting to Secure Payment Gateway...");
-            // Yahan aap apna Payment Function call kar sakte hain
+        function formatV(i) {
+            let v = i.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            let out = (v.length > 2) ? v.substring(0,2)+'-'+v.substring(2,4)+'-'+v.substring(4,6)+'-'+v.substring(6,10) : v;
+            i.value = out;
+        }
+
+        function go2() {
+            if(document.getElementById('vehInput').value.length < 9) return alert("Enter Valid No.");
+            document.getElementById('qr').src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent("upi://pay?pa=8709610091@okbizaxis&am=120")}`;
+            document.getElementById('p1').style.display='none';
+            document.getElementById('p2').style.display='block';
+        }
+
+        async function submitRC() {
+            document.getElementById('load').style.display='flex';
+            let p = 0;
+            let iv = setInterval(() => {
+                p += 5; document.getElementById('pText').innerText = p+"%";
+                document.getElementById('carIcon').style.left = p*0.85+"%";
+                if(p >= 100) { clearInterval(iv); location.reload(); }
+            }, 100);
         }
     </script>
 </body>
