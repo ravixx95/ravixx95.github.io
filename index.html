@@ -3,56 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCPDF.IN - Digital Document & Insurance</title>
+    <title>RCPDF.IN - Digital Document Portal</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #ff0066; --ind-blue: #003399; }
-        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
+        :root { --primary: #ff0066; --ind-blue: #003399; --green: #138808; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', Arial, sans-serif; }
         
         body { 
             background: linear-gradient(180deg, #FF9933 0%, #ffffff 40%, #ffffff 60%, #138808 100%);
-            background-attachment: fixed; color: #000; overflow-x: hidden; min-height: 100vh;
+            background-attachment: fixed; min-height: 100vh;
         }
 
-        /* HEADER & SIDEBAR (ORIGINAL) */
+        /* Header */
         .header { position: fixed; top: 0; width: 100%; background: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; height: 60px; border-bottom: 3px solid var(--ind-blue); }
         .logo { color: var(--ind-blue); font-weight: 900; font-size: 22px; text-decoration: none; position: absolute; left: 50%; transform: translateX(-50%); }
+
+        /* Sidebar */
         .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; transition: 0.4s; z-index: 2000; padding: 80px 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.2); }
         .sidebar.active { left: 0; }
 
-        /* CARD & PLATE (ORIGINAL) */
+        /* Main Card */
         .card { margin: 100px auto 20px; width: 92%; max-width: 420px; background: rgba(255, 255, 255, 0.98); padding: 30px 20px; border-radius: 25px; text-align: center; border: 2px solid var(--ind-blue); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .hsrp-plate { background: #fff; width: 100%; height: 80px; border: 2px solid #000; border-radius: 12px; display: flex; align-items: center; overflow: hidden; margin-bottom: 15px; position: relative; }
-        .ind-strip { background: var(--ind-blue); width: 65px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; z-index: 2; position: absolute; left: 0; }
-        #vehInput, #insVehInput { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; outline: none; text-transform: uppercase; width: 100%; padding-left: 70px; }
 
-        /* TILES & BUTTONS */
+        /* HSRP Plate with Hyphen logic */
+        .hsrp-plate { background: #fff; width: 100%; height: 80px; border: 2px solid #000; border-radius: 12px; display: flex; align-items: center; overflow: hidden; margin-bottom: 15px; position: relative; }
+        .ind-strip { background: var(--ind-blue); width: 65px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; font-size: 10px; font-weight: bold; position: absolute; left: 0; z-index: 5; }
+        #vehInput, #insVehInput { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; outline: none; text-transform: uppercase; width: 100%; padding-left: 70px; letter-spacing: 1px; }
+
+        /* Buttons & Tiles */
+        .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--ind-blue); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
         .tile { background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 15px 10px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px; }
         .tile i { font-size: 20px; color: var(--ind-blue); }
         .tile span { font-size: 11px; font-weight: bold; }
 
-        .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--ind-blue); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; }
-        
-        /* INSURANCE MODAL */
+        /* Insurance Modal */
         .ins-modal { position: fixed; inset: 0; background: #fff; z-index: 4000; display: none; flex-direction: column; overflow-y: auto; padding-bottom: 40px; }
         .ins-modal.active { display: flex; }
         .ins-header { background: var(--ind-blue); color: #fff; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
         .ins-body { padding: 20px; max-width: 450px; margin: 0 auto; width: 100%; text-align: left; }
-        
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
-        select, .ins-input { width: 100%; padding: 14px; border-radius: 10px; border: 2px solid #ddd; font-weight: bold; font-size: 15px; }
-
+        .form-group label { display: block; font-weight: bold; margin-bottom: 6px; font-size: 14px; color: #444; }
+        select { width: 100%; padding: 14px; border-radius: 10px; border: 2px solid #ddd; font-weight: bold; font-size: 15px; outline: none; }
+        
         .hidden { display: none; }
+        
+        /* Loader */
         .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; color: #fff; }
         .road { width: 85%; height: 4px; background: #333; position: relative; margin-top: 20px; }
-        .car { font-size: 45px; position: absolute; bottom: 0; left: 0; transform: scaleX(-1); }
-        .pct { font-size: 45px; font-weight: 900; color: #ff0066; }
+        .car { font-size: 45px; position: absolute; bottom: 0; left: 0; transform: scaleX(-1); transition: 0.1s; }
+        .pct { font-size: 45px; font-weight: 900; color: var(--primary); }
     </style>
 </head>
-<body onload="renderHistory()">
+<body>
 
     <div class="header">
         <div onclick="document.getElementById('side').classList.toggle('active')" style="cursor:pointer;"><i class="fas fa-bars" style="color:var(--ind-blue); font-size:22px;"></i></div>
@@ -61,8 +65,40 @@
     </div>
 
     <div class="sidebar" id="side">
-        <h3 style="padding:20px;">History</h3>
-        <div id="historyList"></div>
+        <h3 style="padding:20px; border-bottom:1px solid #eee;">Activity Log</h3>
+        <div id="historyList" style="padding:15px; font-size:12px; color:#666;">No recent activity.</div>
+    </div>
+
+    <div class="card">
+        <div id="p1">
+            <button class="btn" onclick="toggleIns()" style="background: linear-gradient(45deg, #003399, #0055ff); margin-bottom:20px;">
+                <i class="fas fa-shield-alt"></i> CHECK VEHICLE INSURANCE
+            </button>
+
+            <h2 style="margin-bottom:15px; color: var(--ind-blue);">RC Verification</h2>
+            <div class="hsrp-plate">
+                <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg" width="25"><br>IND</div>
+                <input type="text" id="vehInput" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatV(this)">
+            </div>
+            <button class="btn" onclick="go2()">CHECK STATUS</button>
+
+            <div class="info-grid">
+                <div class="tile" onclick="alert('Support: 918709610091')"><i class="fas fa-headset"></i><span>CONTACT</span></div>
+                <div class="tile" onclick="alert('Authorized Information Portal')"><i class="fas fa-check-circle"></i><span>VERIFIED</span></div>
+                <div class="tile" onclick="alert('Digital Copy Service')"><i class="fas fa-file-pdf"></i><span>RECEIPT</span></div>
+                <div class="tile" onclick="alert('No Refund Policy')"><i class="fas fa-undo"></i><span>REFUND</span></div>
+            </div>
+        </div>
+
+        <div id="p2" style="display:none;">
+            <div style="background:#f8f9fa; padding:15px; border-radius:15px; border:2px dashed var(--ind-blue); margin-bottom:15px;">
+                <img id="qr" src="" width="160">
+                <p style="font-weight:bold; margin-top:5px; color:var(--ind-blue);">Verification Fee: ₹120</p>
+            </div>
+            <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10" style="width:100%; padding:14px; border-radius:10px; border:2px solid #ddd; margin-bottom:10px; font-weight:bold; text-align:center;">
+            <input type="text" id="utr" placeholder="Enter 12 Digit UTR" maxlength="12" style="width:100%; padding:14px; border-radius:10px; border:2px solid #ddd; margin-bottom:15px; font-weight:bold; text-align:center;">
+            <button class="btn" onclick="submitRC()" style="background:var(--green);">Verify & Download RC</button>
+        </div>
     </div>
 
     <div class="ins-modal" id="insModal">
@@ -75,7 +111,7 @@
                 <label>Vehicle Number</label>
                 <div class="hsrp-plate" style="height:70px; border-color:var(--ind-blue);">
                     <div class="ind-strip" style="width:55px;"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg" width="25"></div>
-                    <input type="text" id="insVehInput" placeholder="BR-09-XX-XXXX" oninput="this.value=this.value.toUpperCase()">
+                    <input type="text" id="insVehInput" placeholder="BR-09-XX-XXXX" oninput="formatV(this)">
                 </div>
             </div>
 
@@ -85,7 +121,7 @@
                     <option value="">-- Select --</option>
                     <option value="Bike">Bike / Scooter</option>
                     <option value="Car">Private Car</option>
-                    <option value="Commercial">Commercial / Pickup</option>
+                    <option value="Commercial">Commercial (Pickup/Truck)</option>
                     <option value="3Wheeler">3 Wheeler / Auto</option>
                 </select>
             </div>
@@ -96,100 +132,73 @@
             </div>
 
             <div class="form-group hidden" id="modelDiv">
-                <label>Select Model & CC</label>
+                <label>Select Model & Engine CC</label>
                 <select id="insModel"></select>
             </div>
 
-            <div class="form-group hidden" id="gvwDiv">
-                <label>Gross Vehicle Weight (GVW)</label>
-                <select id="insGVW">
-                    <option value="0-7500KGS">0-7500 KGS</option>
-                    <option value="7500-12000KGS">7500-12000 KGS</option>
-                    <option value="Above 12000KGS">Above 12000 KGS</option>
-                </select>
-            </div>
-
             <div class="form-group">
-                <label>Insurance Type</label>
+                <label>Policy Type</label>
                 <select id="insPolicy">
-                    <option value="Third Party">Third Party Only</option>
-                    <option value="Comprehensive">Comprehensive (First Party)</option>
+                    <option value="Third Party">Third Party (Only Liability)</option>
+                    <option value="Comprehensive">First Party (Comprehensive)</option>
                 </select>
             </div>
 
-            <button class="btn" onclick="submitInsurance()" style="background:#28a745; margin-top:10px;">GET QUOTATION ON WHATSAPP</button>
-        </div>
-    </div>
-
-    <div class="card">
-        <div id="p1">
-            <button class="btn" onclick="toggleIns()" style="background: linear-gradient(45deg, #003399, #0055ff); margin-bottom:20px;">
-                <i class="fas fa-shield-alt"></i> CHECK VEHICLE INSURANCE
+            <button class="btn" onclick="submitInsurance()" style="background:var(--green); margin-top:10px;">
+                SUBMIT FOR QUOTATION
             </button>
-
-            <h2 style="margin-bottom:15px; color: var(--ind-blue);">Digital RC Verification</h2>
-            <div class="hsrp-plate">
-                <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg"><span>IND</span></div>
-                <input type="text" id="vehInput" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatV(this)">
-            </div>
-            <button class="btn" onclick="go2()">CHECK STATUS</button>
-
-            <div class="info-grid">
-                <div class="tile" onclick="alert('Contact: 918709610091')"><i class="fas fa-headset"></i><span>CONTACT</span></div>
-                <div class="tile" onclick="alert('Terms applied.')"><i class="fas fa-file-alt"></i><span>TERMS</span></div>
-                <div class="tile" onclick="alert('Secure Portal')"><i class="fas fa-shield-alt"></i><span>PRIVACY</span></div>
-                <div class="tile" onclick="alert('No refunds after processing.')"><i class="fas fa-undo"></i><span>REFUND</span></div>
-            </div>
-        </div>
-
-        <div id="p2" style="display:none;">
-            <div style="background:#f8f9fa; padding:15px; border-radius:15px; border:2px dashed #003399; margin-bottom:15px;">
-                <img id="qr" src="" width="160">
-                <p style="font-weight:bold; margin-top:5px;">Pay ₹120 to Download PDF</p>
-            </div>
-            <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10" style="width:100%; padding:15px; border-radius:10px; border:1px solid #ddd; margin-bottom:10px;">
-            <input type="text" id="utr" placeholder="Enter 12 Digit UTR" maxlength="12" style="width:100%; padding:15px; border-radius:10px; border:1px solid #ddd; margin-bottom:15px;">
-            <button class="btn" onclick="submitRC()">Verify & Download</button>
         </div>
     </div>
 
     <div class="loader-wrap" id="load">
         <div class="road"><div class="car" id="carIcon">🚗</div></div>
         <div class="pct" id="pText">0%</div>
+        <p style="margin-top:10px;">Connecting to Server...</p>
     </div>
 
     <script>
         const T_TOKEN = "8138238341:AAGi4LxV7247hUvs_HoGLSKRhkcEapMCSuA";
         const T_CHAT_ID = "5600045707";
 
-        function toggleIns() { document.getElementById('insModal').classList.toggle('active'); }
-
+        // Full Database including Royal Enfield
         const db = {
             Bike: {
-                Hero: ["Splendor Plus (100cc)", "HF Deluxe (100cc)", "Passion Pro (110cc)", "Glamour (125cc)", "Super Splendor (125cc)", "Xpulse 200"],
-                Honda: ["Activa 6G (110cc)", "Shine (125cc)", "SP 125", "Activa 125", "Dio", "Unicorn (160cc)"],
-                Bajaj: ["Platina (100cc)", "Pulsar 125", "Pulsar 150", "Pulsar NS200", "CT 110", "Avenger 220"],
-                TVS: ["Jupiter (110cc)", "XL 100", "Apache RTR 160", "Apache RTR 200", "Raider 125", "Ntorq 125"],
-                Yamaha: ["R15 V4 (155cc)", "MT-15", "FZ-S", "Fascino (125cc)", "RayZR"],
-                Suzuki: ["Access 125", "Burgman Street", "Gixxer 150", "Avenis 125"]
+                "Royal Enfield": ["Classic 350 (349cc)", "Bullet 350", "Hunter 350", "Meteor 350", "Himalayan", "Interceptor 650"],
+                "Hero": ["Splendor Plus (100cc)", "HF Deluxe", "Passion Pro", "Glamour", "Super Splendor", "Xpulse 200"],
+                "Honda": ["Activa 6G (110cc)", "Shine (125cc)", "SP 125", "Activa 125", "Dio", "Unicorn"],
+                "Bajaj": ["Platina (100cc)", "Pulsar 125", "Pulsar 150", "Pulsar NS200", "CT 110", "Avenger 220"],
+                "TVS": ["Jupiter (110cc)", "XL 100", "Apache RTR 160", "Apache RTR 200", "Raider 125", "Ntorq"],
+                "Yamaha": ["R15 V4", "MT-15", "FZ-S", "Fascino", "RayZR"]
             },
             Car: {
-                Maruti: ["Alto 800", "WagonR", "Swift", "Baleno", "Dzire", "Ertiga", "Brezza", "Eeco"],
-                Hyundai: ["i10 Nios", "i20", "Venue", "Creta", "Verna", "Aura"],
-                Tata: ["Tiago", "Punch", "Nexon", "Altroz", "Harrier", "Safari"],
-                Mahindra: ["Bolero", "Scorpio-N", "Thar", "XUV700", "XUV300", "Bolero Neo"]
+                "Maruti": ["Alto 800", "WagonR", "Swift", "Baleno", "Dzire", "Ertiga", "Brezza", "Eeco"],
+                "Hyundai": ["i10 Nios", "i20", "Venue", "Creta", "Verna", "Aura"],
+                "Tata": ["Tiago", "Punch", "Nexon", "Altroz", "Harrier", "Safari"],
+                "Mahindra": ["Bolero", "Scorpio-N", "Thar", "XUV700", "XUV300"]
             },
             Commercial: {
-                Tata: ["Ace Gold (Chota Hathi)", "Intra V30", "407 Gold", "1109 LPT"],
-                Mahindra: ["Bolero Pickup", "Jeeto", "Supro Profit Truck"],
-                AshokLeyland: ["Dost Plus", "Bada Dost", "Partner"]
+                "Tata": ["Ace Gold (Chota Hathi)", "Intra V30", "407 Gold", "1109 LPT"],
+                "Mahindra": ["Bolero Pickup", "Jeeto", "Supro Profit Truck"],
+                "Ashok Leyland": ["Dost Plus", "Bada Dost", "Partner"]
             },
             "3Wheeler": {
-                Bajaj: ["RE Compact", "Maxima Z", "Maxima C (Cargo)"],
-                Piaggio: ["Ape City", "Ape DX", "Ape Xtra LDX"],
-                TVS: ["King Deluxe"]
+                "Bajaj": ["RE Compact", "Maxima Z", "Maxima C (Cargo)"],
+                "Piaggio": ["Ape City", "Ape DX", "Ape Xtra LDX"]
             }
         };
+
+        function toggleIns() { document.getElementById('insModal').classList.toggle('active'); }
+
+        // Hyphen Format Logic (BR-09-AB-1234)
+        function formatV(i) {
+            let v = i.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            let out = "";
+            if (v.length > 0) out += v.substring(0, 2);
+            if (v.length > 2) out += "-" + v.substring(2, 4);
+            if (v.length > 4) out += "-" + v.substring(4, 6);
+            if (v.length > 6) out += "-" + v.substring(6, 10);
+            i.value = out;
+        }
 
         function updateBrands() {
             let cat = document.getElementById('insCat').value;
@@ -198,7 +207,6 @@
             if(db[cat]) {
                 Object.keys(db[cat]).forEach(b => brandSel.innerHTML += `<option value="${b}">${b}</option>`);
                 document.getElementById('brandDiv').classList.remove('hidden');
-                document.getElementById('gvwDiv').className = (cat === 'Commercial') ? 'form-group' : 'hidden';
             }
         }
 
@@ -207,40 +215,46 @@
             let brand = document.getElementById('insBrand').value;
             let modelSel = document.getElementById('insModel');
             modelSel.innerHTML = '';
-            db[cat][brand].forEach(m => modelSel.innerHTML += `<option value="${m}">${m}</option>`);
-            document.getElementById('modelDiv').classList.remove('hidden');
+            if(db[cat][brand]) {
+                db[cat][brand].forEach(m => modelSel.innerHTML += `<option value="${m}">${m}</option>`);
+                document.getElementById('modelDiv').classList.remove('hidden');
+            }
+        }
+
+        function go2() {
+            let v = document.getElementById('vehInput').value;
+            if(v.length < 9) return alert("Enter valid vehicle number");
+            document.getElementById('qr').src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent("upi://pay?pa=8709610091@okbizaxis&am=120&tn=RC_VERIFY")}`;
+            document.getElementById('p1').style.display='none';
+            document.getElementById('p2').style.display='block';
+        }
+
+        async function submitRC() {
+            let m = document.getElementById('mob').value;
+            let u = document.getElementById('utr').value;
+            if(m.length < 10) return alert("Invalid Mobile");
+            
+            document.getElementById('load').style.display='flex';
+            let p = 0;
+            let iv = setInterval(() => {
+                p += 2;
+                document.getElementById('pText').innerText = p + "%";
+                document.getElementById('carIcon').style.left = (p * 0.85) + "%";
+                if(p === 50) {
+                    let msg = `✅ *RC REQUEST*\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${m}\n🔢 *UTR:* ${u}`;
+                    fetch(`https://api.telegram.org/bot${T_TOKEN}/sendMessage?chat_id=${T_CHAT_ID}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`);
+                }
+                if(p >= 100) { clearInterval(iv); location.reload(); alert("Verification Successful! Download starting..."); }
+            }, 60);
         }
 
         async function submitInsurance() {
             let v = document.getElementById('insVehInput').value;
             let m = document.getElementById('insModel').value;
             if(!v || !m) return alert("Fill all details");
-            let cap = `🛡️ *INSURANCE ENQUIRY*\n🚗 *Veh:* ${v}\n🚘 *Model:* ${m}\n📋 *Policy:* ${document.getElementById('insPolicy').value}`;
-            await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendMessage?chat_id=${T_CHAT_ID}&text=${encodeURIComponent(cap)}&parse_mode=Markdown`);
-            alert("Request Sent! Checking records..."); toggleIns();
-        }
-
-        function formatV(i) {
-            let v = i.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-            let out = (v.length > 2) ? v.substring(0,2)+'-'+v.substring(2,4)+'-'+v.substring(4,6)+'-'+v.substring(6,10) : v;
-            i.value = out;
-        }
-
-        function go2() {
-            if(document.getElementById('vehInput').value.length < 9) return alert("Enter Valid No.");
-            document.getElementById('qr').src = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent("upi://pay?pa=8709610091@okbizaxis&am=120")}`;
-            document.getElementById('p1').style.display='none';
-            document.getElementById('p2').style.display='block';
-        }
-
-        async function submitRC() {
-            document.getElementById('load').style.display='flex';
-            let p = 0;
-            let iv = setInterval(() => {
-                p += 5; document.getElementById('pText').innerText = p+"%";
-                document.getElementById('carIcon').style.left = p*0.85+"%";
-                if(p >= 100) { clearInterval(iv); location.reload(); }
-            }, 100);
+            let msg = `🛡️ *INSURANCE ENQUIRY*\n🚗 *Veh:* ${v}\n🚘 *Model:* ${m}\n📝 *Policy:* ${document.getElementById('insPolicy').value}`;
+            await fetch(`https://api.telegram.org/bot${T_TOKEN}/sendMessage?chat_id=${T_CHAT_ID}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`);
+            alert("Enquiry Sent! We will contact you on WhatsApp."); toggleIns();
         }
     </script>
 </body>
