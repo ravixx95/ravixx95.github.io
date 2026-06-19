@@ -1,335 +1,672 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RCPDF.IN - Digital Document Information</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root { --primary: #ff0066; --ind-blue: #003399; }
-        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
-        
-        body { 
-            background: linear-gradient(180deg, #FF9933 0%, #ffffff 40%, #ffffff 60%, #138808 100%);
-            background-attachment: fixed;
-            color: #000; overflow-x: hidden; min-height: 100vh;
-        }
-
-        .header { position: fixed; top: 0; width: 100%; background: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; height: 60px; border-bottom: 3px solid var(--ind-blue); }
-        .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 4px; width: 28px; z-index: 1001; }
-        .menu-btn div { width: 100%; height: 3px; background: var(--ind-blue); border-radius: 2px; }
-        .logo { color: var(--ind-blue); font-weight: 900; font-size: 22px; text-decoration: none; position: absolute; left: 50%; transform: translateX(-50%); }
-
-        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: #fff; transition: 0.4s; z-index: 2000; padding: 80px 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.2); overflow-y: auto; }
-        .sidebar.active { left: 0; }
-        .s-link { display: block; width: 100%; padding: 14px; margin-bottom: 12px; background: #f8f9fa; border-radius: 8px; text-decoration: none; color: #333; font-weight: bold; border: 1px solid #ddd; cursor:pointer; text-align: left; }
-        .s-link i { margin-right: 10px; color: var(--ind-blue); }
-
-        .card { margin: 100px auto 20px; width: 92%; max-width: 420px; background: rgba(255, 255, 255, 0.98); padding: 30px 20px; border-radius: 25px; text-align: center; border: 2px solid var(--ind-blue); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-
-        .hsrp-plate { background: #fff; width: 100%; height: 80px; border: 2px solid #000; border-radius: 12px; display: flex; align-items: center; overflow: hidden; margin-bottom: 15px; position: relative; }
-        .ind-strip { background: var(--ind-blue); width: 65px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; z-index: 2; position: absolute; left: 0; }
-        .ind-strip img { width: 30px; margin-bottom: 4px; }
-        
-        #vehInput { flex: 1; border: none; height: 100%; font-size: 26px; font-weight: 900; text-align: center; outline: none; text-transform: uppercase; width: 100%; padding-left: 70px; }
-        #mob, #fatherName, .utr-field, #promoInput, #screenshotInput { width: 100%; padding: 16px; border-radius: 12px; border: 2px solid #ddd; margin-bottom: 15px; font-size: 18px; text-align: center; font-weight: bold; }
-
-        .screenshot-label { display: block; background: #fff3cd; color: #856404; padding: 10px; border-radius: 8px; margin-bottom: 5px; font-size: 14px; font-weight: bold; border: 1px dashed #856404; }
-
-        .promo-section { display: flex; gap: 8px; margin-bottom: 15px; }
-        #promoInput { margin-bottom: 0; flex: 1; text-transform: uppercase; }
-        .apply-btn { background: #000; color: #fff; border: none; padding: 0 15px; border-radius: 12px; cursor: pointer; font-weight: bold; }
-
-        .neon-btn {
-            position: relative; background: #000; color: #fff; font-size: 16px; font-weight: 900;
-            padding: 18px; width: 100%; border-radius: 15px; border: none; cursor: pointer;
-            text-transform: uppercase; margin-bottom: 25px; overflow: hidden; display: flex; align-items: center; justify-content: center;
-        }
-        .neon-btn::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: conic-gradient(#ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
-            animation: rotateRGB 2s linear infinite;
-        }
-        .neon-btn::after { content: 'PAYMENT WITH UPI ❤️'; position: absolute; inset: 4px; background: #000; border-radius: 12px; display: flex; align-items: center; justify-content: center; z-index: 1; }
-        
-        @keyframes rotateRGB { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--ind-blue); color: #fff; font-size: 18px; font-weight: bold; cursor: pointer; }
-
-        .loader-wrap { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; justify-content: center; align-items: center; color: #fff; }
-        .road { width: 85%; height: 4px; background: #333; position: relative; margin-top: 20px; }
-        .car { font-size: 45px; position: absolute; bottom: 0; left: 0; transform: scaleX(-1); }
-        .pct { font-size: 45px; font-weight: 900; color: #ff0066; }
-        
-        .footer { background: #fff; padding: 30px 20px; border-top: 3px solid var(--ind-blue); text-align: center; margin-top: 40px; }
-        .footer-links { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 15px; }
-        .footer-links span { cursor: pointer; color: #333; font-size: 14px; font-weight: bold; text-decoration: underline; }
-        
-        .wa-float { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: #fff; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; z-index: 3000; text-decoration: none; }
-        .overlay { position: fixed; inset: 0; z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: #fff; padding: 20px; background: rgba(0, 128, 0, 0.98); }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wallet System - Login/Signup</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 500px;
+      width: 100%;
+    }
+    .wallet-banner {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 15px;
+      border-radius: 12px;
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 700;
+      font-size: 20px;
+      box-shadow: 0 5px 20px rgba(245, 87, 108, 0.4);
+    }
+    .user-info {
+      background: #667eea;
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+      font-size: 28px;
+    }
+    h2 {
+      font-size: 24px;
+    }
+    .form-group {
+      margin-bottom: 25px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    input {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: border 0.3s;
+    }
+    input:focus {
+      outline: none;
+      border: 2px solid #667eea;
+    }
+    .btn {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-bottom: 15px;
+    }
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .btn-secondary {
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    }
+    .message {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: 600;
+      font-size: 16px;
+      padding: 12px;
+      border-radius: 8px;
+    }
+    .success {
+      background: #d4edda;
+      color: #155724;
+    }
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    .note {
+      background: #fff3cd;
+      color: #856404;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-size: 14px;
+      text-align: center;
+    }
+    .history-section {
+      margin-top: 30px;
+      padding: 20px;
+      background: #f8f9ff;
+      border-radius: 15px;
+    }
+    .history-section h3 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 20px;
+      text-align: center;
+    }
+    .history-item {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .history-item p {
+      margin: 5px 0;
+      color: #555;
+    }
+    .history-item .amount {
+      color: #667eea;
+      font-weight: 700;
+      font-size: 18px;
+    }
+    .history-item .date {
+      color: #999;
+      font-size: 14px;
+    }
+    .switch-form {
+      text-align: center;
+      margin-top: 20px;
+      color: #666;
+    }
+    .switch-form a {
+      color: #667eea;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .switch-form a:hover {
+      text-decoration: underline;
+    }
+    .hidden {
+      display: none;
+    }
+    .logout-btn {
+      background: #dc3545;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    .logout-btn:hover {
+      background: #c82333;
+    }
+  </style>
 </head>
-<body onload="renderHistory()">
-
-    <div class="header">
-        <div class="menu-btn" onclick="toggleM()"><div></div><div></div><div></div></div>
-        <b class="logo">RCPDF.IN</b>
-        <button style="background:none; border:none; font-size:24px; cursor:pointer;" onclick="location.reload()">🏠</button>
+<body>
+  <div class="container">
+    <!-- LOGIN FORM -->
+    <div id="loginForm" class="">
+      <h1>🔐 Login</h1>
+      
+      <div class="form-group">
+        <label for="loginUsername">👤 Username</label>
+        <input type="text" id="loginUsername" placeholder="Apna username daalein" required />
+      </div>
+      
+      <div class="form-group">
+        <label for="loginPassword">🔒 Password</label>
+        <input type="password" id="loginPassword" placeholder="Apna password daalein" required />
+      </div>
+      
+      <button class="btn" onclick="login()">
+        🔑 Login Karein
+      </button>
+      
+      <div class="switch-form">
+        Account nahi hai? <a onclick="showSignup()">Signup Karein</a>
+      </div>
     </div>
 
-    <div class="sidebar" id="side">
-        <h3 style="margin-bottom:15px; color:var(--ind-blue);">Activity Log</h3>
-        <div id="historyList"><p style="font-size:12px; color:#999;">No records found.</p></div>
-        <hr style="margin:20px 0;">
-        <button class="s-link" onclick="window.location.href='https://insurancebju.blogspot.com/2025/11/blog-post_17.html?m=1'"><i class="fas fa-shield-alt"></i> Insurance Info</button>
-        <button class="s-link" onclick="toggleM()" style="background:#ffdddd; margin-top: 20px;">Close</button>
+    <!-- SIGNUP FORM -->
+    <div id="signupForm" class="hidden">
+      <h1>📝 Signup</h1>
+      
+      <div class="form-group">
+        <label for="signupUsername">👤 Username</label>
+        <input type="text" id="signupUsername" placeholder="Apna username daalein" required />
+      </div>
+      
+      <div class="form-group">
+        <label for="signupPassword">🔒 Password</label>
+        <input type="password" id="signupPassword" placeholder="Apna password daalein" required />
+      </div>
+      
+      <div class="form-group">
+        <label for="signupPhone">📱 Phone Number</label>
+        <input type="tel" id="signupPhone" placeholder="10-digit phone number" required />
+      </div>
+      
+      <button class="btn btn-secondary" onclick="signup()">
+        ✨ Signup Karein
+      </button>
+      
+      <div class="switch-form">
+        Account already hai? <a onclick="showLogin()">Login Karein</a>
+      </div>
     </div>
 
-    <div id="successOverlay" class="overlay">
-        <h1 style="font-size: 40px;">😊</h1>
-        <h1 style="font-size: 30px;">Verification Complete!</h1>
-        <p style="font-size: 18px; margin-top: 10px;">Service Record has been updated.</p>
-        <button class="btn" id="dlBtn" style="background:#fff; color:green; width:260px; margin-top:25px; border: 2px solid green;">Download Receipt Now</button>
-    </div>
+    <!-- MAIN APP (After Login) -->
+    <div id="mainApp" class="hidden">
+      <div class="user-info">
+        👤 Welcome, <span id="currentUser">User</span>!
+      </div>
+      
+      <div class="wallet-banner">
+        💰 Your Wallet: ₹<span id="walletBalance">1000</span>
+      </div>
 
-    <div class="card">
-        <div id="p1">
-            <h2 style="margin-bottom:15px; color: var(--ind-blue);">Digital RC Verification</h2>
-            <div class="hsrp-plate">
-                <div class="ind-strip"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Flag_of_India.svg"><span>IND</span></div>
-                <input type="text" id="vehInput" placeholder="BR-09-AB-1234" maxlength="13" oninput="formatV(this)">
-            </div>
-            <button class="btn" onclick="go2()">CHECK STATUS</button>
+      <h2>📄 PDF Download</h2>
+      
+      <div class="form-group">
+        <label for="bikeNumber">🚴 Bike Number</label>
+        <input type="text" id="bikeNumber" placeholder="Apna gaadi number daalein" required />
+      </div>
+      
+      <div class="form-group">
+        <label for="whatsappNumber">📱 WhatsApp Number</label>
+        <input type="tel" id="whatsappNumber" placeholder="10-digit WhatsApp number" required />
+      </div>
+      
+      <button class="btn" id="downloadBtn" onclick="downloadPDF()">
+        📥 PDF Download - ₹130
+      </button>
+      
+      <div id="message" class="message"></div>
+      
+      <div class="note">
+        ⚠️ Har PDF download par ₹130 wallet se kam hoga
+      </div>
+
+      <!-- WALLET HISTORY -->
+      <div class="history-section">
+        <h3>📊 Your Transaction History</h3>
+        <div id="historyList">
+          <p style="text-align: center; color: #999;">No transactions yet</p>
         </div>
+      </div>
 
-        <div id="p2" style="display:none;">
-            <div id="promo-msg" style="color: #138808; font-weight: bold; margin-bottom: 10px; display: none;">Offer Applied!</div>
-            <button class="neon-btn" onclick="pay()"></button>
-            <div style="background:#fff; padding:10px; border-radius:15px; display:inline-block; margin-bottom:15px; border:1px solid #ddd;">
-                <img id="qr" src="" width="160">
-                <p id="amtLabel" style="font-size:10px; font-weight:bold; margin-top:5px;">PAYMENT FOR VERIFICATION ₹120</p>
-            </div>
-
-            <div class="promo-section">
-                <input type="text" id="promoInput" placeholder="HELLO20">
-                <button class="apply-btn" onclick="applyPromo()">APPLY</button>
-            </div>
-
-            <input type="tel" id="mob" placeholder="WhatsApp Number" maxlength="10">
-            <input type="text" id="fatherName" placeholder="Father's Name (Optional)">
-            <input type="tel" id="utr" class="utr-field" placeholder="Enter 12 Digit UTR Number" maxlength="12" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-
-            <label class="screenshot-label">UTR नंबर दर्ज करें या स्क्रीनशॉट अपलोड करें 👇</label>
-            <input type="file" id="screenshotInput" accept="image/*">
-
-            <button class="btn" onclick="submit()">Verify & Generate Receipt</button>
+      <!-- ADD MONEY SECTION (Admin) -->
+      <div style="margin-top: 30px; padding: 20px; background: #e8f4f8; border-radius: 15px;">
+        <h3 style="color: #333; margin-bottom: 15px; text-align: center;">💵 Add Money to Wallet</h3>
+        
+        <div class="form-group">
+          <label for="addAmount">₹ Amount Add Karein</label>
+          <input type="number" id="addAmount" placeholder="100, 500, 1000..." required />
         </div>
+        
+        <button class="btn btn-secondary" onclick="addMoney()">
+          💰 Add Money
+        </button>
+        
+        <button class="logout-btn" onclick="logout()" style="width: 100%;">
+          🚪 Logout
+        </button>
+      </div>
     </div>
+  </div>
 
-    <div class="footer">
-        <div class="footer-links">
-            <span onclick="alert('Privacy Policy: Information is handled securely.')">Privacy Policy</span> | 
-            <span onclick="alert('Terms: Service is for information records.')">Terms & Conditions</span> | 
-            <span onclick="alert('Refund: Processing fees are non-refundable.')">Refund Policy</span>
+  <script>
+    // ═══════════════════════════════════════════════
+    // ADMIN CONFIG - Default wallet for new users
+    // ═══════════════════════════════════════════════
+    const DEFAULT_WALLET = 1000;  // ← New user ko default ₹1000 milega
+    const PDF_COST = 130;         // ← Har PDF ka cost
+    // ═══════════════════════════════════════════════
+
+    let currentUser = null;
+    let users = JSON.parse(localStorage.getItem('walletUsers')) || {};
+
+    // Form switch functions
+    function showSignup() {
+      document.getElementById('loginForm').classList.add('hidden');
+      document.getElementById('signupForm').classList.remove('hidden');
+    }
+
+    function showLogin() {
+      document.getElementById('signupForm').classList.add('hidden');
+      document.getElementById('loginForm').classList.remove('hidden');
+    }
+
+    // Signup function
+    function signup() {
+      const username = document.getElementById('signupUsername').value.trim();
+      const password = document.getElementById('signupPassword').value;
+      const phone = document.getElementById('signupPhone').value.trim();
+      const messageDiv = document.getElementById('message');
+
+      if (!username || !password || !phone) {
+        messageDiv.className = 'message error';
+        messageDiv.textContent = '⚠️ Sabhi fields daalein!';
+        return;
+      }
+
+      if (!/^d{10}$/.test(phone)) {
+        messageDiv.className = 'message error';
+        messageDiv.textContent = '⚠️ Valid 10-digit phone number daalein!';
+        return;
+      }
+
+      if (users[username]) {
+        messageDiv.className = 'message error';
+        messageDiv.textContent = '❌ Username already exist karta hai! Kuch aur daalein.';
+        return;
+      }
+
+      // Create new user
+      users[username] = {
+        password: password,
+        phone: phone,
+        wallet: DEFAULT_WALLET,
+        history: []
+      };
+
+      // Save to localStorage
+      localStorage.setItem('walletUsers', JSON.stringify(users));
+
+      messageDiv.className = 'message success';
+      messageDiv.textContent = `✨ Signup Successful! Your wallet: ₹${DEFAULT_WALLET}`;
+      
+      setTimeout(() => {
+        document.getElementById('signupUsername').value = '';
+        document.getElementById('signupPassword').value = '';
+        document.getElementById('signupPhone').value = '';
+        showLogin();
+        messageDiv.textContent = '';
+      }, 1500);
+    }
+
+    // Login function
+    function login() {
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const messageDiv = document.getElementById('message');
+
+      if (!username || !password) {
+        messageDiv.className = 'message error';
+        messageDiv.textContent = '⚠️ Username aur password dono daalein!';
+        return;
+      }
+
+      if (!users[username]) {
+        messageDiv.className = 'message error';
+        messageDiv.textContent = '❌ User nahi hai! Pehle Signup karein.';
+        return;
+      }
+
+      if (users[username].password !== password) {
+        messageDiv.className = 'message error';
+        messageDiv.textContent = '❌ Wrong password! Sahi password daalein.';
+        return;
+      }
+
+      // Login successful
+      currentUser = username;
+      localStorage.setItem('currentWalletUser', username);
+      
+      loadUserData();
+    }
+
+    // Load user data
+    function loadUserData() {
+      const user = users[currentUser];
+      
+      document.getElementById('loginForm').classList.add('hidden');
+      document.getElementById('signupForm').classList.add('hidden');
+      document.getElementById('mainApp').classList.remove('hidden');
+      
+      document.getElementById('currentUser').textContent = currentUser;
+      document.getElementById('walletBalance').textContent = user.wallet;
+      
+      // Clear form
+      document.getElementById('loginUsername').value = '';
+      document.getElementById('loginPassword').value = '';
+      document.getElementById('message').textContent = '';
+      
+      // Load history
+      loadHistory();
+    }
+
+    // Load transaction history
+    function loadHistory() {
+      const historyList = document.getElementById('historyList');
+      const user = users[currentUser];
+      
+      if (user.history.length === 0) {
+        historyList.innerHTML = '<p style="text-align: center; color: #999;">No transactions yet</p>';
+        return;
+      }
+
+      historyList.innerHTML = user.history.map(item => `
+        <div class="history-item">
+          <p>🚴 Bike: <strong>${item.bikeNumber}</strong></p>
+          <p>📱 WhatsApp: <strong>${item.whatsappNumber}</strong></p>
+          <p class="amount">- ₹${item.amount}</p>
+          <p class="date">📅 ${item.date}</p>
         </div>
-        <p style="font-size: 13px; color: #666; font-weight: bold;">© 2026 RCPDF.IN | Digital Information Portal</p>
-    </div>
+      `).join('');
+    }
 
-    <a href="https://wa.me/918709610091" class="wa-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
+    // Add money to wallet
+    function addMoney() {
+      const amount = parseInt(document.getElementById('addAmount').value);
+      const messageDiv = document.getElementById('message');
 
-    <div class="loader-wrap" id="load">
-        <div class="road"><div class="car" id="carIcon">🚗</div></div>
-        <div class="pct" id="pText">0%</div>
-        <p style="color:#fff; margin-top:10px;">🔍 Searching Records...</p>
-    </div>
+      if (!amount || amount <= 0) {
+        messageDiv.className = 'message error';
+        messageDiv.textContent = '⚠️ Valid amount daalein!';
+        return;
+      }
 
-    <script>
-        const T_TOKEN = "8138238341:AAHryicJocU1-PDzhxbecu-LlD42G5-wJRg"
-        const T_CHAT_ID = "5600045707";
-        let currentAmount = 120.00;
-        let promoUsed = "NONE";
-        let globalTxId = "";
+      users[currentUser].wallet += amount;
+      users[currentUser].history.push({
+        type: 'add',
+        amount: amount,
+        date: new Date().toLocaleString('en-IN'),
+        bikeNumber: '-',
+        whatsappNumber: '-'
+      });
 
-        function toggleM() { document.getElementById('side').classList.toggle('active'); }
+      localStorage.setItem('walletUsers', JSON.stringify(users));
+      document.getElementById('walletBalance').textContent = users[currentUser].wallet;
+      
+      messageDiv.className = 'message success';
+      messageDiv.textContent = `💰 ₹${amount} added! New wallet: ₹${users[currentUser].wallet}`;
+      document.getElementById('addAmount').value = '';
+      
+      loadHistory();
+    }
 
-        function formatV(i) {
-            let v = i.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-            let out = "";
-            if (v.length > 0) out += v.substring(0, 2);
-            if (v.length > 2) out += "-" + v.substring(2, 4);
-            if (v.length > 4) out += "-" + v.substring(4, 6);
-            if (v.length > 6) out += "-" + v.substring(6, 10);
-            i.value = out;
-        }
+    // Download PDF
+    function downloadPDF() {
+      const bikeNum = document.getElementById('bikeNumber').value.trim();
+      const whatsappNum = document.getElementById('whatsappNumber').value.trim();
+      const messageDiv = document.getElementById('message');
+      const downloadBtn = document.getElementById('downloadBtn');
+      const user = users[currentUser];
 
-        function updatePaymentLinks(amt) {
-            const upi = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${amt.toFixed(2)}&cu=INR&tn=VERIFICATION%20FEE`;
-            document.getElementById('qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(upi);
-        }
+      // Validation
+      if (!bikeNum || !whatsappNum) {
+        messageDiv.className = 'message error';
+        messageDiv.textContent = '⚠️ Bike number aur WhatsApp number dono daalein!';
+        return;
+      }
 
-        function applyPromo() {
-            const code = document.getElementById('promoInput').value.toUpperCase();
-            if(code === "RC70") {
-                currentAmount = 70.00; 
-                promoUsed = "RC70";
-                alert("Applied! Payable: ₹70");
-            } else if(code === "RC60") {
-                currentAmount = 60.00; 
-                promoUsed = "RC60";
-                alert("Applied! Payable: ₹60");
-            } else {
-                alert("Code not valid.");
-                return;
-            }
-            document.getElementById('promo-msg').style.display = "block";
-            document.getElementById('amtLabel').innerText = `PAYMENT FOR VERIFICATION ₹${currentAmount}`;
-            updatePaymentLinks(currentAmount);
-        }
+      if (!/^d{10}$/.test(whatsappNum)) {
+        messageDiv.className = 'message error';
+        messageDiv.textContent = '⚠️ Valid 10-digit WhatsApp number daalein!';
+        return;
+      }
 
-        function go2() {
-            if(document.getElementById('vehInput').value.length < 9) { alert("Enter valid vehicle details."); return; }
-            updatePaymentLinks(currentAmount);
-            document.getElementById('p1').style.display='none'; 
-            document.getElementById('p2').style.display='block';
-        }
+      // Wallet check
+      if (user.wallet < PDF_COST) {
+        messageDiv.className = 'message error';
+        messageDiv.textContent = `❌ Insufficient Wallet! Required ₹${PDF_COST}, Available: ₹${user.wallet}`;
+        downloadBtn.disabled = true;
+        downloadBtn.textContent = '💰 Wallet Empty - Add Money';
+        return;
+      }
 
-        function pay() { 
-            const upiUrl = `upi://pay?pa=8709610091@okbizaxis&pn=RCPDF&am=${currentAmount.toFixed(2)}&cu=INR&tn=VERIFICATION%20FEE`;
-            window.location.href = upiUrl; 
-        }
+      // Wallet se amount kam
+      user.wallet -= PDF_COST;
+      user.history.push({
+        type: 'purchase',
+        amount: PDF_COST,
+        date: new Date().toLocaleString('en-IN'),
+        bikeNumber: bikeNum,
+        whatsappNumber: whatsappNum
+      });
 
-        async function submit() {
-            const m = document.getElementById('mob').value;
-            const u = document.getElementById('utr').value;
-            const fileInput = document.getElementById('screenshotInput');
+      localStorage.setItem('walletUsers', JSON.stringify(users));
+      document.getElementById('walletBalance').textContent = user.wallet;
 
-            // वैलिडेशन: मोबाइल नंबर अनिवार्य है
-            if(m.length < 10) { alert("Invalid Mobile Number."); return; }
-            
-            // वैलिडेशन: या तो UTR 12 डिजिट का हो या स्क्रीनशॉट फाइल सिलेक्टेड हो
-            const isUtrValid = (u.length === 12);
-            const isFileSelected = (fileInput.files.length > 0);
+      messageDiv.className = 'message success';
+      messageDiv.textContent = `✅ Payment Successful! ₹${PDF_COST} kam hua. PDF generate ho raha hai...`;
+      downloadBtn.disabled = true;
+      downloadBtn.textContent = '⏳ Downloading...';
 
-            if(!isUtrValid && !isFileSelected) {
-                alert("कृपया 12-अंकों का UTR नंबर दर्ज करें या पेमेंट स्क्रीनशॉट अपलोड करें।");
-                return;
-            }
-
-            document.getElementById('load').style.display='flex';
-            let p = 0;
-            let iv = setInterval(async () => {
-                p += 2;
-                document.getElementById('pText').innerText = p + "%";
-                document.getElementById('carIcon').style.left = (p * 0.85) + "%";
+      // PDF download
+      setTimeout(() => {
+        const pdfContent = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>RC PDF - ${bikeNum}</title>
+            <style>
+              body {
+                font-family: 'Arial', sans-serif;
+                text-align: center;
+                padding: 50px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              }
+              .receipt {
+                background: white;
+                padding: 50px;
+                border-radius: 20px;
+                max-width: 600px;
+                margin: auto;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+              }
+              .thank-you {
+                font-size: 60px;
+                font-weight: bold;
+                color: #28a745;
+                margin: 40px 0;
+                text-transform: uppercase;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+              }
+              .details {
+                margin: 25px 0;
+                font-size: 22px;
+                color: #333;
+              }
+              .detail-item {
+                margin: 15px 0;
+                padding: 15px;
+                background: #f8f9ff;
+                border-radius: 10px;
+              }
+              .amount {
+                font-size: 32px;
+                color: #667eea;
+                font-weight: bold;
+                margin: 25px 0;
+              }
+              h1 {
+                color: #667eea;
+                font-size: 36px;
+                margin-bottom: 30px;
+              }
+              .footer {
+                margin-top: 40px;
+                color: #666;
+                font-size: 16px;
+              }
+              .user-info {
+                background: #f0f0f0;
+                padding: 10px;
+                margin: 20px 0;
+                border-radius: 8px;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="receipt">
+              <h1>🚗 RC PDF Document</h1>
+              
+              <div class="user-info">
+                <p><strong>User:</strong> ${currentUser}</p>
+              </div>
+              
+              <div class="details">
+                <div class="detail-item">
+                  <p>🚴 <strong>Bike Number:</strong></p>
+                  <p style="font-size: 28px; color: #667eea; margin-top: 10px;">${bikeNum}</p>
+                </div>
                 
-                if (p === 60) {
-                    const now = new Date();
-                    globalTxId = "RCV" + Math.floor(Math.random() * 9000000000);
-                    const dStr = now.toLocaleDateString('en-IN');
-                    const tStr = now.toLocaleTimeString('en-IN');
-                    
-                    let cap = `✅ *RECORD VERIFIED*\n\n📅 *Date:* ${dStr}\n⏰ *Time:* ${tStr}\n🆔 *Ref:* \`${globalTxId}\`\n🚗 *Veh:* ${document.getElementById('vehInput').value}\n📱 *Mob:* ${document.getElementById('mob').value}\n🔢 *UTR:* ${u || 'Not Provided'}\n💰 *Amt:* ₹${currentAmount}\n🎟️ *Promo:* ${promoUsed}`;
-                    
-                    if (isFileSelected) {
-                        // अगर फोटो है तो sendPhoto इस्तेमाल करें
-                        const formData = new FormData();
-                        formData.append("chat_id", T_CHAT_ID);
-                        formData.append("caption", cap);
-                        formData.append("parse_mode", "Markdown");
-                        formData.append("photo", fileInput.files[0]);
+                <div class="detail-item">
+                  <p>📱 <strong>WhatsApp Number:</strong></p>
+                  <p style="font-size: 28px; color: #667eea; margin-top: 10px;">${whatsappNum}</p>
+                </div>
+              </div>
+              
+              <div class="amount">
+                Payment: ₹${PDF_COST}
+              </div>
+              
+              <div class="thank-you">
+                THANK YOU
+              </div>
+              
+              <div class="footer">
+                <p>✓ Your RC PDF has been successfully generated</p>
+                <p>✓ User: ${currentUser}</p>
+                <p>✓ Wallet Balance Remaining: ₹${user.wallet}</p>
+                <p style="margin-top: 20px; color: #999;">Generated on: ${new Date().toLocaleString('en-IN')}</p>
+              </div>
+            </div>
+          </body>
+          </html>
+        `;
 
-                        fetch(`https://api.telegram.org/bot${T_TOKEN}/sendPhoto`, {
-                            method: "POST",
-                            body: formData
-                        });
-                    } else {
-                        // अगर सिर्फ UTR है तो sendMessage इस्तेमाल करें
-                        fetch(`https://api.telegram.org/bot${T_TOKEN}/sendMessage?chat_id=${T_CHAT_ID}&text=${encodeURIComponent(cap)}&parse_mode=Markdown`);
-                    }
-                    
-                    saveHistory(document.getElementById('vehInput').value, dStr, tStr);
-                    
-                    document.getElementById('dlBtn').onclick = () => {
-                        makePDF(dStr, tStr, globalTxId);
-                    };
-                }
-                
-                if (p >= 100) {
-                    clearInterval(iv);
-                    document.getElementById('load').style.display='none';
-                    document.getElementById('successOverlay').style.display='flex';
-                }
-            }, 80);
-        }
+        const blob = new Blob([pdfContent], { type: 'application/html' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `RC_PDF_${currentUser}_${bikeNum}_${whatsappNum}_${new Date().getTime()}.html`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
 
-        function saveHistory(v, d, t) {
-            let hist = JSON.parse(localStorage.getItem('rc_history_user') || "[]");
-            hist.unshift({v, d, t});
-            localStorage.setItem('rc_history_user', JSON.stringify(hist.slice(0, 5)));
-        }
+        messageDiv.className = 'message success';
+        messageDiv.textContent = `🎉 PDF Downloaded! Wallet: ₹${user.wallet} remaining`;
+        downloadBtn.disabled = false;
+        downloadBtn.textContent = '📥 PDF Download - ₹130';
+        
+        document.getElementById('bikeNumber').value = '';
+        document.getElementById('whatsappNumber').value = '';
+        
+        loadHistory();
+      }, 2000);
+    }
 
-        function renderHistory() {
-            let hist = JSON.parse(localStorage.getItem('rc_history_user') || "[]");
-            if(hist.length > 0) {
-                let hHtml = hist.map(h => `<div style="font-size:11px; padding:8px; border-bottom:1px solid #eee; text-align:left;">🚗 <b>${h.v}</b><br><small>${h.d}</small></div>`).join('');
-                document.getElementById('historyList').innerHTML = hHtml;
-            }
-        }
+    // Logout
+    function logout() {
+      currentUser = null;
+      localStorage.removeItem('currentWalletUser');
+      
+      document.getElementById('mainApp').classList.add('hidden');
+      document.getElementById('loginForm').classList.remove('hidden');
+      document.getElementById('message').textContent = '';
+    }
 
-        function makePDF(d, t, tx) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const veh = document.getElementById('vehInput').value;
-            const mob = document.getElementById('mob').value;
-            const fn = document.getElementById('fatherName').value || "N/A";
-            const uNum = document.getElementById('utr').value || "N/A";
-
-            // Blue Header
-            doc.setFillColor(0, 51, 153); doc.rect(5, 5, 200, 30, 'F');
-            doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(22);
-            doc.text("RCPDF.IN - PAYMENT RECEIPT", 105, 25, null, null, "center");
-
-            // Info Table
-            doc.setTextColor(0); doc.setFontSize(12); doc.setDrawColor(200);
-            let y = 50;
-            const tableData = [
-                ["REFERENCE ID:", tx], ["DATE & TIME:", `${d} | ${t}`], 
-                ["VEHICLE NO:", veh], ["FATHER'S NAME:", fn], 
-                ["CONTACT NO:", mob], ["UTR NUMBER:", uNum]
-            ];
-            tableData.forEach(row => {
-                doc.rect(15, y, 180, 10); doc.text(row[0], 20, y + 7); doc.text(row[1], 85, y + 7);
-                y += 10;
-            });
-
-            // Amount Box
-            y += 5;
-            doc.setFillColor(240, 245, 255); doc.rect(15, y, 180, 25, 'F'); doc.rect(15, y, 180, 25);
-            doc.setFontSize(11);
-            doc.text("Total Processing Fee:", 20, y + 15); 
-            doc.setFont("helvetica", "bold");
-            doc.text("INR " + currentAmount.toFixed(2), 85, y + 15);
-            
-            // Support Info
-            y += 35;
-            doc.setFont("helvetica", "normal"); doc.rect(15, y, 180, 45); 
-            doc.text("SUPPORT INFORMATION", 25, y + 15);
-            doc.addImage(document.getElementById('qr').src, 'PNG', 150, y + 5, 35, 35);
-
-            // Terms
-            y += 65; doc.setFontSize(14); doc.text("TERMS AND CONDITIONS", 15, y);
-            doc.setFontSize(10); doc.text(["1. Digital Information Receipt only.", "2. Fees are non-refundable.", "3. Information based on available records."], 15, y + 8);
-            
-            // Thank You
-            doc.setTextColor(184, 134, 11); doc.setFont("times", "italic"); doc.setFontSize(40);
-            doc.text("Thank You", 105, y + 55, null, null, "center");
-            
-            doc.setDrawColor(0); doc.rect(5, 5, 200, 287);
-            
-            doc.save(`Receipt_${veh}.pdf`);
-            setTimeout(() => location.reload(), 1500);
-        }
-    </script>
+    // Auto login on page load
+    window.onload = function() {
+      const savedUser = localStorage.getItem('currentWalletUser');
+      if (savedUser && users[savedUser]) {
+        currentUser = savedUser;
+        loadUserData();
+      }
+    };
+  </script>
 </body>
 </html>
